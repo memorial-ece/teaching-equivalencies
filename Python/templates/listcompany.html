@@ -1,0 +1,94 @@
+<!doctype html>
+<html>
+   <head>
+           <style>
+body {color: white;}
+</style>
+      <title>
+         wew lads
+      </title>
+      <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+   </head>
+   <body bgcolor="101111">
+   {% extends "Home.html" %}
+{% block content %}
+        {% if error %}
+      <p><strong>Error:</strong> {{ error }}
+      {% endif %}
+      <table border = 1>
+         <thead>
+            <td>ID</td>
+            <!--<td>UID</td>-->
+            <td>Name</td>
+            <td>Email</td>
+            <!--<td>age</td>-->
+            <!--<td>address</td>-->
+            <!--<td>salary</td>-->
+         </thead>
+         {% for row in Person %}
+            <tr>
+                <td>{{row["ID"]}}</td>
+                <!--<td>{{row["CID"]}}</td>-->
+               <!--<td>{{row["UID"]}}</td>-->
+               <td>{{row["Name"]}}</td>
+                <td>{{row["Email"]}}</td>
+               <!--<td>{{row["AGE"]}}</td>-->
+               <!--<td>{{row['ADDRESS']}}</td>-->
+               <!--<td>{{row["SALARY"]}}</td>-->
+            </tr>
+       {% endfor %}
+                <thead>
+            <td>PseudoID</td>
+            <td>PseudoName</td>
+            <td>Email</td>
+            <td>Team</td>
+         </thead>
+         {% for row in Pseudo %}
+            <tr>
+                <td>{{row["PseudoID"]}}</td>
+               <td>{{row["PseudoName"]}}</td>
+                <td>{{row["Email"]}}</td>
+                <td>{{row["Team"]}}</td>
+            </tr>
+         {% endfor %}
+       <!--CRN,Subj,Crse,Sec,Session,Title-->
+                       <thead>
+            <td>CRN</td>
+            <td>Subj</td>
+            <td>Crse</td>
+            <td>Sec</td>
+            <td>Session</td>
+            <td>Title</td>
+         </thead>
+         {% for row in Course %}
+            <tr>
+                <td>{{row["CRN"]}}</td>
+               <td>{{row["Subj"]}}</td>
+                <td>{{row["Crse"]}}</td>
+                <td>{{row["Sec"]}}</td>
+                <td>{{row["Session"]}}</td>
+                <td>{{row["Title"]}}</td>
+            </tr>
+         {% endfor %}
+      </table>
+ <!--<form action = "{{ url_for('listm') }}" method = "POST">-->
+
+     <!--<h3>dummy info</h3>-->
+         <!--ID<br>-->
+         <!--<input type = "text" name = "ID" /><br>-->
+         <!--add<br>-->
+        <!--<input type = "text" name = "add" /><br>-->
+        <!--sub<br>-->
+         <!--<input type = "text" name = "sub" /><br>-->
+         <!--mtp<br>-->
+        <!--<input type = "text" name = "multiply" /><br>-->
+        <!--dvd<br>-->
+         <!--<input type = "text" name = "divide" /><br>-->
+
+     <!--<input type = "submit" value = "submit" /><br>-->
+     <!--</form>-->
+      <!--<a href = "/">Go back to home page</a>-->
+   <a href="/resettables">reset</a>
+{% endblock %}
+   </body>
+</html>

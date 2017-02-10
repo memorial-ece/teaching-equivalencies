@@ -1,0 +1,87 @@
+<!doctype html>
+<html>
+   <head>
+       {% if error %}
+      <p><strong>Error:</strong> {{ error }}
+      {% endif %}
+      <title>
+         wew lads we on a roll now
+      </title>
+      <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+   </head>
+    <table border = 1>
+        <thead>
+            <td>CID</td>
+            <td>UID</td>
+            <td>Name</td>
+            <td>age</td>
+            <td>address</td>
+            <td>salary</td>
+        </thead>
+         {% for row in rowc %}
+            <tr>
+                <td>{{row["CID"]}}</td>
+                <td>{{row["UID"]}}</td>
+                <td>{{row["NAME"]}}</td>
+                <td>{{row["AGE"]}}</td>
+                <td>{{row['ADDRESS']}}</td>
+                <td>{{row["SALARY"]}}</td>
+            </tr>
+         {% endfor %}
+    </table>
+            <table border = 1>
+                <thead>
+                <td>CID</td>
+                <td>opp</td>
+                <td>aadd</td>
+                <td>sub</td>
+                <td>mtp</td>
+                <td>dvd</td>
+                <td>rslt</td>
+                </thead>
+
+            {% for row in rows %}
+                <tr>
+                <td>{{row["CID"]}}</td>
+                <td>{{row["opp"]}}</td>
+                <td>{{row["aadd"]}}</td>
+                <td>{{row["sub"]}}</td>
+                <td>{{row["mtp"]}}</td>
+                <td>{{row["dvd"]}}</td>
+                <td>{{row["rslt"]}}</td>
+                </tr>
+            {% endfor %}
+            </table>
+
+      <form action = "{{ url_for('addingtables') }}" method = "POST">
+         <h3>dummy info</h3>
+         CID<br>
+         <input type = "text" name = "CID" /><br>
+
+         aadd<br>
+        <input type = "text" name = "aadd" /><br>
+
+         sub<br>
+         <input type = "text" name = "sub" /><br>
+
+         mtp<br>
+         <input type = "text" name = "mtp" /><br>
+          dvd<br>
+          <input type = "text" name = "dvd" /><br>
+         <input type = "submit" value = "submit" /><br>
+
+
+            <div class="slider">
+                <label class="switch">
+                    <input type="checkbox" name='to' />
+                    </label>
+            </div>
+
+      </form>
+
+      <a href = "/">Go back to home page</a>
+     + <a href="/addingtables">math testing ground</a>
+     + <a href="/resettables">reset</a>
+
+   </body>
+</html>

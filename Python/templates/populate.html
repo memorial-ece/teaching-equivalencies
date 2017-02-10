@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <style>
+body {color: white;}
+</style>
+    <meta charset="UTF-8">
+    <title>Populate</title>
+</head>
+<body bgcolor="101111">
+<form action = "{{ url_for('populate') }}" method = "POST">
+
+   {% extends "Home.html" %}
+{% block content %}
+     <h3><font color="white">Dummy</font></h3>
+         <!--ID<br>-->
+         <!--<input type = "text" name = "ID" /><br>-->
+         <!--name<br>-->
+        <!--<input type = "text" name = "name" /><br>-->
+        <!--age<br>-->
+         <!--<input type = "text" name = "age" /><br>-->
+         <!--city<br>-->
+        <!--<input type = "text" name = "city" /><br>-->
+        <!--sal<br>-->
+         <!--<input type = "text" name = "salary" /><br>-->
+
+     <!--<input type = "submit" value = "submit" /><br>-->
+     <!--</form>-->
+    <p>Tables have had data entered</p>
+{% endblock %}
+</body>
+</html>
