@@ -3,6 +3,7 @@ import sqlite3 as sql
 import os
 import random
 import datetime
+from peewee import *
 app = Flask(__name__)
 random.seed(a=2)
 @app.route('/favicon.ico')
@@ -16,8 +17,8 @@ def Profile(CID):
 	con.row_factory = sql.Row
 	c = con.cursor()
 	c.execute("select * from Person where ID = ?", (CID,))
-	rows = c.fetchall()
-	return render_template("listcompanyforempl.html", rows=rows, ID=CID)
+	Person= c.fetchall()
+	return render_template("listcompanyforempl.html", Person=Person, ID=CID)
 @app.route('/resettables')
 def bringdtatonline():
 	con = sql.connect("database.db")
@@ -206,7 +207,122 @@ def listm():
 @app.route('/index')
 @app.route('/',methods=["GET"])
 def index():
-    return render_template("Home.html")
+	return render_template("Home.html")
+
+
+class Person(Model):
+	Name = TextField()
+	Email = TextField()
+	ID = IntegerField(unique=True, primary_key=True, null=False)
+
+
+class Course(Model):
+    CRN = IntegerField(unique=True, primary_key=True, null=False)
+    Subj = TextField()
+    Crse = IntegerField()
+
+
+class CourseGeneration(Model):
+    CourseGenID = IntegerField(unique=True, primary_key=True, null=False)
+    Labs = IntegerField()
+    CreditHours = IntegerField()
+    Title = TextField()
+    CRN = ForeignKeyField(Course, related_name='CourseGenerations')
+
+
+class Term(Model):
+    SemesterID = IntegerField(unique=True, primary_key=True, null=False)
+    Year = DateField()
+    Session = IntegerField()
+
+
+class Offering(Model):
+    OID = IntegerField(unique=True, primary_key=True, null=False, )
+    StudentsTaking = IntegerField()
+    ID = ForeignKeyField(Person, related_name='Offerings')
+    SemesterID = ForeignKeyField(Term, related_name='Offerings')
+
+
+class Role(Model):
+    RoleID = IntegerField(primary_key=True, unique=True, null=False)
+    ViewOnlyYou = IntegerField()
+    ViewOnlyDept = IntegerField()
+    ViewOnlyAll = IntegerField()
+    EditDept = IntegerField()
+
+
+class RolePerson(Model):
+    ID = ForeignKeyField(Person, related_name='RolePersons')
+    RoleID = ForeignKeyField(Role, related_name='RolePersons')
+
+
+class ProjectSupervision(Model):
+    ProjectSupervisionID = IntegerField(primary_key=True, unique=True, null=False)
+    ID = ForeignKeyField(Person, related_name='ProjectSupervisions')
+    PseudoID = ForeignKeyField(PseudoPeople, related_name='ProjectSupervisions')
+    ProjectClassID = ForeignKeyField(ProjectClass, related_name='ProjectSupervisions')
+    SemesterID = ForeignKeyField(Term, related_name='ProjectSupervisions')
+
+
+class ProjectClass(Model):
+    ProjectClassID = IntegerField(primary_key=True, unique=True, null=False)
+    Grad = FloatField()
+    UGrad = FloatField()
+    Master = FloatField()
+
+
+class Supervision(Model):
+    SupervisionID = IntegerField(primary_key=True, unique=True, null=False)
+    ID = ForeignKeyField(Person, related_name='Supervisions')
+    StudentID = ForeignKeyField(Student, related_name='Supervisions')
+    SupervisionClassID = ForeignKeyField(SupervisionClass, related_name='Supervisions')
+    SemesterID = ForeignKeyField(Term, related_name='ProjectSupervisions')
+
+
+class SupervisionClass(Model):
+    SupervisionClassID = IntegerField(primary_key=True, unique=True, null=False)
+    Grad = FloatField()
+    UGrad = FloatField()
+    Master = FloatField()
+
+
+class PseudoPeople(Model):
+    PseudoID = IntegerField(primary_key=True, unique=True, null=False)
+    PName = TextField()
+    PEmail = TextField()
+
+
+class Student(Model):
+    StudentID = IntegerField(primary_key=True, unique=True, null=False)
+    SName = TextField()
+    SEmail = TextField()
+
+
+class Adjustment(Model):
+    AdjustmentID = IntegerField(primary_key=True, unique=True, null=False)
+    ADJWeight = FloatField()
+    AUDITDATE = DateTimeField()
+    AUDITCOMMENT = TextField()
+    ID = ForeignKeyField(Person, related_name='Adjustments')
+
+
+def create_tables():
+    database.connect()
+    database.create_tables([User, Relationship, Message])
+
+@app.route('/peewee')
+def peewee():
+	con = sql.connect("database.db")
+	con.row_factory = sql.Row
+	c = con.cursor()
+	c.create_tables(
+        [Person, Course, CourseGeneration, Adjustment, PseudoPeople, Supervision, SupervisionClass, ProjectClass,
+         ProjectSupervision, Offering, Term, Student, Role, Role])
+
+
+
+
+
 @app.errorhandler(401)
 def page_not_found(e):
 	return Response('<p>Login failed</p><a href="/">home</a>')
