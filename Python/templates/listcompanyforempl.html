@@ -8,24 +8,17 @@
 </head>
  <table border = 1>
          <thead>
-            <td>CID</td>
-            <td>UID</td>
+            <td>ID</td>
             <td>Name</td>
-            <td>age</td>
-            <td>address</td>
-            <td>salary</td>
+            <td>Email</td>
          </thead>
-         {% for row in rows %}
+         {% for row in Person %}
             <tr>
-                <td>{{row["CID"]}}</td>
-               <td>{{row["UID"]}}</td>
-               <td>{{row["NAME"]}}</td>
-               <td>{{row["AGE"]}}</td>
-               <td>{{row['ADDRESS']}}</td>
-               <td>{{row["SALARY"]}}</td>
+                <td>{{row["ID"]}}</td>
+               <td>{{row["Name"]}}</td>
+                <td>{{row["Email"]}}</td>
             </tr>
-         {% endfor %}
- </table>
+       {% endfor %} </table>
 <body>
 <a href="/">home</a>
 </body>
