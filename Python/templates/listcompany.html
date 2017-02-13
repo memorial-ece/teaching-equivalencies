@@ -9,6 +9,9 @@ body {color: white;}
       </title>
       <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
    </head>
+   {% if error %}
+      <p><strong>Error:</strong> {{ error }}
+{% endif %}
    <body bgcolor="101111">
    {% extends "Home.html" %}
 {% block content %}
@@ -27,7 +30,8 @@ body {color: white;}
                 <td>{{row["Name"]}}</td>
                 <td>{{row["Email"]}}</td>
             </tr>
-       {% endfor %}
+       {% endfor %}</table>
+<table border = 5>
        <thead>
             <td>PseudoID</td>
             <td>PseudoName</td>
@@ -41,7 +45,8 @@ body {color: white;}
                 <td>{{row["Email"]}}</td>
                 <td>{{row["Team"]}}</td>
             </tr>
-         {% endfor %}
+         {% endfor %}</table>
+<table border = 1>
        <thead>
             <td>CRN</td>
             <td>Subj</td>
@@ -59,7 +64,8 @@ body {color: white;}
                 <td>{{row["Session"]}}</td>
                 <td>{{row["Title"]}}</td>
             </tr>
-         {% endfor %}
+         {% endfor %}</table>
+<table border = 5>
        <thead>
             <td>SupervisionClassID</td>
             <td>Graduate</td>
@@ -73,7 +79,8 @@ body {color: white;}
                 <td>{{row["Undergrad"]}}</td>
                 <td>{{row["Masters"]}}</td>
             </tr>
-         {% endfor %}
+         {% endfor %}</table>
+<table border = 1>
        <thead>
             <td>ProjectClassID</td>
             <td>Graduate</td>
@@ -87,27 +94,38 @@ body {color: white;}
                 <td>{{row["Undergrad"]}}</td>
                 <td>{{row["Masters"]}}</td>
             </tr>
-         {% endfor %}
+         {% endfor %}</table>
+<table border = 5>
        <thead>
             <td>ProjectSupervisionID</td>
             <td>ProjectClassID</td>
+            <td>ID</td>
+            <td>PseudoID</td>
        </thead>
          {% for row in ProjectSupervision %}
             <tr>
                 <td>{{row["ProjectSupervisionID"]}}</td>
                 <td>{{row["ProjectClassID"]}}</td>
+                <td>{{row["ID"]}}</td>
+                <td>{{row["PseudoID"]}}</td>
             </tr>
-         {% endfor %}
+         {% endfor %}</table>
+<table border = 1>
        <thead>
             <td>SupervisionID</td>
             <td>SupervisionClassID</td>
+            <td>ID</td>
+            <td>PseudoID</td>
        </thead>
          {% for row in Supervision %}
             <tr>
                 <td>{{row["SupervisionID"]}}</td>
                 <td>{{row["SupervisionClassID"]}}</td>
+                <td>{{row["ID"]}}</td>
+                <td>{{row["PseudoID"]}}</td>
             </tr>
-         {% endfor %}
+         {% endfor %}</table>
+<table border = 5>
        <thead>
             <td>AdjustmentID</td>
             <td>ADJTO</td>
@@ -125,7 +143,8 @@ body {color: white;}
                 <td>{{row["AUDITDATE"]}}</td>
                 <td>{{row["AUDITCOMMENT"]}}</td>
             </tr>
-         {% endfor %}
+         {% endfor %}</table>
+<table border = 1>
        <thead>
             <td>ID</td>
             <td>RoleID</td>
@@ -135,7 +154,8 @@ body {color: white;}
                 <td>{{row["ID"]}}</td>
                 <td>{{row["RoleID"]}}</td>
             </tr>
-         {% endfor %}
+         {% endfor %}</table>
+<table border = 5>
        <thead>
             <td>RoleID</td>
             <td>ViewOnlyYou</td>
@@ -143,7 +163,7 @@ body {color: white;}
             <td>ViewOnlyAll</td>
             <td>EditDept</td>
        </thead>
-         {% for row in Adjustment %}
+         {% for row in Role %}
             <tr>
                 <td>{{row["RoleID"]}}</td>
                 <td>{{row["ViewOnlyYou"]}}</td>
@@ -151,19 +171,23 @@ body {color: white;}
                 <td>{{row["ViewOnlyAll"]}}</td>
                 <td>{{row["EditDept"]}}</td>
             </tr>
-         {% endfor %}
+         {% endfor %}</table>
+<table border = 1>
        <thead>
             <td>OID</td>
             <td>Semester</td>
             <td>COURSEGEN</td>
+            <td>ID</td>
        </thead>
          {% for row in Offering %}
             <tr>
                 <td>{{row["OID"]}}</td>
                 <td>{{row["Semester"]}}</td>
                 <td>{{row["COURSEGEN"]}}</td>
+                <td>{{row["ID"]}}</td>
             </tr>
-         {% endfor %}
+         {% endfor %}</table>
+<table border = 5>
        <thead>
             <td>Semester</td>
        </thead>
@@ -171,7 +195,8 @@ body {color: white;}
             <tr>
                 <td>{{row["Semester"]}}</td>
             </tr>
-         {% endfor %}
+         {% endfor %}</table>
+<table border = 1>
        <thead>
             <td>COURSEGEN</td>
             <td>CRN</td>
@@ -183,8 +208,45 @@ body {color: white;}
                 <td>{{row["CRN"]}}</td>
                 <td>{{row["Weight"]}}</td>
             </tr>
-         {% endfor %}
+         {% endfor %}</table>
+<table border = 5>
       </table>
+   <form action = "{{ url_for('listm') }}" method = "POST">
+         <h3>QUICK FIX NEEDED< WILL BREAK IF THE FIRST VALUE ISNT DEFFINED</h3>
+       WHAT TO UPDATE Offering is '1' Project super is '2' supervison is '3' Pseudopeople is '4' Failing to enter this will break the page<br>
+       <input type="text" name="FIXER" /><br>
+       ID Person ID<br>
+       <input type = "text" name = "ID" /><br>
+       SID Supervision ID<br>
+       <input type = "text" name = "SID" /><br>
+       PID ProjectSupervision ID<br>
+       <input type = "text" name = "PID" /><br>
+       OID Offering ID<br>
+       <input type = "text" name = "OID" /><br>
+       CGID Coursegeneration ID<br>
+       <input type = "text" name = "CGID" /><br>
+       SCID Supervision CLass<br>
+       <input type = "text" name = "SCID" /><br>
+       PCID ProjectClasssID<br>
+       <input type = "text" name = "PCID" /><br>
+       SEM Semester<br>
+       <input type = "text" name = "SEM" /><br>
+       SUDO Pseudo People<br>
+       <input type = "text" name = "SUDO" /><br>
+       ADJTO <br>
+       <input type = "text" name = "ADJTO" /><br>
+       ADJW adjustment weight<br>
+       <input type = "text" name = "ADJW" /><br>
+       AUCOM anditory comment for adjustments<br>
+       <input type="text" name="AUCOM"/><br>
+
+       <input type = "submit" value = "submit" /><br>
+
+                    </label>
+            </div>
+<!---->
+      </form>
+
    <a href="/resettables">reset</a>
 {% endblock %}
    </body>
