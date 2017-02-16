@@ -34,16 +34,14 @@ body {color: white;}
 <table border = 5>
        <thead>
             <td>PseudoID</td>
-            <td>PseudoName</td>
-            <td>Email</td>
-            <td>Team</td>
+            <td>PName</td>
+            <td>PEmail</td>
        </thead>
          {% for row in Pseudo %}
             <tr>
                 <td>{{row["PseudoID"]}}</td>
-                <td>{{row["PseudoName"]}}</td>
-                <td>{{row["Email"]}}</td>
-                <td>{{row["Team"]}}</td>
+                <td>{{row["PName"]}}</td>
+                <td>{{row["PEmail"]}}</td>
             </tr>
          {% endfor %}</table>
 <table border = 1>
@@ -51,48 +49,42 @@ body {color: white;}
             <td>CRN</td>
             <td>Subj</td>
             <td>Crse</td>
-            <td>Sec</td>
-            <td>Session</td>
-            <td>Title</td>
        </thead>
          {% for row in Course %}
             <tr>
                 <td>{{row["CRN"]}}</td>
                 <td>{{row["Subj"]}}</td>
                 <td>{{row["Crse"]}}</td>
-                <td>{{row["Sec"]}}</td>
-                <td>{{row["Session"]}}</td>
-                <td>{{row["Title"]}}</td>
             </tr>
          {% endfor %}</table>
 <table border = 5>
        <thead>
             <td>SupervisionClassID</td>
-            <td>Graduate</td>
-            <td>Undergrad</td>
-            <td>Masters</td>
+            <td>Grad</td>
+            <td>UGrad</td>
+            <td>Master</td>
        </thead>
          {% for row in SupervisionClass %}
             <tr>
                 <td>{{row["SupervisionClassID"]}}</td>
-                <td>{{row["Graduate"]}}</td>
-                <td>{{row["Undergrad"]}}</td>
-                <td>{{row["Masters"]}}</td>
+                <td>{{row["Grad"]}}</td>
+                <td>{{row["UGrad"]}}</td>
+                <td>{{row["Master"]}}</td>
             </tr>
          {% endfor %}</table>
 <table border = 1>
        <thead>
             <td>ProjectClassID</td>
-            <td>Graduate</td>
-            <td>Undergrad</td>
-            <td>Masters</td>
+            <td>Grad</td>
+            <td>UGrad</td>
+            <td>Master</td>
        </thead>
          {% for row in ProjectClass %}
             <tr>
                 <td>{{row["ProjectClassID"]}}</td>
-                <td>{{row["Graduate"]}}</td>
-                <td>{{row["Undergrad"]}}</td>
-                <td>{{row["Masters"]}}</td>
+                <td>{{row["Grad"]}}</td>
+                <td>{{row["UGrad"]}}</td>
+                <td>{{row["Master"]}}</td>
             </tr>
          {% endfor %}</table>
 <table border = 5>
@@ -122,7 +114,7 @@ body {color: white;}
                 <td>{{row["SupervisionID"]}}</td>
                 <td>{{row["SupervisionClassID"]}}</td>
                 <td>{{row["ID"]}}</td>
-                <td>{{row["PseudoID"]}}</td>
+                <td>{{row["StudentID"]}}</td>
             </tr>
          {% endfor %}</table>
 <table border = 5>
@@ -175,38 +167,48 @@ body {color: white;}
 <table border = 1>
        <thead>
             <td>OID</td>
-            <td>Semester</td>
-            <td>COURSEGEN</td>
+            <td>StudentsTaking</td>
             <td>ID</td>
+            <td>SemesterID</td>
+            <td>CourseGenID</td>
        </thead>
          {% for row in Offering %}
             <tr>
                 <td>{{row["OID"]}}</td>
-                <td>{{row["Semester"]}}</td>
-                <td>{{row["COURSEGEN"]}}</td>
+                <td>{{row["StudentsTaking"]}}</td>
                 <td>{{row["ID"]}}</td>
+                <td>{{row["SemesterID"]}}</td>
+                <td>{{row["CourseGenID"]}}</td>
             </tr>
          {% endfor %}</table>
 <table border = 5>
        <thead>
-            <td>Semester</td>
+            <td>SemesterID</td>
+            <td>Year</td>
+            <td>Session</td>
        </thead>
          {% for row in Term %}
             <tr>
-                <td>{{row["Semester"]}}</td>
+                <td>{{row["SemesterID"]}}</td>
+                <td>{{row["Year"]}}</td>
+                <td>{{row["Session"]}}</td>
             </tr>
          {% endfor %}</table>
 <table border = 1>
        <thead>
-            <td>COURSEGEN</td>
+            <td>CourseGenID</td>
             <td>CRN</td>
-            <td>Weight</td>
+            <td>CreditHours</td>
+            <td>Labs</td>
+            <td>Title</td>
        </thead>
          {% for row in CourseGeneration %}
             <tr>
-                <td>{{row["COURSEGEN"]}}</td>
+                <td>{{row["CourseGenID"]}}</td>
                 <td>{{row["CRN"]}}</td>
-                <td>{{row["Weight"]}}</td>
+                <td>{{row["CreditHours"]}}</td>
+                <td>{{row["Labs"]}}</td>
+                <td>{{row["Title"]}}</td>
             </tr>
          {% endfor %}</table>
 <table border = 5>
