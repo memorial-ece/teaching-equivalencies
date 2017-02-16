@@ -21,13 +21,47 @@ body {color: white;}
             <td>Name</td>
             <td>Email</td>
          </thead>
-         {% for row in lolerson %}
             <tr>
-                <td>{{row["ID"]}}</td>
-               <td>{{row["Name"]}}</td>
-                <td>{{row["Email"]}}</td>
+                <td>{{person.ID}}</td>
+                <td>{{person.Name}}</td>
+                <td>{{person.Email}}</td>
             </tr>
-       {% endfor %}
+            <td>SupervisionID</td>
+            <td>ID</td>
+            <td>StudentID</td>
+            <td>SupervisionClassID</td>
+            <td>SemesterID</td>
+            <tr>
+                <td>{{supervising.SupervisionID}}</td>
+                <td>{{supervising.ID}}</td>
+                <td>{{supervising.StudentID}}</td>
+                <td>{{supervising.SupervisionClassID}}</td>
+                <td>{{supervising.SemesterID}}</td>
+            </tr>
+            <td>OID</td>
+            <td>StudentsTaking</td>
+            <td>ID</td>
+            <td>SemesterID</td>
+            <td>CourseGenID</td>
+            <tr>
+                <td>{{offer.OID}}</td>
+                <td>{{offer.StudentsTaking}}</td>
+                <td>{{offer.ID}}</td>
+                <td>{{offer.SemesterID}}</td>
+                <td>{{offer.CourseGenID}}</td>
+            </tr>
+            <td>ProjectSupervisionID</td>
+            <td>ID</td>
+            <td>PseudoID</td>
+            <td>ProjectClassID</td>
+            <td>SemesterID</td>
+            <tr>
+                <td>{{Psuper.ProjectSupervisionID}}</td>
+                <td>{{Psuper.ID}}</td>
+                <td>{{Psuper.PseudoID}}</td>
+                <td>{{Psuper.ProjectClassID}}</td>
+                <td>{{Psuper.SemesterID}}</td>
+            </tr>
    </table>
    {% endblock %}
 </html>
