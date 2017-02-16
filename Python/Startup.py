@@ -22,49 +22,9 @@ database = SqliteDatabase(DATABASE)
 
 @app.route("/profile/<CID>")
 def Profile(CID):
-	con = sql.connect("database.db")
-	con.row_factory = sql.Row
-	c = con.cursor()
-	c.execute("select * from Person where ID = ?", (CID,))
-	Person = c.fetchall()
-	return render_template("listcompanyforempl.html", Person=Person, ID=CID)
+	lolerson = Person.select().where(Person.ID == CID).get()
+	return render_template("listcompanyforempl.html", Person=lolerson, ID=CID)
 
-
-# @app.route('/resettables')
-# def bringdtatonline():
-# 	con = sql.connect("database.db")
-# 	c = con.cursor()
-# 	c.execute('drop table if exists CourseGeneration')
-# 	c.execute('drop table if exists Course')
-# 	c.execute('drop table if exists Offering')
-# 	c.execute('drop table if exists Term')
-# 	c.execute('drop table if exists Supervision')
-# 	c.execute('drop table if exists Person')
-# 	c.execute('drop table if exists RolePerson')
-# 	c.execute('drop table if exists Adjustment')
-# 	c.execute('drop table if exists ProjectSupervision')
-# 	c.execute('drop table if exists SupervisionClass')
-# 	c.execute('drop table if exists PseudoPeople')
-# 	c.execute('drop table if exists Role')
-# 	c.execute('drop table if exists ProjectClass')
-# c.execute('CREATE TABLE CourseGeneration(COURSEGEN int NOT NULL, CRN int, Weight REAL, PRIMARY KEY (COURSEGEN),FOREIGN KEY (CRN) REFERENCES Course (CRN))')
-# c.execute('CREATE TABLE Course(CRN int, Subj text, Crse text, Sec text, Session text, Title text, PRIMARY KEY (CRN))')
-# c.execute('CREATE TABLE Offering(OID int NOT NULL, Semester text, ID int, COURSEGEN int, PRIMARY KEY (OID), FOREIGN KEY (ID) REFERENCES Person (ID), FOREIGN KEY (COURSEGEN) REFERENCES CourseGeneration (COURSEGEN))')
-# c.execute('CREATE TABLE Person(ID int NOT NULL, Email text NOT NULL, Name text NOT NULL, PRIMARY KEY (ID))')
-# c.execute('CREATE TABLE Term(Semester text NOT NULL, PRIMARY KEY (Semester))')
-# #ADD THE AUTOIMCREMENT STATMENT BACK TO ADJ ID, AUDIT ID, AND THE DATE
-# c.execute('CREATE TABLE RolePerson(ID int, RoleID int, FOREIGN KEY (ID) REFERENCES Person (ID), FOREIGN KEY (RoleID) REFERENCES Role (RoleID))')
-# c.execute('CREATE TABLE Role(RoleID int, ViewOnlyYou int,ViewOnlyDept int, ViewOnlyAll int, EditDept int, PRIMARY KEY (RoleID))')
-# c.execute('CREATE TABLE ProjectSupervision(ProjectSupervisionID int NOT NULL, ID int,PseudoID int, ProjectClassID int, PRIMARY KEY(ProjectSupervisionID), FOREIGN KEY (ID) REFERENCES Person (ID), FOREIGN KEY (ProjectClassID) REFERENCES ProjectClass (ProjectClassID), FOREIGN KEY (PseudoID) REFERENCES PseudoPeople (PseudoID))')
-# c.execute('CREATE TABLE SupervisionClass(SupervisionClassID int NOT NULL, Graduate REAL, Undergrad REAL, Masters REAL, PRIMARY KEY (SupervisionClassID))')
-# c.execute('CREATE TABLE PseudoPeople(PseudoID int NOT NULL, PseudoName text NOT NULL, Email text, Team text, int, PRIMARY KEY (PseudoID))')
-# c.execute('CREATE TABLE ProjectClass(ProjectClassID int NOT NULL, Graduate REAL, Undergrad REAL, Masters REAL, PRIMARY KEY (ProjectClassID))')
-# c.execute('CREATE TABLE Adjustment(AdjustmentID INTEGER PRIMARY KEY AUTOINCREMENT, ADJTO int NOT NULL, ID int, ADJWeight REAL,  AUDITDATE date, AUDITCOMMENT text, FOREIGN KEY (ID) REFERENCES Person (ID))')
-# c.execute('CREATE TABLE Supervision(SupervisionID int NOT NULL, ID int, PseudoID int, SupervisionClassID int, PRIMARY KEY (SupervisionID), FOREIGN KEY (ID) REFERENCES Person (ID), FOREIGN KEY (SupervisionClassID) REFERENCES SupervisionClass (SupervisionClassID), FOREIGN KEY (PseudoID) REFERENCES PseudoPeople (PseudoID))')
-# 	con.commit()
-# 	ID=random.randrange(0,100)
-# 	print (ID)
-# 	return render_template('reset.html')
 
 @app.route('/populate', methods=["GET", "POST"])
 def populate():
@@ -82,9 +42,13 @@ def populate():
 		ransam5 = random.choice(ranlist)
 		a = random.uniform(0, 1)
 		b = random.uniform(0, 1)
-		cb = random.uniform(0, 1)
+		ci= random.uniform(0, 1)
+		cb = random.choice([True, False])
 		d = random.uniform(1, 12)
 		e = random.uniform(1, 200)
+		ab = random.choice([True,False])
+		bb = random.choice([True, False])
+		db = random.choice([True, False])
 		word = random.choice(WORDS)
 		Subj = random.choice(WORDS)
 		Emale = word + "@mail.to"
@@ -112,11 +76,11 @@ def populate():
 		# c.execute('insert into Course (CRN,Subj,Crse,Sec,Session,Title) Values (?,?,?,?,?,?)', (CRN,Subj,Crse,Sec,Session,Title))
 		# con.commit()
 		elif 40 > count > 30:
-			supervisionClass = SupervisionClass.create(Grad=a, UGrad=b, Master=cb)
+			supervisionClass = SupervisionClass.create(Grad=a, UGrad=b, Master=ci)
 		# c.execute('insert into SupervisionClass(SupervisionClassID,Graduate,Undergrad,Masters) Values (?,?,?,?)', (ID,a,b,cb))
 		# con.commit()
 		elif 50 > count > 40:
-			projectClass = ProjectClass.create(Grad=a, UGrad=b, Master=cb)
+			projectClass = ProjectClass.create(Grad=a, UGrad=b, Master=ci)
 		# c.execute('insert into ProjectClass(ProjectClassID,Graduate,Undergrad,Masters) Values (?,?,?,?)', (ID,a,b,cb))
 		# con.commit()
 		elif 60 > count > 50:
@@ -132,7 +96,7 @@ def populate():
 		# c.execute('insert into Offering (OID) Values (?)', (ID,))
 		# con.commit()
 		elif 90 > count > 80:
-			role = Role.create(ViewOnlyYou=a, ViewOnlyDept=b, ViewOnlyAll=cb, EditDept=d)
+			role = Role.create(ViewOnlyYou=ab, ViewOnlyDept=bb, ViewOnlyAll=cb, EditDept=db)
 		# c.execute('insert into Role(RoleID) Values (?)', (ID,))
 		# con.commit()
 		elif 100 > count > 90:
@@ -159,50 +123,56 @@ def get_db():
 
 @app.route('/listm', methods=['GET', 'POST'])
 def listm():
+	error=None
+	if request.method == 'POST':
+		FIXER=request.form['FIXER']
+		ID=request.form['ID']
+		SID = request.form['SID']
+		SCID = request.form['SCID']
+		PCID = request.form['PCID']
+		PID = request.form['PID']
+		OID = request.form['OID']
+		CGID = request.form['CGID']
+		SEM= request.form['SEM']
+		SUDO= request.form['SUDO']
+		AUCOM=request.form['AUCOM']
+		ADJTO=request.form['ADJTO']
+		ADJW=request.form['ADJW']
+		AUDITDATE=datetime.date.today()
+		print(FIXER)
+		if FIXER=="1":
+			q= Offering.update(ID = ID,CourseGenID=CGID,SemesterID=SEM).where(Offering.OID == OID)
+			q.execute()
+		elif FIXER=="2":
+			q = ProjectSupervision.update(ID=ID, ProjectClassID=PCID, SemesterID=SEM).where(
+				ProjectSupervision.ProjectSupervisionID == PID)
+			q.execute()
+		elif FIXER=="3":
+			q = Supervision.update(ID=ID, SupervisionClassID=SCID, SemesterID=SEM).where(
+				Supervision.SupervisionID == SID)
+			q.execute()
+		elif FIXER=="4":
+			q = PseudoPeople.update(SupervisionID=SID, ProjectSupervisionID=PID).where(
+				PseudoPeople.PseudoID == SUDO)
+			q.execute()
+		elif FIXER=="5":
+			if not AUCOM=="":
+				q = Adjustment.insert(ID=ID,ADJWeight=ADJW,AUDITDATE=AUDITDATE,AUDITCOMMENT=AUCOM)
+				q.execute()
+			else:
+				error="comment not filled"
+				return render_template("listcompany.html", Person=Person, Pseudo=PseudoPeople, Course=Course,
+									   SupervisionClass=SupervisionClass, ProjectClass=ProjectClass,
+									   ProjectSupervision=ProjectSupervision, Supervision=Supervision,
+									   Adjustment=Adjustment,
+									   RolePerson=RolePerson, Role=Role, Term=Term, Offering=Offering,
+									   CourseGeneration=CourseGeneration, error=error)
 
-	# if request.method == 'POST':
-	# 	con = sql.connect("database.db")
-	# 	con.row_factory = sql.Row
-	# 	c = con.cursor()
-	# 	FIXER=request.form['FIXER']
-	# 	ID=request.form['ID']
-	# 	SID = request.form['SID']
-	# 	SCID = request.form['SCID']
-	# 	PCID = request.form['PCID']
-	# 	PID = request.form['PID']
-	# 	OID = request.form['OID']
-	# 	CGID = request.form['CGID']
-	# 	SEM= request.form['SEM']
-	# 	SUDO= request.form['SUDO']
-	# 	AUCOM=request.form['AUCOM']
-	# 	ADJTO=request.form['ADJTO']
-	# 	ADJW=request.form['ADJW']
-	# 	AUDITDATE=datetime.date.today()
-	# 	print(FIXER)
-	# 	if FIXER=="1":
-	# 		c.execute("update Offering set ID = ?,COURSEGEN=?,Semester=? where OID = ?", (ID,CGID,SEM,OID))
-	# 		con.commit()
-	# 	elif FIXER=="2":
-	# 		c.execute("update ProjectSupervision set ID = ?,Semester=?,ProjectClassID=? where ProjectSupervisionID = ?", (ID, SEM,PCID,PID))
-	# 		con.commit()
-	# 	elif FIXER=="3":
-	# 		c.execute("update Supervision set ID = ?,Semester=?,SupervisionClassID=? where SupervisionID = ?", (ID, SEM,SCID,SID))
-	# 		con.commit()
-	# 	elif FIXER=="4":
-	# 		c.execute("update PseudoPeople set SupervisionID=?,ProjectSupervisionID=? where PseudoID=?",(SID,PID,SUDO))
-	# 		con.commit()
-	# 	elif FIXER=="5":
-	# 		if not AUCOM=="":
-	# 			c.execute("Insert into Adjustment (ADJTO, ID, ADJWeight,AUDITDATE,AUDITCOMMENT) values (?,?,?,?,?)",(ADJTO,ID,ADJW,AUDITDATE,AUCOM))
-	# 			con.commit()
-	# 		else:
-	# 			error="comment not filled"
-	# 			return render_template("listcompany.html", error=error, Person=Person, Pseudo=Pseudo, Course=Course,SupervisionClass=SupervisionClass, ProjectClass=ProjectClass,ProjectSupervision=ProjectSupervision, Supervision=Supervison, Adjustment=Adjustment,RolePerson=RolePerson, Role=Role, Term=Term, Offering=Offering,CourseGeneration=CourseGeneration)
 	return render_template("listcompany.html", Person=Person, Pseudo=PseudoPeople, Course=Course,
 							SupervisionClass=SupervisionClass, ProjectClass=ProjectClass,
 							ProjectSupervision=ProjectSupervision, Supervision=Supervision, Adjustment=Adjustment,
 							RolePerson=RolePerson, Role=Role, Term=Term, Offering=Offering,
-							CourseGeneration=CourseGeneration)
+							CourseGeneration=CourseGeneration, error=error)
 
 
 @app.route('/Dashboard')
@@ -254,10 +224,10 @@ class Offering(Model):
 
 class Role(Model):
 	RoleID = IntegerField(primary_key=True, unique=True, null=False)
-	ViewOnlyYou = IntegerField()
-	ViewOnlyDept = IntegerField()
-	ViewOnlyAll = IntegerField()
-	EditDept = IntegerField()
+	ViewOnlyYou = BooleanField()
+	ViewOnlyDept = BooleanField()
+	ViewOnlyAll = BooleanField()
+	EditDept = BooleanField()
 
 
 class SupervisionClass(Model):

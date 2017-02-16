@@ -120,7 +120,6 @@ body {color: white;}
 <table border = 5>
        <thead>
             <td>AdjustmentID</td>
-            <td>ADJTO</td>
             <td>ID</td>
             <td>ADJWeight</td>
             <td>AUDITDATE</td>
@@ -129,7 +128,6 @@ body {color: white;}
          {% for row in Adjustment %}
             <tr>
                 <td>{{row["AdjustmentID"]}}</td>
-                <td>{{row["ADJTO"]}}</td>
                 <td>{{row["ID"]}}</td>
                 <td>{{row["ADJWeight"]}}</td>
                 <td>{{row["AUDITDATE"]}}</td>
@@ -235,8 +233,8 @@ body {color: white;}
        <input type = "text" name = "SEM" /><br>
        SUDO Pseudo People<br>
        <input type = "text" name = "SUDO" /><br>
-       ADJTO <br>
-       <input type = "text" name = "ADJTO" /><br>
+       <!--ADJTO <br>-->
+       <!--<input type = "text" name = "ADJTO" /><br>-->
        ADJW adjustment weight<br>
        <input type = "text" name = "ADJW" /><br>
        AUCOM anditory comment for adjustments<br>
