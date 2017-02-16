@@ -20,10 +20,11 @@ DATABASE = 'database.db'
 database = SqliteDatabase(DATABASE)
 
 
-@app.route("/profile/<CID>")
-def Profile(CID):
-	lolerson = Person.select().where(Person.ID == CID).get()
-	return render_template("listcompanyforempl.html", Person=lolerson, ID=CID)
+@app.route("/profile/<ID>")
+def Profile(ID):
+	lolerson = Person.get(Person.ID == ID)
+	print (lolerson)
+	return render_template("listcompanyforempl.html", lolerson=lolerson)
 
 
 @app.route('/populate', methods=["GET", "POST"])
@@ -166,8 +167,6 @@ class Person(Model):
 	Name = TextField()
 	Email = TextField()
 	ID = IntegerField(unique=True, primary_key=True, null=False)
-	def Powers(self):
-		return Person.select().join(RolePerson, on= RolePerson.ID,).where(RolePerson.RoleID==self)
 
 
 class Course(Model):
