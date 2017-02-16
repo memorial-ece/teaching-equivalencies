@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <style>
+body {color: white;}
+</style>
+    <meta charset="UTF-8">
+    <title>Populate</title>
+</head>
+<body bgcolor="101111">
+<form action = "{{ url_for('populate') }}" method = "POST">
+
+   {% extends "Home.html" %}
+{% block content %}
+     <h3><font color="white">Dummy</font></h3>
+    <p>Tables have had data entered</p>
+{% endblock %}
+</body>
+</html>

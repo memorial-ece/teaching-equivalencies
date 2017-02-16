@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+        <style>
+body {color: white;}
+</style>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <title>HALBRED</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body bgcolor="101111">
+<div class="container">
+    <img alt="Brand" src="https://my.mun.ca/images/MUN_Logo_RGB.png" style="width:125px;" class="img-responsive">
+  <h3>H.A.L.B.E.R.D</h3>
+  <p>Logistics database</p>
+  <p>Started by Keegan J. Brophy <a href="mailto:kb6737@mun.ca?Subject=Hello%20HALBRED" target="_top">kb6737@mun.ca</a> in 2017</p>
+</div>
+
+<a href="/populate">populate</a>
++
+<a href="/">home</a>
+++
+<a href="/listm">listm</a>
+++
+<a href="https://www.youtube.com/watch?v=gDSLrpxR3G4">flak tutorial 1</a>
+++
+<a href="https://www.youtube.com/watch?v=6vopR3ys8Kw&list=RD6vopR3ys8Kw">my mix</a>
+++
+<a href="/peewee">reset</a>
+++
++ <a href="/populate">populate</a>
+ +
+ <hr>
+    {% block content %}{% endblock %}
+
+</body>
+</html>

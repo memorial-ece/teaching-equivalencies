@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+   <head>
+           <style>
+body {color: white;}
+</style>
+      <title>
+         wew lads
+      </title>
+      <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+   </head>
+   <body bgcolor="101111">
+   {% extends "Home.html" %}
+{% block content %}
+        {% if error %}
+      <p><strong>Error:</strong> {{ error }}
+      {% endif %}
+ <table border = 1>
+         <thead>
+            <td>ID</td>
+            <td>Name</td>
+            <td>Email</td>
+         </thead>
+         {% for row in Person %}
+            <tr>
+                <td>{{row["ID"]}}</td>
+               <td>{{row["Name"]}}</td>
+                <td>{{row["Email"]}}</td>
+            </tr>
+       {% endfor %}
+       <thead>
+            <td>ID</td>
+            <td>Weight</td>
+       </thead>
+         {% for row in new %}
+            <tr>
+                <td>{{row["ID"]}}</td>
+                <td>{{row["Weight"]}}</td>
+            </tr>
+         {% endfor %}
+   </table>
+   {% endblock %}
+</html>
