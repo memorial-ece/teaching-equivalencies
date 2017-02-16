@@ -60,57 +60,38 @@ def populate():
 		sem2 = random.choice(sem1)
 		year1 = random.randrange(1970, 2017)
 		year2 = str(year1)
-		if count == 121:
+		if count == 131:
 			roa = 1
 			break
 		elif 20 > count > 10:
 			person = Person.create(Email=Emale, Name=word)
-		# c.execute ('INSERT INTO Person (ID,Email,Name) VALUES (?, ?, ?)', (ID, Emale, word))
-		# con.commit()
 		elif 10 > count > 0:
 			pseudoPeople = PseudoPeople.create(PEmail=Emale, PName=word)
-		# c.execute('insert into PseudoPeople (PseudoID,Email,PseudoName,Team) Values (?,?,?,?)', (ID, Emale, word,myteam))
-		# con.commit()
 		elif 30 > count > 20:
 			course = Course.create(Subj=Subj, Crse=Crse)
-		# c.execute('insert into Course (CRN,Subj,Crse,Sec,Session,Title) Values (?,?,?,?,?,?)', (CRN,Subj,Crse,Sec,Session,Title))
-		# con.commit()
 		elif 40 > count > 30:
 			supervisionClass = SupervisionClass.create(Grad=a, UGrad=b, Master=ci)
-		# c.execute('insert into SupervisionClass(SupervisionClassID,Graduate,Undergrad,Masters) Values (?,?,?,?)', (ID,a,b,cb))
-		# con.commit()
 		elif 50 > count > 40:
 			projectClass = ProjectClass.create(Grad=a, UGrad=b, Master=ci)
-		# c.execute('insert into ProjectClass(ProjectClassID,Graduate,Undergrad,Masters) Values (?,?,?,?)', (ID,a,b,cb))
-		# con.commit()
 		elif 60 > count > 50:
 			courseGeneration = CourseGeneration.create(Labs=a, CreditHours=d, Title=word, CRN=ransam1)
-		# c.execute('insert into CourseGeneration(COURSEGEN,CRN,Weight) Values (?,?,?)', (ID,CRN,a))
-		# con.commit()
 		elif 70 > count > 60:
 			term = Term.create(Year=year2, Session=sem2)
-		# c.execute('insert into Term(Semester) Values (?)', (put,))
-		# con.commit()
 		elif 80 > count > 70:
 			offering = Offering.create(StudentsTaking=e, ID=ransam1, SemesterID=ransam2, CourseGenID=ransam3)
-		# c.execute('insert into Offering (OID) Values (?)', (ID,))
-		# con.commit()
 		elif 90 > count > 80:
 			role = Role.create(ViewOnlyYou=ab, ViewOnlyDept=bb, ViewOnlyAll=cb, EditDept=db)
-		# c.execute('insert into Role(RoleID) Values (?)', (ID,))
-		# con.commit()
 		elif 100 > count > 90:
 			supervision = Supervision.create(ID=ransam1, StudentID=ransam2, SupervisionClassID=ransam3,
 												SemesterID=ransam4)
-		# c.execute('insert into Supervision (SupervisionID) Values (?)', (ID,))
-		# con.commit()
 		elif 110 > count > 100:
 			projectSupervision = ProjectSupervision.create(ID=ransam1, PseudoID=ransam2, StudentID=ransam3,
 															ProjectClassID=ransam4, SemesterID=ransam5)
-		# c.execute('insert into ProjectSupervision (ProjectSupervisionID) Values (?)', (ID,))
-		# con.commit()
 		elif 120 > count > 110:
 			student = Student.create(SName=word, SEmail=Emale)
+		elif 130> count >120:
+			rolePerson= Role.select().join(RolePerson.RoleID).join(Person.ID).where(Person.ID==ransam1,RolePerson.RoleID==ransam2)
+
 	return render_template('populate.html')
 
 
@@ -136,7 +117,6 @@ def listm():
 		SEM= request.form['SEM']
 		SUDO= request.form['SUDO']
 		AUCOM=request.form['AUCOM']
-		ADJTO=request.form['ADJTO']
 		ADJW=request.form['ADJW']
 		AUDITDATE=datetime.date.today()
 		print(FIXER)
@@ -186,6 +166,8 @@ class Person(Model):
 	Name = TextField()
 	Email = TextField()
 	ID = IntegerField(unique=True, primary_key=True, null=False)
+	def Powers(self):
+		return Person.select().join(RolePerson, on= RolePerson.ID,).where(RolePerson.RoleID==self)
 
 
 class Course(Model):
@@ -253,7 +235,8 @@ class PseudoPeople(Model):
 class RolePerson(Model):
 	ID = ForeignKeyField(Person, related_name='RolePersons')
 	RoleID = ForeignKeyField(Role, related_name='RolePersons')
-
+	class Meta:
+		indexes = ((('ID','RoleID'),True),)
 
 class ProjectSupervision(Model):
 	ProjectSupervisionID = IntegerField(primary_key=True, unique=True, null=False)
@@ -289,11 +272,6 @@ def create_tables():
 		[Person, Course, CourseGeneration, Term, Offering, Role, RolePerson, ProjectSupervision, ProjectClass,
 		 Supervision, SupervisionClass, PseudoPeople, Student, Adjustment])
 	return render_template('reset.html')
-
-
-@app.errorhandler(401)
-def page_not_found(e):
-	return Response('<p>Login failed</p><a href="/">home</a>')
 
 
 if __name__ == '__main__':
