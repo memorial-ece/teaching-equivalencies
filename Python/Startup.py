@@ -19,13 +19,8 @@ def Profile(ID):
 	supervision = Supervision.select().join(Person).where(Person.ID == ID)
 	projectsupervision = ProjectSupervision.select().join(Person).where(Person.ID == ID)
 	offering = Offering.select().join(Person).where(Person.ID == ID)
-	offering1 = Offering.select().join(Person).where(Person.ID == ID).first()
-	print offering.CourseGenID
-	# oweight=CourseGeneration.select().join(offering).where(CourseGeneration.CourseGenID==j)
-	# print oweight
 	return render_template("listcompanyforempl.html", person=person,supervision=supervision,
 						   projectsupervision=projectsupervision,offering=offering )
-						   # oweight=oweight)
 
 @app.route('/populate', methods=["GET", "POST"])
 def populate():
@@ -51,7 +46,7 @@ def listm():
 			student = request.form['stu']
 			iD1 = request.form['ID1']
 			courseGenID = request.form['CourseGenID']
-			Offering.create(Student=student, ID=iD1, SemesterID=semesterID1, CourseGenID=courseGenID)
+			Offering.create(StudentsTaking=student, ID=iD1, SemesterID=semesterID1, CourseGenID=courseGenID)
 		elif request.form['subm1'] == "submit3":
 			sID = request.form['StudentID']
 			superclass = request.form['SupervisionClassID']

@@ -32,18 +32,20 @@ body {color: white;}
     <table border = 5>
          <thead>
             <td>SupervisionID</td>
-            <td>SupervisionClassID</td>
-            <td>ID</td>
+            <td>SupervisionClass Description</td>
+            <td>Weight</td>
             <td>StudentID</td>
-            <td>SemesterID</td>
+            <td>SemesterYear</td>
+            <td>SemesterSection</td>
          </thead>
          {% for row in supervision %}
             <tr>
-                <td>{{row["SupervisionID"]}}</td>
-                <td>{{row["SupervisionClassID"]}}</td>
-                <td>{{row["ID"]}}</td>
-                <td>{{row["StudentID"]}}</td>
-                <td>{{row["SemesterID"]}}</td>
+                <td>{{row.SupervisionID}}</td>
+                <td>{{row.SupervisionClassID.Description}}</td>
+                <td>{{row.SupervisionClassID.Weight}}</td>
+                <td>{{row.StudentID.StudentID}}</td>
+                <td>{{row.SemesterID.Year}}</td>
+                <td>{{row.SemesterID.Session}}</td>
             </tr>
         {% endfor %}
     </table>
@@ -52,17 +54,19 @@ body {color: white;}
          <thead>
             <td>ProjectSupervisionID</td>
             <td>ProjectClassID</td>
-            <td>ID</td>
+            <td>Weight</td>
             <td>PseudoID</td>
-            <td>SemesterID</td>
+            <td>SemesterYear</td>
+            <td>SemesterSection</td>
          </thead>
          {% for row in projectsupervision %}
             <tr>
-                <td>{{row["ProjectSupervisionID"]}}</td>
-                <td>{{row["ProjectClassID"]}}</td>
-                <td>{{row["ID"]}}</td>
-                <td>{{row["PseudoID"]}}</td>
-                <td>{{row["SemesterID"]}}</td>
+                <td>{{row.ProjectSupervisionID}}</td>
+                <td>{{row.ProjectClassID.Description}}</td>
+                <td>{{row.ProjectClassID.Weight}}</td>
+                <td>{{row.PseudoID.PseudoID}}</td>
+                <td>{{row.SemesterID.Year}}</td>
+                <td>{{row.SemesterID.Session}}</td>
             </tr>
         {% endfor %}
     </table>
@@ -71,19 +75,34 @@ body {color: white;}
          <thead>
             <td>OID</td>
             <td>StudentsTaking</td>
-            <td>ID</td>
-            <td>SemesterID</td>
-            <td>CourseGenID</td>
+            <td>Crse</td>
+            <td>Subj</td>
+            <td>Labs</td>
+            <td>SemesterYear</td>
+            <td>SemesterSection</td>
+            <td>Complex function</td>
          </thead>
          {% for row in offering %}
             <tr>
-                <td>{{row["OID"]}}</td>
-                <td>{{row["StudentsTaking"]}}</td>
-                <td>{{row["ID"]}}</td>
-                <td>{{row["SemesterID"]}}</td>
-                <td>{{row["CourseGenID"]}}</td>
+                <td>{{row.OID}}</td>
+                <td>{{row.StudentsTaking}}</td>
+                <td>{{row.CourseGenID.CRN.Crse}}</td>
+                <td>{{row.CourseGenID.CRN.Subj}}</td>
+                <td>{{row.CourseGenID.Labs}}</td>
+                <td>{{row.SemesterID.Year}}</td>
+                <td>{{row.SemesterID.Session}}</td>
+                <td>{{(row.CourseGenID.CRN.Crse/57)*(0.325*row.CourseGenID.Labs)}}</td>
             </tr>
         {% endfor %}
     </table>
+   <h1>TOTAL</h1>
+   {% for row in supervision %}
+   {% for row1 in offering %}
+   {% for row2 in projectsupervision %}
+        {{(row.SupervisionClassID.Weight)+(row2.ProjectClassID.Weight)}}
+   {% endfor %}
+   {% endfor %}
+   {% endfor %}
+
    {% endblock %}
 </html>

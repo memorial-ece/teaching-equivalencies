@@ -27,9 +27,9 @@ body {color: white;}
          </thead>
          {% for row in Person %}
             <tr>
-                <td>{{row["ID"]}}</td>
-                <td>{{row["Name"]}}</td>
-                <td>{{row["Email"]}}</td>
+                <td>{{row.ID}}</td>
+                <td>{{row.Name}}</td>
+                <td>{{row.Email}}</td>
             </tr>
        {% endfor %}</table>
 <table border = 5>
@@ -41,9 +41,9 @@ body {color: white;}
        </thead>
          {% for row in Pseudo %}
             <tr>
-                <td>{{row["PseudoID"]}}</td>
-                <td>{{row["PName"]}}</td>
-                <td>{{row["PEmail"]}}</td>
+                <td>{{row.PseudoID}}</td>
+                <td>{{row.PName}}</td>
+                <td>{{row.PEmail}}</td>
             </tr>
          {% endfor %}</table>
 <table border = 1>
@@ -55,9 +55,9 @@ body {color: white;}
        </thead>
          {% for row in Course %}
             <tr>
-                <td>{{row["CRN"]}}</td>
-                <td>{{row["Subj"]}}</td>
-                <td>{{row["Crse"]}}</td>
+                <td>{{row.CRN}}</td>
+                <td>{{row.Subj}}</td>
+                <td>{{row.Crse}}</td>
             </tr>
          {% endfor %}</table>
 <table border = 3>
@@ -70,9 +70,9 @@ body {color: white;}
        </thead>
          {% for row in Student %}
             <tr>
-                <td>{{row["StudentID"]}}</td>
-                <td>{{row["SName"]}}</td>
-                <td>{{row["SEmail"]}}</td>
+                <td>{{row.StudentID}}</td>
+                <td>{{row.SName}}</td>
+                <td>{{row.SEmail}}</td>
             </tr>
          {% endfor %}</table>
 <table border = 5>
@@ -85,9 +85,9 @@ body {color: white;}
        </thead>
          {% for row in SupervisionClass %}
             <tr>
-                <td>{{row["SupervisionClassID"]}}</td>
-                <td>{{row["Description"]}}</td>
-                <td>{{row["Weight"]}}</td>
+                <td>{{row.SupervisionClassID}}</td>
+                <td>{{row.Description}}</td>
+                <td>{{row.Weight}}</td>
             </tr>
          {% endfor %}</table>
 <table border = 1>
@@ -99,9 +99,9 @@ body {color: white;}
        </thead>
          {% for row in ProjectClass %}
             <tr>
-                <td>{{row["ProjectClassID"]}}</td>
-                <td>{{row["Description"]}}</td>
-                <td>{{row["Weight"]}}</td>
+                <td>{{row.ProjectClassID}}</td>
+                <td>{{row.Description}}</td>
+                <td>{{row.Weight}}</td>
             </tr>
          {% endfor %}</table>
 <table border = 5>
@@ -116,11 +116,11 @@ body {color: white;}
        </thead>
          {% for row in ProjectSupervision %}
             <tr>
-                <td>{{row["ProjectSupervisionID"]}}</td>
-                <td>{{row["ProjectClassID"]}}</td>
-                <td>{{row["ID"]}}</td>
-                <td>{{row["PseudoID"]}}</td>
-                <td>{{row["SemesterID"]}}</td>
+                <td>{{row.ProjectSupervisionID}}</td>
+                <td>{{row.ProjectClassID.ProjectClassID}}</td>
+                <td>{{row.ID.ID}}</td>
+                <td>{{row.PseudoID.PseudoID}}</td>
+                <td>{{row.SemesterID.SemesterID}}</td>
 
             </tr>
          {% endfor %}</table>
@@ -136,11 +136,11 @@ body {color: white;}
        </thead>
          {% for row in Supervision %}
             <tr>
-                <td>{{row["SupervisionID"]}}</td>
-                <td>{{row["SupervisionClassID"]}}</td>
-                <td>{{row["ID"]}}</td>
-                <td>{{row["StudentID"]}}</td>
-                <td>{{row["SemesterID"]}}</td>
+                <td>{{row.SupervisionID}}</td>
+                <td>{{row.SupervisionClassID.SupervisionClassID}}</td>
+                <td>{{row.ID.ID}}</td>
+                <td>{{row.StudentID.StudentID}}</td>
+                <td>{{row.SemesterID.SemesterID}}</td>
 
             </tr>
          {% endfor %}</table>
@@ -155,11 +155,11 @@ body {color: white;}
        </thead>
          {% for row in Adjustment %}
             <tr>
-                <td>{{row["AdjustmentID"]}}</td>
-                <td>{{row["ID"]}}</td>
-                <td>{{row["ADJWeight"]}}</td>
-                <td>{{row["AUDITDATE"]}}</td>
-                <td>{{row["AUDITCOMMENT"]}}</td>
+                <td>{{row.AdjustmentID}}</td>
+                <td>{{row.ID.ID}}</td>
+                <td>{{row.ADJWeight.ADJWeight}}</td>
+                <td>{{row.AUDITDATE.AUDITDATE}}</td>
+                <td>{{row.AUDITCOMMENT.AUDITCOMMENT}}</td>
             </tr>
          {% endfor %}</table>
 <table border = 1>
@@ -170,8 +170,8 @@ body {color: white;}
        </thead>
          {% for row in RolePerson %}
             <tr>
-                <td>{{row["ID"]}}</td>
-                <td>{{row["RoleID"]}}</td>
+                <td>{{row.ID.ID}}</td>
+                <td>{{row.RoleID.RoleID}}</td>
             </tr>
          {% endfor %}</table>
 <table border = 5>
@@ -185,11 +185,11 @@ body {color: white;}
        </thead>
          {% for row in Role %}
             <tr>
-                <td>{{row["RoleID"]}}</td>
-                <td>{{row["ViewOnlyYou"]}}</td>
-                <td>{{row["ViewOnlyDept"]}}</td>
-                <td>{{row["ViewOnlyAll"]}}</td>
-                <td>{{row["EditDept"]}}</td>
+                <td>{{row.RoleID}}</td>
+                <td>{{row.ViewOnlyYou}}</td>
+                <td>{{row.ViewOnlyDept}}</td>
+                <td>{{row.ViewOnlyAll}}</td>
+                <td>{{row.EditDept}}</td>
             </tr>
          {% endfor %}</table>
 <table border = 1>
@@ -203,11 +203,11 @@ body {color: white;}
        </thead>
          {% for row in Offering %}
             <tr>
-                <td>{{row["OID"]}}</td>
-                <td>{{row["StudentsTaking"]}}</td>
-                <td>{{row["ID"]}}</td>
-                <td>{{row["SemesterID"]}}</td>
-                <td>{{row["CourseGenID"]}}</td>
+                <td>{{row.OID}}</td>
+                <td>{{row.StudentsTaking}}</td>
+                <td>{{row.ID.ID}}</td>
+                <td>{{row.SemesterID.SemesterID}}</td>
+                <td>{{row.CourseGenID.CourseGenID}}</td>
             </tr>
          {% endfor %}</table>
 <table border = 5>
@@ -219,9 +219,9 @@ body {color: white;}
        </thead>
          {% for row in Term %}
             <tr>
-                <td>{{row["SemesterID"]}}</td>
-                <td>{{row["Year"]}}</td>
-                <td>{{row["Session"]}}</td>
+                <td>{{row.SemesterID}}</td>
+                <td>{{row.Year}}</td>
+                <td>{{row.Session}}</td>
             </tr>
          {% endfor %}</table>
 <table border = 1>
@@ -235,11 +235,11 @@ body {color: white;}
        </thead>
          {% for row in CourseGeneration %}
             <tr>
-                <td>{{row["CourseGenID"]}}</td>
-                <td>{{row["CRN"]}}</td>
-                <td>{{row["CreditHours"]}}</td>
-                <td>{{row["Labs"]}}</td>
-                <td>{{row["Title"]}}</td>
+                <td>{{row.CourseGenID}}</td>
+                <td>{{row.CRN.CRN}}</td>
+                <td>{{row.CreditHours}}</td>
+                <td>{{row.Labs}}</td>
+                <td>{{row.Title}}</td>
             </tr>
          {% endfor %}</table>
    <form action = "{{ url_for('listm') }}" method = "POST">
