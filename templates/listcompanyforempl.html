@@ -1,0 +1,89 @@
+<!doctype html>
+<html>
+   <head>
+           <style>
+body {color: white;}
+</style>
+      <title>
+         wew lads
+      </title>
+      <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+   </head>
+   <body bgcolor="101111">
+   {% extends "Home.html" %}
+{% block content %}
+        {% if error %}
+      <p><strong>Error:</strong> {{ error }}
+      {% endif %}
+   <h3>Personal Info</h3>
+ <table border = 1>
+         <thead>
+            <td>ID</td>
+            <td>Name</td>
+            <td>Email</td>
+         </thead>
+            <tr>
+                <td>{{person.ID}}</td>
+                <td>{{person.Name}}</td>
+                <td>{{person.Email}}</td>
+            </tr>
+   </table>
+      <h3>Supervisions</h3>
+    <table border = 5>
+         <thead>
+            <td>SupervisionID</td>
+            <td>SupervisionClassID</td>
+            <td>ID</td>
+            <td>StudentID</td>
+            <td>SemesterID</td>
+         </thead>
+         {% for row in supervision %}
+            <tr>
+                <td>{{row["SupervisionID"]}}</td>
+                <td>{{row["SupervisionClassID"]}}</td>
+                <td>{{row["ID"]}}</td>
+                <td>{{row["StudentID"]}}</td>
+                <td>{{row["SemesterID"]}}</td>
+            </tr>
+        {% endfor %}
+    </table>
+         <h3>Project Suppervisions</h3>
+    <table border = 1>
+         <thead>
+            <td>ProjectSupervisionID</td>
+            <td>ProjectClassID</td>
+            <td>ID</td>
+            <td>PseudoID</td>
+            <td>SemesterID</td>
+         </thead>
+         {% for row in projectsupervision %}
+            <tr>
+                <td>{{row["ProjectSupervisionID"]}}</td>
+                <td>{{row["ProjectClassID"]}}</td>
+                <td>{{row["ID"]}}</td>
+                <td>{{row["PseudoID"]}}</td>
+                <td>{{row["SemesterID"]}}</td>
+            </tr>
+        {% endfor %}
+    </table>
+         <h3>Offerings</h3>
+    <table border = 1>
+         <thead>
+            <td>OID</td>
+            <td>StudentsTaking</td>
+            <td>ID</td>
+            <td>SemesterID</td>
+            <td>CourseGenID</td>
+         </thead>
+         {% for row in offering %}
+            <tr>
+                <td>{{row["OID"]}}</td>
+                <td>{{row["StudentsTaking"]}}</td>
+                <td>{{row["ID"]}}</td>
+                <td>{{row["SemesterID"]}}</td>
+                <td>{{row["CourseGenID"]}}</td>
+            </tr>
+        {% endfor %}
+    </table>
+   {% endblock %}
+</html>
