@@ -19,6 +19,7 @@ body {color: white;}
       <p><strong>Error:</strong> {{ error }}
       {% endif %}
       <table border = 1>
+       <h3>Person</h3>
          <thead>
             <td>ID</td>
             <td>Name</td>
@@ -32,6 +33,7 @@ body {color: white;}
             </tr>
        {% endfor %}</table>
 <table border = 5>
+    <h3>PseudoPerson</h3>
        <thead>
             <td>PseudoID</td>
             <td>PName</td>
@@ -45,6 +47,7 @@ body {color: white;}
             </tr>
          {% endfor %}</table>
 <table border = 1>
+    <h3>Course</h3>
        <thead>
             <td>CRN</td>
             <td>Subj</td>
@@ -57,7 +60,23 @@ body {color: white;}
                 <td>{{row["Crse"]}}</td>
             </tr>
          {% endfor %}</table>
+<table border = 3>
+    <h3>Student</h3>
+       <thead>
+            <td>StudentID</td>
+            <td>SName</td>
+            <td>SEmail</td>
+
+       </thead>
+         {% for row in Student %}
+            <tr>
+                <td>{{row["StudentID"]}}</td>
+                <td>{{row["SName"]}}</td>
+                <td>{{row["SEmail"]}}</td>
+            </tr>
+         {% endfor %}</table>
 <table border = 5>
+    <h3>SupervisionClass</h3>
        <thead>
             <td>SupervisionClassID</td>
             <td>Description</td>
@@ -72,6 +91,7 @@ body {color: white;}
             </tr>
          {% endfor %}</table>
 <table border = 1>
+    <h3>ProjectClass</h3>
        <thead>
             <td>ProjectClassID</td>
             <td>Description</td>
@@ -85,11 +105,14 @@ body {color: white;}
             </tr>
          {% endfor %}</table>
 <table border = 5>
+    <h3>ProjectSupervision</h3>
        <thead>
             <td>ProjectSupervisionID</td>
             <td>ProjectClassID</td>
             <td>ID</td>
             <td>PseudoID</td>
+            <td>SemesterID</td>
+
        </thead>
          {% for row in ProjectSupervision %}
             <tr>
@@ -97,14 +120,19 @@ body {color: white;}
                 <td>{{row["ProjectClassID"]}}</td>
                 <td>{{row["ID"]}}</td>
                 <td>{{row["PseudoID"]}}</td>
+                <td>{{row["SemesterID"]}}</td>
+
             </tr>
          {% endfor %}</table>
 <table border = 1>
+    <h3>Supervision</h3>
        <thead>
             <td>SupervisionID</td>
             <td>SupervisionClassID</td>
             <td>ID</td>
             <td>StudentID</td>
+            <td>SemesterID</td>
+
        </thead>
          {% for row in Supervision %}
             <tr>
@@ -112,9 +140,12 @@ body {color: white;}
                 <td>{{row["SupervisionClassID"]}}</td>
                 <td>{{row["ID"]}}</td>
                 <td>{{row["StudentID"]}}</td>
+                <td>{{row["SemesterID"]}}</td>
+
             </tr>
          {% endfor %}</table>
 <table border = 5>
+   <h3>Adjustment</h3>
        <thead>
             <td>AdjustmentID</td>
             <td>ID</td>
@@ -132,6 +163,7 @@ body {color: white;}
             </tr>
          {% endfor %}</table>
 <table border = 1>
+   <h3>RolePerson</h3>
        <thead>
             <td>ID</td>
             <td>RoleID</td>
@@ -143,6 +175,7 @@ body {color: white;}
             </tr>
          {% endfor %}</table>
 <table border = 5>
+    <h3>Role</h3>
        <thead>
             <td>RoleID</td>
             <td>ViewOnlyYou</td>
@@ -160,6 +193,7 @@ body {color: white;}
             </tr>
          {% endfor %}</table>
 <table border = 1>
+    <h3>Offering</h3>
        <thead>
             <td>OID</td>
             <td>StudentsTaking</td>
@@ -177,6 +211,7 @@ body {color: white;}
             </tr>
          {% endfor %}</table>
 <table border = 5>
+    <h3>Term</h3>
        <thead>
             <td>SemesterID</td>
             <td>Year</td>
@@ -190,6 +225,7 @@ body {color: white;}
             </tr>
          {% endfor %}</table>
 <table border = 1>
+    <h3>CourseGeneration</h3>
        <thead>
             <td>CourseGenID</td>
             <td>CRN</td>
@@ -206,6 +242,56 @@ body {color: white;}
                 <td>{{row["Title"]}}</td>
             </tr>
          {% endfor %}</table>
+   <form action = "{{ url_for('listm') }}" method = "POST">
+    <h3>CourseGen</h3>
+       Labs<br>
+       <input type = "text" name = "Labs" /><br>
+       Credit<br>
+       <input type = "text" name = "Credit" /><br>
+       Title<br>
+       <input type = "text" name = "Title" /><br>
+       CRN<br>
+       <input type = "text" name = "CRN" /><br>
+       <input type = "submit" name="subm1" value = "submit1" /><br>
+   </form>
+   <form action = "{{ url_for('listm') }}" method = "POST">
+    <h3>Offering</h3>
+       StudentTaking#<br>
+       <input type = "text" name = "stu" /><br>
+       ID<br>
+       <input type = "text" name = "ID1" /><br>
+       SemesterID<br>
+       <input type = "text" name = "SemesterID1" /><br>
+       CourseGenID<br>
+       <input type = "text" name = "CourseGenID" /><br>
+       <input type = "submit" name="subm1" value = "submit2" /><br>
+   </form>
+   <form action = "{{ url_for('listm') }}" method = "POST">
+    <h3>Supervision</h3>
+       ID<br>
+       <input type = "text" name = "ID2" /><br>
+       StudentID<br>
+       <input type = "text" name = "StudentID" /><br>
+       SupervisionClassID<br>
+       <input type = "text" name = "SupervisionClassID" /><br>
+       SemesterID<br>
+       <input type = "text" name = "SemesterID2" /><br>
+       <input type = "submit" name="subm1" value = "submit3" /><br>
+
+   </form>
+   <form action = "{{ url_for('listm') }}" method = "POST">
+    <h3>ProjectSupervision</h3>
+       ID<br>
+       <input type = "text" name = "ID3" /><br>
+       PseudoID<br>
+       <input type = "text" name = "PseudoID" /><br>
+       ProjectClassID<br>
+       <input type = "text" name = "ProjectClassID" /><br>
+       SemesterID<br>
+       <input type = "text" name = "SemesterID3" /><br>
+       <input type = "submit" name="subm1" value = "submit4" /><br>
+
+   </form>
 {% endblock %}
    </body>
 </html>

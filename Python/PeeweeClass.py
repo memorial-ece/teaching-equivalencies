@@ -5,26 +5,6 @@ class Person(Model):
 	Email = TextField()
 	ID = IntegerField(unique=True, primary_key=True, null=False)
 
-	class Meta:
-		order_by = ('Name',)
-
-	def power1(self):
-		# query other users through the "relationship" table
-		return Person.select().join(
-			RolePerson, on=RolePerson.ID,
-		).where(RolePerson.RoleID == self)
-
-	def power2(self):
-		return Person.select().join(
-			RolePerson, on=RolePerson.RoleID,
-		).where(RolePerson.ID == self)
-
-	def poswers(self, Person):
-		return RolePerson.select().where(
-			(RolePerson.RoleID == self) &
-			(RolePerson.ID == Person)
-		).count() > 0
-
 
 class Course(Model):
 	CRN = IntegerField(unique=True, primary_key=True, null=False)

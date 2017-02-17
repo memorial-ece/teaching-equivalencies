@@ -8,12 +8,16 @@ body {color: white;}
     <title>Populate</title>
 </head>
 <body bgcolor="101111">
-<form action = "{{ url_for('populate') }}" method = "POST">
 
    {% extends "Home.html" %}
 {% block content %}
-     <h3><font color="white">Dummy</font></h3>
-    <p>Tables have had data entered</p>
+        <p>
+    <form action = "{{ url_for('populate') }}" method = "POST">
+         <input type="submit" name="Full" value="Simple gen" />
+         <input type="submit" name="Full" value="Full gen" />
+    </form>
+    <h3>Generation method select</h3>
+        </p>
 {% endblock %}
 </body>
 </html>

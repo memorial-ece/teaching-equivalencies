@@ -42,25 +42,13 @@ def Gen2():
 			supervisionClass = SupervisionClass.create(Description=word, Weight=a)
 		elif 10 > count > 8:
 			projectClass = ProjectClass.create(Weight=a, Description=word)
-		elif 14 > count > 12:
-			courseGeneration = CourseGeneration.create(Labs=d, CreditHours=d, Title=word, CRN=ransam1)
 		elif 16 > count > 14:
 			term = Term.create(Year=year2, Session=sem2)
-		elif 18 > count > 16:
-			offering = Offering.create(StudentsTaking=e, ID=ransam1, SemesterID=ransam2, CourseGenID=ransam3)
 		elif 20 > count > 18:
 			role = Role.create(ViewOnlyYou=ab, ViewOnlyDept=bb, ViewOnlyAll=cb, EditDept=db)
-		elif 24 > count > 22:
-			supervision = Supervision.create(ID=ransam1, StudentID=ransam2, SupervisionClassID=ransam3,
-											 SemesterID=ransam4)
-		elif 26 > count > 24:
-			projectSupervision = ProjectSupervision.create(ID=ransam1, PseudoID=ransam2, StudentID=ransam3,
-														   ProjectClassID=ransam4, SemesterID=ransam5)
 		elif 28 > count > 26:
 			student = Student.create(SName=word, SEmail=Emale)
-		elif 30 > count > 28:
-			rolePerson = RolePerson.create(ID=ransam1, RoleID=ransam2)
-def Gen():
+def Gen1():
 	count = 0
 	while (True):
 		count += 1
@@ -103,7 +91,7 @@ def Gen():
 		elif 50 > count > 40:
 			projectClass = ProjectClass.create(Weight=a, Description=word)
 		elif 60 > count > 50:
-			courseGeneration = CourseGeneration.create(Labs=d, CreditHours=d, Title=word, CRN=ransam1)
+			courseGeneration = CourseGeneration.create(Labs=e, CreditHours=d, Title=word, CRN=ransam1)
 		elif 70 > count > 60:
 			term = Term.create(Year=year2, Session=sem2)
 		elif 80 > count > 70:
