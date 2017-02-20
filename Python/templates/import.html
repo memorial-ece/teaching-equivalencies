@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <style>
+body {color: white;}
+</style>
+    <meta charset="UTF-8">
+    <title>Populate</title>
+</head>
+<body bgcolor="101111">
+
+   {% extends "home.html" %}
+{% block content %}
+        <p>
+           Imports for the main file that startup.py is in.
+	    <!--<title>Upload new File</title>-->
+	    <!--<h1>Upload new File</h1>-->
+    <form action = "{{ url_for('docustomimport') }}" method = "POST">
+            <!--<input type=file name=file>-->
+            <!--<select>-->
+
+       ++ BIG BUG. ONLY ENTER "1" IN THE FIRST BOX AND IT WILL LOAD ALL DATA. NO IDEA WHY AND IT SHOULDNT.++
+                        <input type = "text" name = "Person" /><br>BLANK
+                        <input type = "text" name = "Supervision" /><br>BLANK
+                        <input type = "text" name = "SupervisionClass" /><br>BLANK
+                        <input type = "text" name = "Course" /><br>BLANK
+                        <input type = "text" name = "CourseGeneration" /><br>BLANK
+                        <input type = "text" name = "Student" /><br>BLANK
+                        <input type = "text" name = "Term" /><br>BLANK
+                        <input type = "text" name = "Offering" /><br>BLANK
+                        <input type = "text" name = "Role" /><br>BLANK
+                        <input type = "text" name = "ProjectClass" /><br>BLANK
+                        <input type = "text" name = "PseudoPeople" /><br>BLANK
+                        <input type = "text" name = "RolePerson" /><br>BLANK
+                        <input type = "text" name = "ProjectSupervision" /><br>BLANK
+                        <input type = "text" name = "Adjustment" /><br>
+                  <!--<option value="Person">Person</option>-->
+                  <!--<option value="Supervision">Supervision</option>-->
+                  <!--<option value="SupervisionClass">SupervisionClass</option>-->
+                  <!--<option value="Course">Course</option>-->
+                  <!--<option value="CourseGeneration">CourseGeneration</option>-->
+                  <!--<option value="Student">Student</option>-->
+                  <!--<option value="Term">Term</option>-->
+                  <!--<option value="Offering">Offering</option>-->
+                  <!--<option value="Role">Role</option>-->
+                  <!--<option value="ProjectClass">ProjectClass</option>-->
+                  <!--<option value="PseudoPeople">PseudoPeople</option>-->
+                  <!--<option value="RolePerson">RolePerson</option>-->
+                  <!--<option value="ProjectSupervision">ProjectSupervision</option>-->
+                  <!--<option value="Adjustment">Adjustment</option>-->
+            <!--</select>-->
+            <input type=submit value=submit>
+	    </form>
+
+        </p>
+{% endblock %}
+</body>
+</html>l>

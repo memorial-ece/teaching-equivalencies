@@ -70,6 +70,7 @@ class RolePerson(Model):
 	ID = ForeignKeyField(Person, related_name='people_roles')
 	RoleID = ForeignKeyField(Role, related_name='roles_ofpeople')
 
+
 class ProjectSupervision(Model):
 	ProjectSupervisionID = IntegerField(primary_key=True, unique=True, null=False)
 	ID = ForeignKeyField(Person, related_name='supervisied_projects')
