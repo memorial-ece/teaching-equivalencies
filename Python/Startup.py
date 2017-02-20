@@ -3,12 +3,13 @@ import os
 from Populate import *
 from Exporter import *
 from Importer import *
-
 app = Flask(__name__)
 random.seed(a=2)
 DATABASE = 'database.db'
 db = SqliteDatabase(DATABASE)
-
+UPLOAD_FOLDER=''
+ALLOWED_EXTENSIONS=set(['csv'])
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 @app.route('/favicon.ico')
 def favicon():
@@ -37,20 +38,64 @@ def docustomexport():
 
 @app.route("/import", methods=['GET', 'POST'])
 def docustomimport():
-	importProfile()
-	importSupervision()
-	importSupervisionClass()
-	importCourse()
-	importCourseGeneration()
-	importStudent()
-	importTerm()
-	importOffering()
-	importRole()
-	importProjectClass()
-	importPseudoPeople()
-	importRolePerson()
-	importProjectSupervision()
-	importAdjustment()
+	if request.method == 'POST':
+		a=request.form['Person']
+		b=request.form['Supervision']
+		c=request.form['SupervisionClass']
+		d=request.form['Course']
+		e=request.form['CourseGeneration']
+		f=request.form['Student']
+		g=request.form['Term']
+		h=request.form['Offering']
+		i=request.form['Role']
+		j=request.form['ProjectClass']
+		k=request.form['PseudoPeople']
+		l=request.form['RolePerson']
+		m=request.form['ProjectSupervision']
+		n=request.form['Adjustment']
+		if a == '1':
+			importProfile()
+		if b != '1':
+			importSupervision()
+		if c != '1':
+			importSupervisionClass()
+		if d != '1':
+			importCourse()
+		if e != '1':
+			importCourseGeneration()
+		if f != '1':
+			importStudent()
+		if g != '1':
+			importTerm()
+		if h != '1':
+			importOffering()
+		if i != '1':
+			importRole()
+		if j != '1':
+			importProjectClass()
+		if k != '1':
+			importPseudoPeople()
+		if l != '1':
+			importRolePerson()
+		if m != '1':
+			importProjectSupervision()
+		if n != '1':
+			importAdjustment()
+		# check if the post request has the file part
+		# if 'file' not in request.files:
+		# 	flash('No file part')
+		# 	return redirect(request.url)
+		# file = request.files['file']
+		# # if user does not select file, browser also
+		# # submit a empty part without filename
+		# if file.filename == '':
+		# 	flash('No selected file')
+		# 	return redirect(request.url)
+		# if file and (file.filename):
+		# 	filename = file.filename
+		# 	file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+		# 	return redirect(url_for('uploaded_file',
+		# 							filename=filename))
 	return render_template('import.html')
 
 
