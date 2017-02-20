@@ -1,11 +1,14 @@
 from flask import *
 import os
 from Populate import *
+from Exporter import *
+from Importer import *
 
 app = Flask(__name__)
 random.seed(a=2)
 DATABASE = 'database.db'
-database = SqliteDatabase(DATABASE)
+db = SqliteDatabase(DATABASE)
+
 
 @app.route('/favicon.ico')
 def favicon():
@@ -13,13 +16,61 @@ def favicon():
 								'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 
+@app.route("/export", methods=['GET'])
+def docustomexport():
+	exportProfile()
+	exportSupervision()
+	exportSupervisionClass()
+	exportCourse()
+	exportCourseGeneration()
+	exportStudent()
+	exportTerm()
+	exportOffering()
+	exportRole()
+	exportProjectClass()
+	exportPseudoPeople()
+	exportRolePerson()
+	exportProjectSupervision()
+	exportAdjustment()
+	return render_template('export.html')
+
+
+@app.route("/import", methods=['GET', 'POST'])
+def docustomimport():
+	importProfile()
+	importSupervision()
+	importSupervisionClass()
+	importCourse()
+	importCourseGeneration()
+	importStudent()
+	importTerm()
+	importOffering()
+	importRole()
+	importProjectClass()
+	importPseudoPeople()
+	importRolePerson()
+	importProjectSupervision()
+	importAdjustment()
+	return render_template('import.html')
+
+
+@app.route("/profile/<ID>/history")
+def Profilehist(ID):
+	person = Person.get(Person.ID == ID)
+	supervision = Supervision.select().join(Person).where(Person.ID == ID).order_by(Supervision.SemesterID.desc())
+	projectsupervision = ProjectSupervision.select().join(Person).where(Person.ID == ID).order_by(ProjectSupervision.SemesterID.desc())
+	offering = Offering.select().join(Person).where(Person.ID == ID).order_by(Offering.SemesterID.desc())
+	adjustment=Adjustment.select().join(Person).where(Person.ID == ID).order_by(Adjustment.AdjustmentID.desc())
+	return render_template("profilehist.html", person=person,supervision=supervision,
+						   projectsupervision=projectsupervision,offering=offering, adjustment=adjustment)
+
 @app.route("/profile/<ID>")
 def Profile(ID):
 	person = Person.get(Person.ID == ID)
-	supervision = Supervision.select().join(Person).where(Person.ID == ID)
-	projectsupervision = ProjectSupervision.select().join(Person).where(Person.ID == ID)
-	offering = Offering.select().join(Person).where(Person.ID == ID)
-	adjustment=Adjustment.select().join(Person).where(Person.ID == ID)
+	supervision = Supervision.select().join(Person).where(Person.ID == ID).order_by(Supervision.SupervisionClassID.desc())
+	projectsupervision = ProjectSupervision.select().join(Person).where(Person.ID == ID).order_by(ProjectSupervision.ProjectSupervisionID.desc())
+	offering = Offering.select().join(Person).where(Person.ID == ID).order_by(Offering.OID.desc())
+	adjustment=Adjustment.select().join(Person).where(Person.ID == ID).order_by(Adjustment.AdjustmentID.desc())
 	return render_template("profile.html", person=person,supervision=supervision,
 						   projectsupervision=projectsupervision,offering=offering, adjustment=adjustment)
 
@@ -82,27 +133,28 @@ def index():
 def peeweetable():
 	if request.method == 'POST':
 		if request.form['Full'] == 'Drop and ReCreate':
-			database.connect()
-			database.drop_tables(
+			db.connect()
+			db.drop_tables(
 			[Person, Course, CourseGeneration, Term, Offering, Role, RolePerson, ProjectSupervision, ProjectClass,
 			 Supervision, SupervisionClass, PseudoPeople, Student, Adjustment,],safe=True)
-			database.create_tables(
+			db.create_tables(
 			[Person, Course, CourseGeneration, Term, Offering, Role, RolePerson, ProjectSupervision, ProjectClass,
 			 Supervision, SupervisionClass, PseudoPeople, Student, Adjustment],safe=True)
-			database.close()
+			db.close()
 		elif request.form['Full'] == 'Create':
-			database.connect()
-			database.create_tables(
+			db.connect()
+			db.create_tables(
 				[Person, Course, CourseGeneration, Term, Offering, Role, RolePerson, ProjectSupervision, ProjectClass,
 				 Supervision, SupervisionClass, PseudoPeople, Student, Adjustment],safe=True)
-			database.close()
+			db.close()
 		elif request.form['Full'] == 'Drop':
-			database.connect()
-			database.drop_tables(
+			db.connect()
+			db.drop_tables(
 				[Person, Course, CourseGeneration, Term, Offering, Role, RolePerson, ProjectSupervision, ProjectClass,
 				 Supervision, SupervisionClass, PseudoPeople, Student, Adjustment, ],safe=True)
-			database.close()
+			db.close()
 	return render_template('reset.html')
+
 
 
 if __name__ == '__main__':
