@@ -19,8 +19,9 @@ def Profile(ID):
 	supervision = Supervision.select().join(Person).where(Person.ID == ID)
 	projectsupervision = ProjectSupervision.select().join(Person).where(Person.ID == ID)
 	offering = Offering.select().join(Person).where(Person.ID == ID)
-	return render_template("listcompanyforempl.html", person=person,supervision=supervision,
-						   projectsupervision=projectsupervision,offering=offering )
+	adjustment=Adjustment.select().join(Person).where(Person.ID == ID)
+	return render_template("profile.html", person=person,supervision=supervision,
+						   projectsupervision=projectsupervision,offering=offering, adjustment=adjustment)
 
 @app.route('/populate', methods=["GET", "POST"])
 def populate():
@@ -59,7 +60,12 @@ def listm():
 			pseudoID = request.form['PseudoID']
 			projectClassID = request.form['ProjectClassID']
 			ProjectSupervision.create(ID=iD3, PseudoID=pseudoID, ProjectClassID=projectClassID,SemesterID=semesterID3)
-	return render_template("listcompany.html", Person=Person, Pseudo=PseudoPeople, Course=Course,
+		elif request.form['subm1']== "submit5":
+			iD4 = request.form['ID4']
+			ADJWeight = request.form['ADJWeight']
+			AUDITCOMMENT = request.form['AUDITCOMMENT']
+			Adjustment.create(ID=iD4, ADJWeight=ADJWeight,AUDITCOMMENT=AUDITCOMMENT)
+	return render_template("masterlist.html", Person=Person, Pseudo=PseudoPeople, Course=Course,
 							SupervisionClass=SupervisionClass, ProjectClass=ProjectClass,
 							ProjectSupervision=ProjectSupervision, Supervision=Supervision, Adjustment=Adjustment,
 							RolePerson=RolePerson, Role=Role, Term=Term, Offering=Offering,
@@ -70,7 +76,7 @@ def listm():
 @app.route('/index')
 @app.route('/', methods=["GET"])
 def index():
-	return render_template("Home.html")
+	return render_template("home.html")
 
 @app.route('/peeweetable', methods=["GET", "POST"])
 def peeweetable():
