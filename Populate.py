@@ -1,4 +1,4 @@
-from PeeweeClass import *
+from Class import *
 import random
 def Gen2():
 	count = 0
