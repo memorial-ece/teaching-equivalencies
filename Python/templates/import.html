@@ -5,7 +5,7 @@
 body {color: white;}
 </style>
     <meta charset="UTF-8">
-    <title>Populate</title>
+    <title>import</title>
 </head>
 <body bgcolor="101111">
 
@@ -13,26 +13,24 @@ body {color: white;}
 {% block content %}
         <p>
            Imports for the main file that startup.py is in.
+            you need to place "1" in the feild you want to import
 	    <!--<title>Upload new File</title>-->
 	    <!--<h1>Upload new File</h1>-->
     <form action = "{{ url_for('docustomimport') }}" method = "POST">
-            <!--<input type=file name=file>-->
-            <!--<select>-->
-
-       ++ BIG BUG. ONLY ENTER "1" IN THE FIRST BOX AND IT WILL LOAD ALL DATA. NO IDEA WHY AND IT SHOULDNT.++
-                        <input type = "text" name = "Person" /><br>BLANK
-                        <input type = "text" name = "Supervision" /><br>BLANK
-                        <input type = "text" name = "SupervisionClass" /><br>BLANK
-                        <input type = "text" name = "Course" /><br>BLANK
-                        <input type = "text" name = "CourseGeneration" /><br>BLANK
-                        <input type = "text" name = "Student" /><br>BLANK
-                        <input type = "text" name = "Term" /><br>BLANK
-                        <input type = "text" name = "Offering" /><br>BLANK
-                        <input type = "text" name = "Role" /><br>BLANK
-                        <input type = "text" name = "ProjectClass" /><br>BLANK
-                        <input type = "text" name = "PseudoPeople" /><br>BLANK
-                        <input type = "text" name = "RolePerson" /><br>BLANK
-                        <input type = "text" name = "ProjectSupervision" /><br>BLANK
+            <!--<select>-->Person
+                        <input type = "text" name = "Person" /><br>Supervision
+                        <input type = "text" name = "Supervision" /><br>SupervisionClass
+                        <input type = "text" name = "SupervisionClass" /><br>Course
+                        <input type = "text" name = "Course" /><br>CourseGeneration
+                        <input type = "text" name = "CourseGeneration" /><br>Student
+                        <input type = "text" name = "Student" /><br>Term
+                        <input type = "text" name = "Term" /><br>Offering
+                        <input type = "text" name = "Offering" /><br>Role
+                        <input type = "text" name = "Role" /><br>ProjectClass
+                        <input type = "text" name = "ProjectClass" /><br>PseudoPeople
+                        <input type = "text" name = "PseudoPeople" /><br>RolePerson
+                        <input type = "text" name = "RolePerson" /><br>ProjectSupervision
+                        <input type = "text" name = "ProjectSupervision" /><br>Adjustment
                         <input type = "text" name = "Adjustment" /><br>
                   <!--<option value="Person">Person</option>-->
                   <!--<option value="Supervision">Supervision</option>-->

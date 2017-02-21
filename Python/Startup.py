@@ -1,8 +1,9 @@
 from flask import *
 import os
-from Populate import *
 from Exporter import *
 from Importer import *
+from werkzeug.utils import *
+
 app = Flask(__name__)
 random.seed(a=2)
 DATABASE = 'database.db'
@@ -11,28 +12,73 @@ UPLOAD_FOLDER=''
 ALLOWED_EXTENSIONS=set(['csv'])
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
+
 @app.route('/favicon.ico')
 def favicon():
 	return send_from_directory(os.path.join(app.root_path, 'static'),
 								'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 
-@app.route("/export", methods=['GET'])
+def allowed_file(filename):
+	return '.' in filename and \
+		   filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+@app.route('/upload', methods=['GET','POST'])
+def upload():
+	if request.method == 'POST':
+		file = request.files['file']
+		if file and allowed_file(file.filename):
+			filename = secure_filename(file.filename)
+			file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+			return redirect(url_for('upload',filename=filename))
+	return render_template('upload.html')
+
+@app.route("/export",  methods=['GET', 'POST'])
 def docustomexport():
-	exportProfile()
-	exportSupervision()
-	exportSupervisionClass()
-	exportCourse()
-	exportCourseGeneration()
-	exportStudent()
-	exportTerm()
-	exportOffering()
-	exportRole()
-	exportProjectClass()
-	exportPseudoPeople()
-	exportRolePerson()
-	exportProjectSupervision()
-	exportAdjustment()
+	if request.method == 'POST':
+		a=request.form['Person']
+		b=request.form['Supervision']
+		c=request.form['SupervisionClass']
+		d=request.form['Course']
+		e=request.form['CourseGeneration']
+		f=request.form['Student']
+		g=request.form['Term']
+		h=request.form['Offering']
+		i=request.form['Role']
+		j=request.form['ProjectClass']
+		k=request.form['PseudoPeople']
+		l=request.form['RolePerson']
+		m=request.form['ProjectSupervision']
+		n=request.form['Adjustment']
+		if a == '1':
+			exportProfile()
+		if b == '1':
+			exportSupervision()
+		if c == '1':
+			exportSupervisionClass()
+		if d == '1':
+			exportCourse()
+		if e == '1':
+			exportCourseGeneration()
+		if f == '1':
+			exportStudent()
+		if g == '1':
+			exportTerm()
+		if h == '1':
+			exportOffering()
+		if i == '1':
+			exportRole()
+		if j == '1':
+			exportProjectClass()
+		if k == '1':
+			exportPseudoPeople()
+		if l == '1':
+			exportRolePerson()
+		if m == '1':
+			exportProjectSupervision()
+		if n == '1':
+			exportAdjustment()
 	return render_template('export.html')
 
 
@@ -55,47 +101,32 @@ def docustomimport():
 		n=request.form['Adjustment']
 		if a == '1':
 			importProfile()
-		if b != '1':
+		if b == '1':
 			importSupervision()
-		if c != '1':
+		if c == '1':
 			importSupervisionClass()
-		if d != '1':
+		if d == '1':
 			importCourse()
-		if e != '1':
+		if e == '1':
 			importCourseGeneration()
-		if f != '1':
+		if f == '1':
 			importStudent()
-		if g != '1':
+		if g == '1':
 			importTerm()
-		if h != '1':
+		if h == '1':
 			importOffering()
-		if i != '1':
+		if i == '1':
 			importRole()
-		if j != '1':
+		if j == '1':
 			importProjectClass()
-		if k != '1':
+		if k == '1':
 			importPseudoPeople()
-		if l != '1':
+		if l == '1':
 			importRolePerson()
-		if m != '1':
+		if m == '1':
 			importProjectSupervision()
-		if n != '1':
+		if n == '1':
 			importAdjustment()
-		# check if the post request has the file part
-		# if 'file' not in request.files:
-		# 	flash('No file part')
-		# 	return redirect(request.url)
-		# file = request.files['file']
-		# # if user does not select file, browser also
-		# # submit a empty part without filename
-		# if file.filename == '':
-		# 	flash('No selected file')
-		# 	return redirect(request.url)
-		# if file and (file.filename):
-		# 	filename = file.filename
-		# 	file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-		# 	return redirect(url_for('uploaded_file',
-		# 							filename=filename))
 	return render_template('import.html')
 
 
@@ -103,7 +134,8 @@ def docustomimport():
 def Profilehist(ID):
 	person = Person.get(Person.ID == ID)
 	supervision = Supervision.select().join(Person).where(Person.ID == ID).order_by(Supervision.SemesterID.desc())
-	projectsupervision = ProjectSupervision.select().join(Person).where(Person.ID == ID).order_by(ProjectSupervision.SemesterID.desc())
+	projectsupervision = ProjectSupervision.select().join(Person).where(Person.ID == ID).order_by(
+		ProjectSupervision.SemesterID.desc())
 	offering = Offering.select().join(Person).where(Person.ID == ID).order_by(Offering.SemesterID.desc())
 	adjustment=Adjustment.select().join(Person).where(Person.ID == ID).order_by(Adjustment.AdjustmentID.desc())
 	return render_template("profilehist.html", person=person,supervision=supervision,
@@ -113,7 +145,8 @@ def Profilehist(ID):
 def Profile(ID):
 	person = Person.get(Person.ID == ID)
 	supervision = Supervision.select().join(Person).where(Person.ID == ID).order_by(Supervision.SupervisionClassID.desc())
-	projectsupervision = ProjectSupervision.select().join(Person).where(Person.ID == ID).order_by(ProjectSupervision.ProjectSupervisionID.desc())
+	projectsupervision = ProjectSupervision.select().join(Person).where(Person.ID == ID).order_by(
+		ProjectSupervision.ProjectSupervisionID.desc())
 	offering = Offering.select().join(Person).where(Person.ID == ID).order_by(Offering.OID.desc())
 	adjustment=Adjustment.select().join(Person).where(Person.ID == ID).order_by(Adjustment.AdjustmentID.desc())
 	return render_template("profile.html", person=person,supervision=supervision,

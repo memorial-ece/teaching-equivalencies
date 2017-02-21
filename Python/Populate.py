@@ -108,3 +108,15 @@ def Gen1():
 			student = Student.create(SName=word, SEmail=Emale)
 		elif 130>count>120:
 			rolePerson= RolePerson.create(ID=ransam1,RoleID=ransam2)
+def Gen3():
+	year=1970
+	term1=0
+	count = 0
+	while (True):
+		term1 +=1
+		term = Term.create(Year=year, Session=term1)
+		if term1==5:
+			term1=0
+			year +=1
+		if year==2020:
+			break

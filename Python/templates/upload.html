@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <style>
+body {color: white;}
+</style>
+    <meta charset="UTF-8">
+    <title>upload</title>
+</head>
+<body bgcolor="101111">
+
+{% extends "home.html" %}
+{% block content %}
+
+<h3>if you are importing after your upload you need to do it manualy right now. Also it needs to be in the account-xxxx.cvs form beacuse i havn't installed identifyers yet</h3>
+ <form action = "{{ url_for('upload') }}" enctype=multipart/form-data method = "POST">
+     <input type=file name=file>
+     <input type=submit value=Upload>
+ </form>
+{% endblock %}
+</body>
+</html>
