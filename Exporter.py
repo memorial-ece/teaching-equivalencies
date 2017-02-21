@@ -16,7 +16,7 @@ def export_supervision():
 
 def export_supervision_class():
 	with open('table_SupervisionClass.csv', 'w') as fh:
-		query = SupervisionClass.select().order_by(SupervisionClass.supervision_class_id)
+		query = Supervision_Class.select().order_by(Supervision_Class.supervision_class_id)
 		dump_csv(query, fh)
 
 
