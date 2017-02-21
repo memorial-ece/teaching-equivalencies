@@ -3,7 +3,7 @@ import os
 from Exporter import *
 from Importer import *
 from werkzeug.utils import *
-
+import datetime
 app = Flask(__name__)
 random.seed(a=2)
 DATABASE = 'database.db'
@@ -69,95 +69,83 @@ def upload():
 @app.route("/export",  methods=['GET', 'POST'])
 def docustomexport():
 	if request.method == 'POST':
-		a=request.form['Person']
-		b=request.form['Supervision']
-		c=request.form['SupervisionClass']
-		d=request.form['Course']
-		e=request.form['CourseGeneration']
-		f=request.form['Student']
-		g=request.form['Term']
-		h=request.form['Offering']
-		i=request.form['Role']
-		j=request.form['ProjectClass']
-		k=request.form['PseudoPeople']
-		l=request.form['RolePerson']
-		m=request.form['ProjectSupervision']
-		n=request.form['Adjustment']
-		if a == '1':
+		a = request.form.get('Select')
+		if a == 'Person':
 			exportProfile()
-		if b == '1':
+			return send_file('account-Person.csv')
+		if a == 'Supervision':
 			exportSupervision()
-		if c == '1':
+			return send_file('account-Supervision.csv')
+		if a == 'SupervisionClass':
 			exportSupervisionClass()
-		if d == '1':
+			return send_file('account-SupervisionClass.csv')
+		if a == 'Course':
 			exportCourse()
-		if e == '1':
+			return send_file('account-Course.csv')
+		if a == 'CourseGeneration':
 			exportCourseGeneration()
-		if f == '1':
+			return send_file('account-CourseGeneration.csv')
+		if a == 'Student':
 			exportStudent()
-		if g == '1':
+			return send_file('account-Student.csv')
+		if a == 'Term':
 			exportTerm()
-		if h == '1':
+			return send_file('account-Term.csv')
+		if a == 'Offering':
 			exportOffering()
-		if i == '1':
+			return send_file('account-Offering.csv')
+		if a == 'Role':
 			exportRole()
-		if j == '1':
+			return send_file('account-Role.csv')
+		if a == 'ProjectClass':
 			exportProjectClass()
-		if k == '1':
+			return send_file('account-ProjectClass.csv')
+		if a == 'PseudoPeople':
 			exportPseudoPeople()
-		if l == '1':
+			return send_file('account-PseudoPeople.csv')
+		if a == 'RolePerson':
 			exportRolePerson()
-		if m == '1':
+			return send_file('account-RolePerson.csv')
+		if a == 'ProjectSupervision':
 			exportProjectSupervision()
-		if n == '1':
+			return send_file('account-ProjectSupervision.csv')
+		if a == 'Adjustment':
 			exportAdjustment()
+			return send_file('account-Adjustment.csv')
 	return render_template('export.html')
 
 
 @app.route("/import", methods=['GET', 'POST'])
 def docustomimport():
 	if request.method == 'POST':
-		a=request.form['Person']
-		b=request.form['Supervision']
-		c=request.form['SupervisionClass']
-		d=request.form['Course']
-		e=request.form['CourseGeneration']
-		f=request.form['Student']
-		g=request.form['Term']
-		h=request.form['Offering']
-		i=request.form['Role']
-		j=request.form['ProjectClass']
-		k=request.form['PseudoPeople']
-		l=request.form['RolePerson']
-		m=request.form['ProjectSupervision']
-		n=request.form['Adjustment']
-		if a == '1':
+		a = request.form.get('Select')
+		if a == 'Person':
 			importProfile()
-		if b == '1':
+		if a == 'Supervision':
 			importSupervision()
-		if c == '1':
+		if a == 'SupervisionClass':
 			importSupervisionClass()
-		if d == '1':
+		if a == 'Course':
 			importCourse()
-		if e == '1':
+		if a == 'CourseGeneration':
 			importCourseGeneration()
-		if f == '1':
+		if a == 'Student':
 			importStudent()
-		if g == '1':
+		if a == 'Term':
 			importTerm()
-		if h == '1':
+		if a == 'Offering':
 			importOffering()
-		if i == '1':
+		if a == 'Role':
 			importRole()
-		if j == '1':
+		if a == 'ProjectClass':
 			importProjectClass()
-		if k == '1':
+		if a == 'PseudoPeople':
 			importPseudoPeople()
-		if l == '1':
+		if a == 'RolePerson':
 			importRolePerson()
-		if m == '1':
+		if a == 'ProjectSupervision':
 			importProjectSupervision()
-		if n == '1':
+		if a == 'Adjustment':
 			importAdjustment()
 	return render_template('import.html')
 
@@ -175,14 +163,35 @@ def Profilehist(ID):
 
 @app.route("/profile/<ID>")
 def Profile(ID):
+	now = datetime.datetime.now()
+	year1=now.year
 	person = Person.get(Person.ID == ID)
 	supervision = Supervision.select().join(Person).where(Person.ID == ID).order_by(Supervision.SupervisionClassID.desc())
 	projectsupervision = ProjectSupervision.select().join(Person).where(Person.ID == ID).order_by(
 		ProjectSupervision.ProjectSupervisionID.desc())
 	offering = Offering.select().join(Person).where(Person.ID == ID).order_by(Offering.OID.desc())
 	adjustment=Adjustment.select().join(Person).where(Person.ID == ID).order_by(Adjustment.AdjustmentID.desc())
+	Stotal =(
+		Supervision.select().where(Supervision.ID == ID).join(SupervisionClass)
+			.select(fn.SUM(SupervisionClass.Weight)).scalar()
+	)
+	Atotal = (
+		Person.select().where(Person.ID == ID).join(Adjustment)
+			.select(fn.SUM(Adjustment.ADJWeight)).scalar()
+	)
+	Ptotal = (
+		ProjectSupervision.select().where(ProjectSupervision.ID == ID).join(ProjectClass)
+			.select(fn.SUM(ProjectClass.Weight)).scalar()
+	)
+	if Atotal==None:
+		Atotal=0
+	if Stotal==None:
+		Stotal=0
+	if Ptotal==None:
+		Ptotal=0
 	return render_template("profile.html", person=person,supervision=supervision,
-						   projectsupervision=projectsupervision,offering=offering, adjustment=adjustment)
+						   projectsupervision=projectsupervision,offering=offering, adjustment=adjustment, Ptotal=Ptotal
+						   , Stotal=Stotal, Atotal=Atotal)
 
 @app.route('/populate', methods=["GET", "POST"])
 def populate():
