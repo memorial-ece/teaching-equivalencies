@@ -20,19 +20,51 @@ def favicon():
 
 
 def allowed_file(filename):
-	return '.' in filename and \
-		   filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 @app.route('/upload', methods=['GET','POST'])
 def upload():
 	if request.method == 'POST':
+		a=request.form.get('Select')
 		file = request.files['file']
+		if a == 'Person':
+			filenam='account-Person.csv'
+		if a == 'Course':
+			filenam='account-Course.csv'
+		if a == 'CourseGeneration':
+			filenam='account-CourseGeneration.csv'
+		if a == 'Student':
+			filenam='account-Student.csv'
+		if a == 'Term':
+			filenam='account-Term.csv'
+		if a == 'Offering':
+			filenam='account-Offering.csv'
+		if a == 'Role':
+			filenam='account-Role.csv'
+		if a == 'SupervisionClass':
+			filenam='account-SupervisionClass.csv'
+		if a == 'ProjectClass':
+			filenam='account-ProjectClass.csv'
+		if a == 'PseudoPeople':
+			filenam='account-PseudoPeople.csv'
+		if a == 'RolePerson':
+			filenam='account-RolePerson.csv'
+		if a == 'ProjectSupervision':
+			filenam='account-ProjectSupervision.csv'
+		if a == 'Supervision':
+			filenam='account-Supervision.csv'
+		if a == 'Adjustment':
+			filenam='account-Adjustment.csv'
 		if file and allowed_file(file.filename):
 			filename = secure_filename(file.filename)
-			file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-			return redirect(url_for('upload',filename=filename))
+			file.save(os.path.join(app.config['UPLOAD_FOLDER'], filenam))
+			return redirect(url_for('upload',
+									filename=filename))
+
 	return render_template('upload.html')
+
 
 @app.route("/export",  methods=['GET', 'POST'])
 def docustomexport():
