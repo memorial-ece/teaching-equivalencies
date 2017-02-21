@@ -111,12 +111,6 @@ body {color: white;}
          {% endfor %}
     </table>
    <h1>TOTAL</h1>
-   {% for row in supervision %}
-   {% for row1 in offering %}
-   {% for row2 in projectsupervision %}
-   {% endfor %}
-   {% endfor %}
-   {% endfor %}
-
+   {{Atotal+Stotal+Ptotal}}
    {% endblock %}
 </html>

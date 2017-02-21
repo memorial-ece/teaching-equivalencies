@@ -5,18 +5,16 @@
 body {color: white;}
 </style>
     <meta charset="UTF-8">
-    <title>export</title>
+    <title>upload</title>
 </head>
 <body bgcolor="101111">
 
-   {% extends "home.html" %}
+{% extends "home.html" %}
 {% block content %}
-               <p>
-           export for the main file that startup.py is in.
-            you need to place "1" in the feild you want to export
-	    <!--<title>Upload new File</title>-->
-	    <!--<h1>Upload new File</h1>-->
-    <form action = "{{ url_for('docustomexport') }}" method = "POST">
+
+<h3>if you are importing after your upload you need to do it manualy right now. Also it needs to be in the account-xxxx.cvs form beacuse i havn't installed identifyers yet</h3>
+ <form action = "{{ url_for('upload') }}" enctype=multipart/form-data method = "POST">
+     <input type=file name=file>
       <select name="Select">
         <option value = "Person">Person </option>
         <option value = "Supervision">Supervision </option>
@@ -33,10 +31,8 @@ body {color: white;}
         <option value = "ProjectSupervision">ProjectSupervision</option>
         <option value = "Adjustment">Adjustment </option>
       </select>
-            <input type=submit value=submit>
-	    </form>
-
-        </p>
+     <input type=submit value=Upload>
+ </form>
 {% endblock %}
 </body>
 </html>
