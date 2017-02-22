@@ -8,35 +8,27 @@ body {color: white;}
     <title>export</title>
 </head>
 <body bgcolor="101111">
-
-   {% extends "home.html" %}
+{% extends "home.html" %}
 {% block content %}
-               <p>
-           export for the main file that startup.py is in.
-            you need to place "1" in the feild you want to export
-	    <!--<title>Upload new File</title>-->
-	    <!--<h1>Upload new File</h1>-->
     <form action = "{{ url_for('docustomexport') }}" method = "POST">
       <select name="Select">
         <option value = "Person">Person </option>
         <option value = "Supervision">Supervision </option>
-        <option value = "SupervisionClass">SupervisionClass </option>
+        <option value = "Supervision_Class">SupervisionClass </option>
         <option value = "Course">Course </option>
-        <option value = "CourseGeneration">CourseGeneration </option>
+        <option value = "Course_Generation">CourseGeneration </option>
         <option value = "Student">Student </option>
         <option value = "Term">Term </option>
         <option value = "Offering">Offering </option>
         <option value = "Role">Role" </option>
-        <option value = "ProjectClass">ProjectClass </option>
-        <option value = "PseudoPeople">PseudoPeople </option>
-        <option value = "RolePerson">RolePerson </option>
-        <option value = "ProjectSupervision">ProjectSupervision</option>
+        <option value = "Project_Class">ProjectClass </option>
+        <option value = "Pseudo_People">PseudoPeople </option>
+        <option value = "Role_Person">RolePerson </option>
+        <option value = "Project_Supervision">ProjectSupervision</option>
         <option value = "Adjustment">Adjustment </option>
       </select>
-            <input type=submit value=submit>
-	    </form>
-
-        </p>
+        <input type = submit value=submit>
+    </form>
 {% endblock %}
 </body>
 </html>

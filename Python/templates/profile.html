@@ -7,108 +7,107 @@ body {color: white;}
       <title>
          profile
       </title>
-      <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+       <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
    </head>
    <body bgcolor="101111">
    {% extends "home.html" %}
-{% block content %}
-        {% if error %}
-      <p><strong>Error:</strong> {{ error }}
-      {% endif %}
+   {% block content %}
+   {% if error %}
+   <p><strong>Error:</strong> {{ error }}
+       {% endif %}
    <h3>Personal Info</h3>
- <table border = 1>
-         <thead>
-            <td>ID</td>
-            <td>Name</td>
-            <td>Email</td>
-         </thead>
-            <tr>
-                <td>{{person.ID}}</td>
-                <td>{{person.Name}}</td>
-                <td>{{person.Email}}</td>
-            </tr>
-   </table>
-      <h3>Supervisions</h3>
-    <table border = 5>
-         <thead>
-            <td>SupervisionID</td>
-            <td>SupervisionClass Description</td>
-            <td>Weight</td>
-            <td>StudentID</td>
-            <td>SemesterYear</td>
-            <td>SemesterSection</td>
-         </thead>
-         {% for row in supervision %}
-            <tr>
-                <td>{{row.SupervisionID}}</td>
-                <td>{{row.SupervisionClassID.Description}}</td>
-                <td>{{row.SupervisionClassID.Weight}}</td>
-                <td>{{row.StudentID.StudentID}}</td>
-                <td>{{row.SemesterID.Year}}</td>
-                <td>{{row.SemesterID.Session}}</td>
-            </tr>
-        {% endfor %}
-    </table>
-         <h3>Project Suppervisions</h3>
-    <table border = 1>
-         <thead>
-            <td>ProjectSupervisionID</td>
-            <td>Description</td>
-            <td>Weight</td>
-            <td>PseudoID</td>
-            <td>SemesterYear</td>
-            <td>SemesterSection</td>
-         </thead>
-         {% for row in projectsupervision %}
-            <tr>
-                <td>{{row.ProjectSupervisionID}}</td>
-                <td>{{row.ProjectClassID.Description}}</td>
-                <td>{{row.ProjectClassID.Weight}}</td>
-                <td>{{row.PseudoID.PseudoID}}</td>
-                <td>{{row.SemesterID.Year}}</td>
-                <td>{{row.SemesterID.Session}}</td>
-            </tr>
-        {% endfor %}
-    </table>
-         <h3>Offerings</h3>
-    <table border = 1>
-         <thead>
-            <td>OID</td>
-            <td>StudentsTaking</td>
-            <td>Crse</td>
-            <td>Subj</td>
-            <td>Labs</td>
-            <td>SemesterYear</td>
-            <td>SemesterSection</td>
-            <td>Complex function example of weight generation</td>
-         </thead>
-         {% for row in offering %}
-            <tr>
-                <td>{{row.OID}}</td>
-                <td>{{row.StudentsTaking}}</td>
-                <td>{{row.CourseGenID.CRN.Crse}}</td>
-                <td>{{row.CourseGenID.CRN.Subj}}</td>
-                <td>{{row.CourseGenID.Labs}}</td>
-                <td>{{row.SemesterID.Year}}</td>
-                <td>{{row.SemesterID.Session}}</td>
-                <td>{{(row.CourseGenID.CRN.Crse/57)*(0.325*row.CourseGenID.Labs)}}</td>
-            </tr>
-        {% endfor %}</table>
-<table border = 5>
-    <h3>Adjustment</h3>
+   <table border = 1>
        <thead>
-            <td>AdjustmentID</td>
-            <td>ADJWeight</td>
-            <td>AUDITCOMMENT</td>
-
+       <td>ID</td>
+       <td>Name</td>
+       <td>Email</td>
        </thead>
-         {% for row in adjustment %}
-            <tr>
-                <td>{{row.AdjustmentID}}</td>
-                <td>{{row.ADJWeight}}</td>
-                <td>{{row.AUDITCOMMENT}}</td>
-            </tr>
-         {% endfor %}
+       <tr>
+           <td>{{person.prof_id}}</td>
+           <td>{{person.name}}</td>
+           <td>{{person.email}}</td>
+       </tr>
+   </table>
+   <h3>Supervisions</h3>
+   <table border = 5>
+       <thead>
+       <td>SupervisionID</td>
+       <td>SupervisionClass Description</td>
+       <td>Weight</td>
+       <td>StudentID</td>
+       <td>SemesterYear</td>
+       <td>SemesterSection</td>
+       </thead>
+       {% for row in supervision %}
+       <tr>
+           <td>{{row.supervision_id}}</td>
+           <td>{{row.supervision_class_id.description}}</td>
+           <td>{{row.supervision_class_id.weight}}</td>
+           <td>{{row.student_id.student_id}}</td>
+           <td>{{row.semester_id.year}}</td>
+           <td>{{row.semester_id.session}}</td>
+       </tr>
+       {% endfor %}
+   </table>
+   <h3>Project Suppervisions</h3>
+   <table border = 1>
+       <thead>
+       <td>ProjectSupervisionID</td>
+       <td>description</td>
+       <td>weight</td>
+       <td>PseudoID</td>
+       <td>SemesterYear</td>
+       <td>SemesterSection</td>
+       </thead>
+       {% for row in projectsupervision %}
+       <tr>
+           <td>{{row.project_supervision_id}}</td>
+           <td>{{row.project_class_id.description}}</td>
+           <td>{{row.project_class_id.weight}}</td>
+           <td>{{row.pseudo_id.pseudo_id}}</td>
+           <td>{{row.semester_id.year}}</td>
+           <td>{{row.semester_id.session}}</td>
+       </tr>
+       {% endfor %}
+   </table>
+   <h3>Offerings</h3>
+   <table border = 1>
+       <thead>
+       <td>OID</td>
+       <td>StudentsTaking</td>
+       <td>Crse</td>
+       <td>Subj</td>
+       <td>Labs</td>
+       <td>SemesterYear</td>
+       <td>SemesterSection</td>
+       <td>Complex function example of weight generation</td>
+       </thead>
+       {% for row in offering %}
+       <tr>
+           <td>{{row.offering_id}}</td>
+           <td>{{row.students_taking}}</td>
+           <td>{{row.course_gen_id.course_id.course_num}}</td>
+           <td>{{row.course_gen_id.course_id.subject}}</td>
+           <td>{{row.course_gen_id.labs}}</td>
+           <td>{{row.semester_id.year}}</td>
+           <td>{{row.semester_id.session}}</td>
+           <td>{{row.course_gen_id.course_id.course_num}}</td>
+       </tr>
+       {% endfor %}</table>
+   <table border = 5>
+       <h3>Adjustment</h3>
+       <thead>
+       <td>AdjustmentID</td>
+       <td>ADJWeight</td>
+       <td>AUDITCOMMENT</td>
+       </thead>
+       {% for row in adjustment %}
+       <tr>
+           <td>{{row.adjustment_id}}</td>
+           <td>{{row.adjustment_weight}}</td>
+           <td>{{row.audit_comment}}</td>
+       </tr>
+       {% endfor %}
     </table>
    <h1>TOTAL</h1>
    {{Atotal+Stotal+Ptotal}}

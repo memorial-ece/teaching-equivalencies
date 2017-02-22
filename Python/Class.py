@@ -1,95 +1,97 @@
 from peewee import *
 
+
 class Person(Model):
-	Name = TextField()
-	Email = TextField()
-	ID = IntegerField(unique=True, primary_key=True, null=False)
+	name = TextField()
+	email = TextField()
+	prof_id = IntegerField(unique=True, primary_key=True, null=False)
 
 
 class Course(Model):
-	CRN = IntegerField(unique=True, primary_key=True, null=False)
-	Subj = TextField()
-	Crse = IntegerField()
+	course_id = IntegerField(unique=True, primary_key=True, null=False)
+	subject = TextField()
+	course_num = CharField(4)
 
 
 class CourseGeneration(Model):
-	CourseGenID = IntegerField(unique=True, primary_key=True, null=False)
-	Labs = IntegerField()
-	CreditHours = IntegerField()
-	Title = TextField()
-	CRN = ForeignKeyField(Course, related_name='course_gen')
+	course_gen_id = IntegerField(unique=True, primary_key=True, null=False)
+	labs = TextField()
+	credit_hours = IntegerField()
+	title = TextField()
+	comments = TextField(null=True)
+	course_id = ForeignKeyField(Course, related_name='course_gen')
 
 
 class Student(Model):
-	StudentID = IntegerField(primary_key=True, unique=True, null=False)
-	SName = TextField()
-	SEmail = TextField()
+	student_id = IntegerField(primary_key=True, unique=True, null=False)
+	student_name = TextField()
+	student_email = TextField()
 
 
 class Term(Model):
-	SemesterID = IntegerField(unique=True, primary_key=True, null=False)
-	Year = DateField()
-	Session = IntegerField()
+	semester_id = IntegerField(unique=True, primary_key=True, null=False)
+	year = DateField()
+	session = IntegerField()
 
 
 class Offering(Model):
-	OID = IntegerField(unique=True, primary_key=True, null=False, )
-	StudentsTaking = IntegerField()
-	ID = ForeignKeyField(Person, related_name='taking')
-	SemesterID = ForeignKeyField(Term, related_name='offering')
-	CourseGenID = ForeignKeyField(CourseGeneration, related_name='offerings')
+	offering_id = IntegerField(unique=True, primary_key=True, null=False, )
+	students_taking = IntegerField()
+	prof_id = ForeignKeyField(Person, related_name='taking')
+	semester_id = ForeignKeyField(Term, related_name='offering')
+	course_gen_id = ForeignKeyField(CourseGeneration, related_name='offerings')
 
 
 class Role(Model):
-	RoleID = IntegerField(primary_key=True, unique=True, null=False)
-	ViewOnlyYou = BooleanField()
-	ViewOnlyDept = BooleanField()
-	ViewOnlyAll = BooleanField()
-	EditDept = BooleanField()
+	role_id = IntegerField(primary_key=True, unique=True, null=False)
+	role_name = TextField()
+	view_only_you = BooleanField()
+	view_only_dept = BooleanField()
+	view_only_All = BooleanField()
+	edit_dept = BooleanField()
 
 
 class SupervisionClass(Model):
-	SupervisionClassID = IntegerField(primary_key=True, unique=True, null=False)
-	Description = TextField()
-	Weight = FloatField()
+	supervision_class_id = IntegerField(primary_key=True, unique=True, null=False)
+	description = TextField()
+	weight = FloatField()
 
 
 class ProjectClass(Model):
-	ProjectClassID = IntegerField(primary_key=True, unique=True, null=False)
-	Description = TextField()
-	Weight = FloatField()
+	project_class_id = IntegerField(primary_key=True, unique=True, null=False)
+	description = TextField()
+	weight = FloatField()
 
 
 class PseudoPeople(Model):
-	PseudoID = IntegerField(primary_key=True, unique=True, null=False)
-	PName = TextField()
-	PEmail = TextField()
+	pseudo_id = IntegerField(primary_key=True, unique=True, null=False)
+	pseudo_name = TextField()
+	pseudo_email = TextField()
 
 
 class RolePerson(Model):
-	ID = ForeignKeyField(Person, related_name='people_roles')
-	RoleID = ForeignKeyField(Role, related_name='roles_ofpeople')
+	prof_id = ForeignKeyField(Person, related_name='people_roles')
+	role_id = ForeignKeyField(Role, related_name='roles_ofpeople')
 
 
 class ProjectSupervision(Model):
-	ProjectSupervisionID = IntegerField(primary_key=True, unique=True, null=False)
-	ID = ForeignKeyField(Person, related_name='supervisied_projects')
-	PseudoID = ForeignKeyField(PseudoPeople, related_name='projects')
-	ProjectClassID = ForeignKeyField(ProjectClass, related_name='projects')
-	SemesterID = ForeignKeyField(Term, related_name='projects')
+	project_supervision_id = IntegerField(primary_key=True, unique=True, null=False)
+	prof_id = ForeignKeyField(Person, related_name='supervisied_projects')
+	pseudo_id = ForeignKeyField(PseudoPeople, related_name='projects')
+	project_class_id = ForeignKeyField(ProjectClass, related_name='projects')
+	semester_id = ForeignKeyField(Term, related_name='projects')
 
 
 class Supervision(Model):
-	SupervisionID = IntegerField(primary_key=True, unique=True, null=False)
-	ID = ForeignKeyField(Person, related_name='supervised_people')
-	StudentID = ForeignKeyField(Student, related_name='supered')
-	SupervisionClassID = ForeignKeyField(SupervisionClass, related_name='supered')
-	SemesterID = ForeignKeyField(Term, related_name='supered')
+	supervision_id = IntegerField(primary_key=True, unique=True, null=False)
+	prof_id = ForeignKeyField(Person, related_name='supervised_people')
+	student_id = ForeignKeyField(Student, related_name='supered')
+	supervision_class_id = ForeignKeyField(SupervisionClass, related_name='supered')
+	semester_id = ForeignKeyField(Term, related_name='supered')
 
 
 class Adjustment(Model):
-	AdjustmentID = IntegerField(primary_key=True, unique=True, null=False)
-	ADJWeight = FloatField()
-	# AUDITDATE = DateTimeField()
-	AUDITCOMMENT = TextField()
-	ID = ForeignKeyField(Person, related_name='made_change')
+	adjustment_id = IntegerField(primary_key=True, unique=True, null=False)
+	adjustment_weight = FloatField()
+	audit_comment = TextField()
+	prof_id = ForeignKeyField(Person, related_name='made_change')
