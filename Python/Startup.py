@@ -4,8 +4,13 @@ from Exporter import *
 from Importer import *
 from werkzeug.utils import *
 import datetime
-from parser import *
+# from graphcourses import *
+import re
 
+
+course_number = re.compile('[0-9W]{4} [A-Z][a-z]+')
+numeric = re.compile('^[0-9]+$')
+special_topics = re.compile('[0-9]{4}-[0-9]{4} [A-Z][a-z]+')
 app = Flask(__name__)
 DATABASE = 'database.db'
 db = SqliteDatabase(DATABASE)
@@ -23,6 +28,7 @@ def favicon():
 @app.route('/parse')
 def parse():
 	return redirect('/')
+
 
 def allowed_file(filename):
 	return '.' in filename and \
@@ -282,7 +288,7 @@ def listm():
 							SupervisionClass=SupervisionClass, ProjectClass=ProjectClass,
 							ProjectSupervision=ProjectSupervision, Supervision=Supervision, Adjustment=Adjustment,
 							RolePerson=RolePerson, Role=Role, Term=Term, Offering=Offering,
-							CourseGeneration=CourseGeneration, Student=Student)
+							CourseGeneration=CourseGeneration, Student=Student,CourseGeneration1=CourseGeneration1, Course1=Course1)
 
 
 @app.route('/Dashboard')
@@ -299,22 +305,22 @@ def peeweetable():
 			db.connect()
 			db.drop_tables(
 			[Person, Course, CourseGeneration, Term, Offering, Role, RolePerson, ProjectSupervision, ProjectClass,
-			 Supervision, SupervisionClass, PseudoPeople, Student, Adjustment,],safe=True)
+			 Supervision, SupervisionClass, PseudoPeople, Student, Adjustment,Course1, CourseGeneration1],safe=True)
 			db.create_tables(
 			[Person, Course, CourseGeneration, Term, Offering, Role, RolePerson, ProjectSupervision, ProjectClass,
-			 Supervision, SupervisionClass, PseudoPeople, Student, Adjustment],safe=True)
+			 Supervision, SupervisionClass, PseudoPeople, Student, Adjustment,Course1, CourseGeneration1],safe=True)
 			db.close()
 		elif request.form['Full'] == 'Create':
 			db.connect()
 			db.create_tables(
 				[Person, Course, CourseGeneration, Term, Offering, Role, RolePerson, ProjectSupervision, ProjectClass,
-				 Supervision, SupervisionClass, PseudoPeople, Student, Adjustment],safe=True)
+				 Supervision, SupervisionClass, PseudoPeople, Student, Adjustment,Course1, CourseGeneration1],safe=True)
 			db.close()
 		elif request.form['Full'] == 'Drop':
 			db.connect()
 			db.drop_tables(
 				[Person, Course, CourseGeneration, Term, Offering, Role, RolePerson, ProjectSupervision, ProjectClass,
-				 Supervision, SupervisionClass, PseudoPeople, Student, Adjustment, ],safe=True)
+				 Supervision, SupervisionClass, PseudoPeople, Student, Adjustment, Course1, CourseGeneration1],safe=True)
 			db.close()
 	return render_template('reset.html')
 

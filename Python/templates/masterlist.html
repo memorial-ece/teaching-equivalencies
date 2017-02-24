@@ -54,6 +54,20 @@ body {color: white;}
         <td>{{row.course_num}}</td>
     </tr>
     {% endfor %}</table>
+<table border = 1>
+    <h3>Course1</h3>
+    <thead>
+    <td>CRN</td>
+    <td>Subj</td>
+    <td>Crse</td>
+    </thead>
+    {% for row in Course1 %}
+    <tr>
+        <td>{{row.course_id}}</td>
+        <td>{{row.subject}}</td>
+        <td>{{row.course_num}}</td>
+    </tr>
+    {% endfor %}</table>
 <table border = 3>
     <h3>Student</h3>
     <thead>
@@ -218,6 +232,8 @@ body {color: white;}
     <td>CourseGenID</td>
     <td>CRN</td>
     <td>CreditHours</td>
+    <td>lecture hours</td>
+    <td>comments</td>
     <td>Labs</td>
     <td>Title</td>
     </thead>
@@ -226,6 +242,30 @@ body {color: white;}
         <td>{{row.course_gen_id}}</td>
         <td>{{row.course_id.course_id}}</td>
         <td>{{row.credit_hours}}</td>
+        <td>{{row.lecture_hours}}</td>
+        <td>{{row.comments}}</td>
+        <td>{{row.labs}}</td>
+        <td>{{row.title}}</td>
+    </tr>
+    {% endfor %}</table>
+<table border = 1>
+    <h3>CourseGeneration1</h3>
+    <thead>
+    <td>CourseGenID</td>
+    <td>CRN</td>
+    <td>CreditHours</td>
+    <td>lecture hours</td>
+    <td>comments</td>
+    <td>Labs</td>
+    <td>Title</td>
+    </thead>
+    {% for row in CourseGeneration1 %}
+    <tr>
+        <td>{{row.course_gen_id}}</td>
+        <td>{{row.course_id.course_id}}</td>
+        <td>{{row.credit_hours}}</td>
+        <td>{{row.lecture_hours}}</td>
+        <td>{{row.comments}}</td>
         <td>{{row.labs}}</td>
         <td>{{row.title}}</td>
     </tr>

@@ -15,11 +15,28 @@ class Course(Model):
 
 class CourseGeneration(Model):
 	course_gen_id = IntegerField(unique=True, primary_key=True, null=False)
-	labs = TextField()
-	credit_hours = IntegerField()
+	labs = TextField(null=True)
+	credit_hours = TextField()
+	lecture_hours=TextField(null=True)
 	title = TextField()
 	comments = TextField(null=True)
-	course_id = ForeignKeyField(Course, related_name='course_gen')
+	course_id = ForeignKeyField(Course, related_name='course_gen', null=True )
+
+
+class Course1(Model):
+	course_id = IntegerField(unique=True, primary_key=True, null=False)
+	subject = TextField()
+	course_num = CharField(4)
+
+
+class CourseGeneration1(Model):
+	course_gen_id = IntegerField(unique=True, primary_key=True, null=False)
+	labs = TextField(null=True)
+	credit_hours = TextField()
+	lecture_hours=TextField(null=True)
+	title = TextField()
+	comments = TextField(null=True)
+	course_id = ForeignKeyField(Course1, related_name='course_gen', null=True )
 
 
 class Student(Model):
