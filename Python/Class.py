@@ -26,7 +26,7 @@ class CourseGeneration(Model):
 class Course1(Model):
 	course_id = IntegerField(unique=True, primary_key=True, null=False)
 	subject = TextField()
-	course_num = CharField(4)
+	course_num = CharField(4,unique=True)
 
 
 class CourseGeneration1(Model):
@@ -37,6 +37,7 @@ class CourseGeneration1(Model):
 	title = TextField()
 	comments = TextField(null=True)
 	course_id = ForeignKeyField(Course1, related_name='course_gen', null=True )
+	useable = BooleanField(null=True)
 
 
 class Student(Model):
@@ -60,7 +61,7 @@ class Offering(Model):
 
 
 class Role(Model):
-	role_id = IntegerField(primary_key=True, unique=True, null=False)
+	role_id = IntegerField(primary_key=True, unique=True, null=False,)
 	role_name = TextField()
 	view_only_you = BooleanField()
 	view_only_dept = BooleanField()
