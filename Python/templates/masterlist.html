@@ -257,6 +257,7 @@ body {color: white;}
     <td>lecture hours</td>
     <td>comments</td>
     <td>Labs</td>
+    <td>useable</td>
     <td>Title</td>
     </thead>
     {% for row in CourseGeneration1 %}
@@ -267,6 +268,7 @@ body {color: white;}
         <td>{{row.lecture_hours}}</td>
         <td>{{row.comments}}</td>
         <td>{{row.labs}}</td>
+        <td>{{row.useable}}</td>
         <td>{{row.title}}</td>
     </tr>
     {% endfor %}</table>
