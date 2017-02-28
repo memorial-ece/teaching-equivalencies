@@ -4,8 +4,10 @@ from Exporter import *
 from Importer import *
 from werkzeug.utils import *
 import datetime
-# from graphcourses import *
 import re
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 
 course_number = re.compile('[0-9W]{4} [A-Z][a-z]+')
@@ -24,10 +26,6 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 def favicon():
 	return send_from_directory(os.path.join(app.root_path, 'static'),
 								'favicon.ico', mimetype='image/vnd.microsoft.icon')
-
-@app.route('/parse')
-def parse():
-	return redirect('/')
 
 
 def allowed_file(filename):

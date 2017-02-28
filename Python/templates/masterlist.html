@@ -234,6 +234,7 @@ body {color: white;}
     <td>CreditHours</td>
     <td>lecture hours</td>
     <td>comments</td>
+    <td>exclusive</td>
     <td>Labs</td>
     <td>Title</td>
     </thead>
@@ -244,6 +245,7 @@ body {color: white;}
         <td>{{row.credit_hours}}</td>
         <td>{{row.lecture_hours}}</td>
         <td>{{row.comments}}</td>
+        <td>{{row.exclusive}}</td>
         <td>{{row.labs}}</td>
         <td>{{row.title}}</td>
     </tr>
@@ -259,6 +261,7 @@ body {color: white;}
     <td>Labs</td>
     <td>useable</td>
     <td>Title</td>
+    <td>old_course_id</td>
     </thead>
     {% for row in CourseGeneration1 %}
     <tr>
@@ -270,6 +273,7 @@ body {color: white;}
         <td>{{row.labs}}</td>
         <td>{{row.useable}}</td>
         <td>{{row.title}}</td>
+        <td>{{row.old_course_id}}</td>
     </tr>
     {% endfor %}</table>
 <form action = "{{ url_for('listm') }}" method = "POST">
