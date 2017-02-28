@@ -5,8 +5,13 @@ import calendar as cal
 import collections
 import sys
 import csv
+import random
 from Class import *
 from ConvertParse import *
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
+
 args = argparse.ArgumentParser()
 args.add_argument('filename', nargs = '+')
 args.add_argument('--format', choices = [ 'calendar', 'dot' ], default = 'dot')
@@ -41,42 +46,65 @@ with open('dict.csv', 'wb') as csv_file:
 		writer.writerow([key, value])
 
 
-
 for name, course in courses.items():
-	cc = Course1()
-	g = CourseGeneration1()
-	print course.keys()
-	length=len(courses)
+	sem1 = open('fun').readlines()
+	sem2 = random.choice(sem1)
+	print sem2
 	labs = convert_parse_labs(name, course)
 	credit_hours = convert_parse_credit_hours(name, course)
 	lecture_hours = convert_parse_lecture_hours(name, course)
 	title = convert_parse_title(name, course)
 	comments = convert_parse_comments(name, course)
 	course_num = convert_parse_course_id(name, course)
+	other_info=convert_parse_other(name,course)
+	exclusive=convert_parse_exclusive(name,course)
+	for course_2 in Course1.select():
+		num2=course_2.course_num
+		id2=course_2.course_id
+		if exclusive!=None:
+			if exclusive ==num2:
+				try:
+					Course1.create(subject="ENGI", course_num=course_num)
+					late_update = Course1.select().order_by(Course1.course_id.desc()).get()
+					CourseGeneration1.create(labs=labs, credit_hours=credit_hours, lecture_hours=lecture_hours,
+											 title=title, comments=comments,
+											 course_id=late_update, useable=True, other_info=other_info,
+											 old_course_id=id2)
+				except:
+					pass
 	try:
-		cc.create(subject="ENGI", course_num=course_num)
-		b = Course1.select().order_by(Course1.course_id.desc()).get()
-		g.create(labs=labs, credit_hours=credit_hours, lecture_hours=lecture_hours, title=title, comments=comments,
-			 course_id=b,useable=True)
+		Course1.create(subject="ENGI", course_num=course_num)
+		late_update = Course1.select().order_by(Course1.course_id.desc()).get()
+		CourseGeneration1.create(labs=labs, credit_hours=credit_hours, lecture_hours=lecture_hours, title=title, comments=comments,
+			 course_id=late_update,useable=True,other_info=other_info,old_course_id=exclusive)
 	except:
 		pass
-	for x in cc.select():
-		c=x.course_id
-		a=x.course_num
-		if course_num==a :
-			for y in g.select():
-				d=(y.course_id)
-				e=(y.comments)
-				f=str(y.title)
-				h=str(y.lecture_hours)
-				i=str(y.credit_hours)
-				j=str(y.labs)
-				k=y.useable
-				if k:
-					if c==d.course_id:
-						if   e!=comments or f!=title or (y.lecture_hours)!=lecture_hours or i!=credit_hours or j!=labs and k:
-
-							qqq=CourseGeneration1.update(useable=False).where(CourseGeneration1.course_id==c)
-							qqq.execute()
-							g.create(labs=labs, credit_hours=credit_hours, lecture_hours=lecture_hours, title=title,
-								 comments=comments, course_id=d.course_id,useable=True)
+	for course_1 in Course1.select():
+		id1=course_1.course_id
+		num1=course_1.course_num
+		if exclusive==num1:
+			qaq = CourseGeneration1.update(useable=False).where(CourseGeneration1.course_id == id1)
+			qaq.execute()
+		if course_num==num1 :
+			for y in CourseGeneration1.select():
+				id2=(y.course_id)
+				com=(y.comments)
+				titl=str(y.title)
+				chou=str(y.credit_hours)
+				lab=str(y.labs)
+				boo=y.useable
+				if boo:
+					if id1==id2.course_id:
+						if exclusive==None:
+							if com!=comments or titl!=title or (y.lecture_hours)!=lecture_hours or chou!=credit_hours or lab!=labs and boo:
+								qqq=CourseGeneration1.update(useable=False).where(CourseGeneration1.course_id==id1)
+								qqq.execute()
+								CourseGeneration1.create(labs=labs, credit_hours=credit_hours, lecture_hours=lecture_hours, title=title,
+									 comments=comments, course_id=id2.course_id,useable=True,other_info=other_info,old_course_id=exclusive)
+						elif exclusive==num1:
+							exclusive=id1
+							if com!=comments or titl!=title or (y.lecture_hours)!=lecture_hours or chou!=credit_hours or lab!=labs and boo:
+								qqq=CourseGeneration1.update(useable=False).where(CourseGeneration1.course_id==id1)
+								qqq.execute()
+								CourseGeneration1.create(labs=labs, credit_hours=credit_hours, lecture_hours=lecture_hours, title=title,
+									 comments=comments, course_id=id2.course_id,useable=True,other_info=other_info,old_course_id=exclusive)

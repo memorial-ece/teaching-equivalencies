@@ -32,12 +32,14 @@ class Course1(Model):
 class CourseGeneration1(Model):
 	course_gen_id = IntegerField(unique=True, primary_key=True, null=False)
 	labs = TextField(null=True)
-	credit_hours = TextField()
+	credit_hours = TextField(null=True)
 	lecture_hours=TextField(null=True)
-	title = TextField()
+	title = TextField(null=True)
 	comments = TextField(null=True)
 	course_id = ForeignKeyField(Course1, related_name='course_gen', null=True )
+	other_info= TextField(null=True)
 	useable = BooleanField(null=True)
+	old_course_id= TextField(null=True)
 
 
 class Student(Model):

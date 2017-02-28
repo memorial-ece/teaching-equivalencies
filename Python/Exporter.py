@@ -22,13 +22,13 @@ def export_supervision_class():
 
 def export_course():
 	with open('table_Course.csv', 'w') as fh:
-		query = Course.select().order_by(Course.course_num)
+		query = Course1.select().order_by(Course1.course_num)
 		dump_csv(query, fh)
 
 
 def export_course_generation():
 	with open('table_CourseGeneration.csv', 'w') as fh:
-		query = CourseGeneration.select().order_by(CourseGeneration.course_gen_id)
+		query = CourseGeneration1.select().order_by(CourseGeneration1.course_gen_id)
 		dump_csv(query, fh)
 
 
