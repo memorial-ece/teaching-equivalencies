@@ -14,7 +14,6 @@ sys.setdefaultencoding('utf-8')
 
 args = argparse.ArgumentParser()
 args.add_argument('filename', nargs = '+')
-args.add_argument('--format', choices = [ 'calendar', 'dot' ], default = 'dot')
 args.add_argument('-o', '--output', default = '-')
 
 args = args.parse_args()
@@ -22,13 +21,13 @@ output = sys.stdout if args.output == '-' else open(args.output, 'w')
 
 
 courses = collections.defaultdict(list)
-list_course= collections.defaultdict(list)
+list_course= collections.defaultdict(dict)
 dict_gen=collections.defaultdict(dict)
 dict_view_gen=collections.defaultdict(dict)
 
 for filename in args.filename:
 	p1 = re.compile(r"(\d+\b)(?!.*\1\b)")
-	filen2 = ''.join(p1.findall(str(filename)))
+	filen2 = int(''.join(p1.findall(str(filename))))
 	html = filename.endswith('.htm') or filename.endswith('.html')
 	parse = cal.parseHTML if html else cal.parseText
 	for (name,c) in parse(open(filename)).items():
@@ -48,12 +47,12 @@ for year, cour in courses.items():
 		# print courses[year][a]
 		# print dict_year.items()
 		# print code
-		list_course[code].append(dict_year.items())
+		list_course[code][year] = course
 		# print list_course.items()
 
 # for x in list_course:
-	
-# print list_course
+
+print list_course
 # print list_course.values()
 
 
