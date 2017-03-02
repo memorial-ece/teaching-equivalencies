@@ -22,7 +22,7 @@ output = sys.stdout if args.output == '-' else open(args.output, 'w')
 
 
 courses = collections.defaultdict(list)
-dict_course= collections.defaultdict(dict)
+list_course= collections.defaultdict(list)
 dict_gen=collections.defaultdict(dict)
 dict_view_gen=collections.defaultdict(dict)
 
@@ -43,15 +43,22 @@ for year, cour in courses.items():
 		a=courses[year].index(course)
 		code=course['name']
 		dict_year[year]=courses[year][a]
+		# print dict_year.items()
 		# print dict_year
-		dict_course[code]=dict_year
 		# print courses[year][a]
-		print dict_year.items()
-		dict_course[code]=dict_year.items()
-		# print dict_course.items()
+		# print dict_year.items()
+		# print code
+		list_course[code].append(dict_year.items())
+		# print list_course.items()
+
+# for x in list_course:
+	
+# print list_course
+# print list_course.values()
+
 
 		# if code!=
-# print dict_course.keys()
+# print list_course.keys()
 
 
 
@@ -64,10 +71,10 @@ for year, cour in courses.items():
 
 
 
-# for name,ye_de in dict_course.items():
-# 	print dict_course
+# for name,ye_de in list_course.items():
+# 	print list_course
 	# year=sorted(ye_de.items())
-	# decs=dict_course[name].values()
+	# decs=list_course[name].values()
 	# print decs
 	# a=-1
 	# for i in range(len(decs)):
