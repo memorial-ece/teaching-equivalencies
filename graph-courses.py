@@ -11,6 +11,7 @@ from ConvertParse import *
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
+
 args = argparse.ArgumentParser()
 args.add_argument('filename', nargs = '+')
 args.add_argument('--format', choices = [ 'calendar', 'dot' ], default = 'dot')
@@ -20,48 +21,65 @@ args = args.parse_args()
 output = sys.stdout if args.output == '-' else open(args.output, 'w')
 
 
-courses = collections.defaultdict(dict)
+courses = collections.defaultdict(list)
 dict_course= collections.defaultdict(dict)
-dict_year={}
 dict_gen=collections.defaultdict(dict)
 dict_view_gen=collections.defaultdict(dict)
 
-count=(-1)
-p1 = re.compile(r"(\d+\b)(?!.*\1\b)")
-p2 = re.compile(r"((filen1[count])+......\w)")
-filen1 = (p1.findall(str(args.filename)))
-for year in filen1:
-	year=int(year)
-	for filename in args.filename:
-		p1 = re.compile(r"(\d+\b)(?!.*\1\b)")
-		filen2 = ''.join(p1.findall(str(filename)))
-		filen2= int(filen2)
-		if filen2==year:
-			f = open(filename)
-			html = filename.endswith('.htm') or filename.endswith('.html')
-			parse = cal.parseHTML if html else cal.parseText
-			for (name,c) in parse(open(filename), prefix='ENGI').items():
-				code=convert_parse_course_id(name,c)
-				check=obscure_refference(name,c)
-				dict_year[year]=check
-				dict_course[code]=dict_year
+for filename in args.filename:
+	p1 = re.compile(r"(\d+\b)(?!.*\1\b)")
+	filen2 = ''.join(p1.findall(str(filename)))
+	html = filename.endswith('.htm') or filename.endswith('.html')
+	parse = cal.parseHTML if html else cal.parseText
+	for (name,c) in parse(open(filename)).items():
+		codex=convert_parse_course_id(name,c)
+		course=obscure_refference(name,c)
+		courses[filen2].append(course)
+		# print courses.items()
+
+for year, cour in courses.items():
+	dict_year = collections.defaultdict(dict)
+	for course in cour:
+		a=courses[year].index(course)
+		code=course['name']
+		dict_year[year]=courses[year][a]
+		# print dict_year
+		dict_course[code]=dict_year
+		# print courses[year][a]
+		print dict_year.items()
+		dict_course[code]=dict_year.items()
+		# print dict_course.items()
+
+		# if code!=
+# print dict_course.keys()
 
 
-for name,ye_de in dict_course.items():
-	year=sorted(ye_de.items())
-	decs=sorted(ye_de.values())
+
+
+
+
+
+
+
+
+
+
+# for name,ye_de in dict_course.items():
+# 	print dict_course
+	# year=sorted(ye_de.items())
+	# decs=dict_course[name].values()
 	# print decs
-	a=-1
-	for i in range(len(decs)):
-		a=i+1
-		try:
-			if decs[i]==decs[a]:
-				print decs[i]
-				dict_gen[i]=decs[i]
-				print dict_gen
-
-		except:
-			pass
+	# a=-1
+	# for i in range(len(decs)):
+	# 	a=i+1
+	# 	try:
+	# 		if decs[i]==decs[a]:
+	# 			print decs[i]
+	# 			dict_gen[i]=decs[i]
+	# 			print dict_gen
+	#
+	# 	except:
+	# 		pass
 
 
 
