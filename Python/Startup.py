@@ -190,7 +190,7 @@ def Profilehist(prof_id):
 				  .select()
 				  .join(Person)
 				  .where(Person.prof_id == prof_id)
-				  .order_by(Adjustment.adjustment_id.desc()))
+				  .order_by(Adjustment.id.desc()))
 	return render_template("profilehist.html", person=person, supervision=supervision,
 						   projectsupervision=projectsupervision, offering=offering, adjustment=adjustment)
 
@@ -210,18 +210,18 @@ def Profile(prof_id):
 						  .join(Person, on=(ProjectSupervision.prof_id == Person.prof_id))
 						  .join(Term, on=(ProjectSupervision.semester_id == Term.semester_id))
 						  .where(Person.prof_id == prof_id, Term.year == year1)
-						  .order_by(ProjectSupervision.project_supervision_id.desc()))
+						  .order_by(ProjectSupervision.id.desc()))
 	offering = (Offering
 				.select()
 				.join(Person, on=(Offering.prof_id == Person.prof_id))
 				.join(Term, on=(Offering.semester_id == Term.semester_id))
 				.where(Person.prof_id == prof_id, Term.year == year1)
-				.order_by(Offering.offering_id.desc()))
+				.order_by(Offering.id.desc()))
 	adjustment = (Adjustment
 				  .select()
 				  .join(Person)
 				  .where(Person.prof_id == prof_id)
-				  .order_by(Adjustment.adjustment_id.desc()))
+				  .order_by(Adjustment.id.desc()))
 	Stotal = (Supervision
 			  .select()
 			  .where(Supervision.prof_id == prof_id)
@@ -232,7 +232,7 @@ def Profile(prof_id):
 			  .select()
 			  .where(Person.prof_id == prof_id)
 			  .join(Adjustment)
-			  .select(fn.SUM(Adjustment.adjustment_weight))
+			  .select(fn.SUM(Adjustment.weight))
 			  .scalar())
 	Ptotal = (ProjectSupervision
 			  .select()
@@ -299,8 +299,7 @@ def listm():
 						   SupervisionClass=SupervisionClass, ProjectClass=ProjectClass,
 						   ProjectSupervision=ProjectSupervision, Supervision=Supervision, Adjustment=Adjustment,
 						   RolePerson=RolePerson, Role=Role, Term=Term, Offering=Offering,
-						   CourseGeneration=CourseGeneration, Student=Student, CourseGeneration1=CourseGeneration1,
-						   Course1=Course1)
+						   CourseGeneration=CourseGeneration, Student=Student)
 
 
 @app.route('/Dashboard')
@@ -317,25 +316,25 @@ def peeweetable():
 			db.connect()
 			db.drop_tables(
 				[Person, Course, CourseGeneration, Term, Offering, Role, RolePerson, ProjectSupervision, ProjectClass,
-				 Supervision, SupervisionClass, PseudoPeople, Student, Adjustment, Course1, CourseGeneration1],
+				 Supervision, SupervisionClass, PseudoPeople, Student, Adjustment],
 				safe=True)
 			db.create_tables(
 				[Person, Course, CourseGeneration, Term, Offering, Role, RolePerson, ProjectSupervision, ProjectClass,
-				 Supervision, SupervisionClass, PseudoPeople, Student, Adjustment, Course1, CourseGeneration1],
+				 Supervision, SupervisionClass, PseudoPeople, Student, Adjustment],
 				safe=True)
 			db.close()
 		elif request.form['Full'] == 'Create':
 			db.connect()
 			db.create_tables(
 				[Person, Course, CourseGeneration, Term, Offering, Role, RolePerson, ProjectSupervision, ProjectClass,
-				 Supervision, SupervisionClass, PseudoPeople, Student, Adjustment, Course1, CourseGeneration1],
+				 Supervision, SupervisionClass, PseudoPeople, Student, Adjustment],
 				safe=True)
 			db.close()
 		elif request.form['Full'] == 'Drop':
 			db.connect()
 			db.drop_tables(
 				[Person, Course, CourseGeneration, Term, Offering, Role, RolePerson, ProjectSupervision, ProjectClass,
-				 Supervision, SupervisionClass, PseudoPeople, Student, Adjustment, Course1, CourseGeneration1],
+				 Supervision, SupervisionClass, PseudoPeople, Student, Adjustment],
 				safe=True)
 			db.close()
 	return render_template('reset.html')

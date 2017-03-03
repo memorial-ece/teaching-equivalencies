@@ -35,9 +35,9 @@ body {color: white;}
     </thead>
     {% for row in Pseudo %}
     <tr>
-        <td>{{row.pseudo_id}}</td>
-        <td>{{row.pseudo_name}}</td>
-        <td>{{row.pseudo_email}}</td>
+        <td>{{row.id}}</td>
+        <td>{{row.name}}</td>
+        <td>{{row.email}}</td>
     </tr>
     {% endfor %}</table>
 <table border = 1>
@@ -49,21 +49,7 @@ body {color: white;}
     </thead>
     {% for row in Course %}
     <tr>
-        <td>{{row.course_id}}</td>
-        <td>{{row.subject}}</td>
-        <td>{{row.course_num}}</td>
-    </tr>
-    {% endfor %}</table>
-<table border = 1>
-    <h3>Course1</h3>
-    <thead>
-    <td>CRN</td>
-    <td>Subj</td>
-    <td>Crse</td>
-    </thead>
-    {% for row in Course1 %}
-    <tr>
-        <td>{{row.course_id}}</td>
+        <td>{{row.id}}</td>
         <td>{{row.subject}}</td>
         <td>{{row.course_num}}</td>
     </tr>
@@ -77,9 +63,9 @@ body {color: white;}
     </thead>
     {% for row in Student %}
     <tr>
-        <td>{{row.student_id}}</td>
-        <td>{{row.student_name}}</td>
-        <td>{{row.student_email}}</td>
+        <td>{{row.id}}</td>
+        <td>{{row.name}}</td>
+        <td>{{row.email}}</td>
     </tr>
     {% endfor %}</table>
 <table border = 5>
@@ -91,7 +77,7 @@ body {color: white;}
     </thead>
     {% for row in SupervisionClass %}
     <tr>
-        <td>{{row.supervision_class_id}}</td>
+        <td>{{row.id}}</td>
         <td>{{row.description}}</td>
         <td>{{row.weight}}</td>
     </tr>
@@ -105,7 +91,7 @@ body {color: white;}
     </thead>
     {% for row in ProjectClass %}
     <tr>
-        <td>{{row.project_class_id}}</td>
+        <td>{{row.id}}</td>
         <td>{{row.description}}</td>
         <td>{{row.weight}}</td>
     </tr>
@@ -121,11 +107,11 @@ body {color: white;}
     </thead>
     {% for row in ProjectSupervision %}
     <tr>
-        <td>{{row.project_supervision_id}}</td>
-        <td>{{row.project_class_id.project_class_id}}</td>
+        <td>{{row.id}}</td>
+        <td>{{row.project_class_id.id}}</td>
         <td>{{row.prof_id.prof_id}}</td>
-        <td>{{row.pseudo_id.pseudo_id}}</td>
-        <td>{{row.semester_id.semester_id}}</td>
+        <td>{{row.pseudo_id.id}}</td>
+        <td>{{row.semester_id.id}}</td>
     </tr>
     {% endfor %}</table>
 <table border = 1>
@@ -139,11 +125,11 @@ body {color: white;}
     </thead>
     {% for row in Supervision %}
     <tr>
-        <td>{{row.supervision_id}}</td>
-        <td>{{row.supervision_class_id.supervision_class_id}}</td>
+        <td>{{row.id}}</td>
+        <td>{{row.supervision_class_id.id}}</td>
         <td>{{row.prof_id.prof_id}}</td>
-        <td>{{row.student_id.student_id}}</td>
-        <td>{{row.semester_id.semester_id}}</td>
+        <td>{{row.student_id.id}}</td>
+        <td>{{row.semester_id.id}}</td>
     </tr>
     {% endfor %}</table>
 <table border = 5>
@@ -156,10 +142,10 @@ body {color: white;}
     </thead>
     {% for row in Adjustment %}
     <tr>
-        <td>{{row.adjustment_id}}</td>
-        <td>{{row.prof_id.prof_id}}</td>
-        <td>{{row.adjustment_weight}}</td>
-        <td>{{row.audit_comment}}</td>
+        <td>{{row.id}}</td>
+        <td>{{row.prof_id.id}}</td>
+        <td>{{row.weight}}</td>
+        <td>{{row.comment}}</td>
     </tr>
     {% endfor %}</table>
 <table border = 1>
@@ -171,7 +157,7 @@ body {color: white;}
     {% for row in RolePerson %}
     <tr>
         <td>{{row.prof_id.prof_id}}</td>
-        <td>{{row.role_id.role_id}}</td>
+        <td>{{row.role.id}}</td>
     </tr>
     {% endfor %}</table>
 <table border = 5>
@@ -186,7 +172,7 @@ body {color: white;}
     </thead>
     {% for row in Role %}
     <tr>
-        <td>{{row.role_id}}</td>
+        <td>{{row.id}}</td>
         <td>{{row.role_name}}</td>
         <td>{{row.view_only_you}}</td>
         <td>{{row.view_only_dept}}</td>
@@ -205,10 +191,10 @@ body {color: white;}
     </thead>
     {% for row in Offering %}
     <tr>
-        <td>{{row.offering_id}}</td>
+        <td>{{row.id}}</td>
         <td>{{row.students_taking}}</td>
         <td>{{row.prof_id.prof_id}}</td>
-        <td>{{row.semester_id.semester_id}}</td>
+        <td>{{row.semester_id.id}}</td>
         <td>{{row.course_gen_id.course_gen_id}}</td>
     </tr>
     {% endfor %}</table>
@@ -221,7 +207,7 @@ body {color: white;}
     </thead>
     {% for row in Term %}
     <tr>
-        <td>{{row.semester_id}}</td>
+        <td>{{row.id}}</td>
         <td>{{row.year}}</td>
         <td>{{row.session}}</td>
     </tr>
@@ -234,41 +220,17 @@ body {color: white;}
     <td>CreditHours</td>
     <td>lecture hours</td>
     <td>comments</td>
-    <td>exclusive</td>
     <td>Labs</td>
+    <td>Year generation</td>
+    <td>Year valid</td>
     <td>Title</td>
+    <td>Old course id</td>
+    <td>Other info</td>
     </thead>
     {% for row in CourseGeneration %}
     <tr>
-        <td>{{row.course_gen_id}}</td>
-        <td>{{row.course_id.course_id}}</td>
-        <td>{{row.credit_hours}}</td>
-        <td>{{row.lecture_hours}}</td>
-        <td>{{row.comments}}</td>
-        <td>{{row.exclusive}}</td>
-        <td>{{row.labs}}</td>
-        <td>{{row.title}}</td>
-    </tr>
-    {% endfor %}</table>
-<table border = 1>
-    <h3>CourseGeneration1</h3>
-    <thead>
-    <td>CourseGenID</td>
-    <td>CRN</td>
-    <td>CreditHours</td>
-    <td>lecture hours</td>
-    <td>comments</td>
-    <td>Labs</td>
-    <td>year_of_valid_generation</td>
-    <td>year_valid_to</td>
-    <td>Title</td>
-    <td>old_course_id</td>
-    <td>other_info</td>
-    </thead>
-    {% for row in CourseGeneration1 %}
-    <tr>
-        <td>{{row.course_gen_id}}</td>
-        <td>{{row.course_id.course_id}}</td>
+        <td>{{row.id}}</td>
+        <td>{{row.course_id.id}}</td>
         <td>{{row.credit_hours}}</td>
         <td>{{row.lecture_hours}}</td>
         <td>{{row.comments}}</td>
