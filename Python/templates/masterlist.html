@@ -1,0 +1,343 @@
+<!doctype html>
+<html>
+<head>
+    <style>
+body {color: white;}
+</style>
+    <title>
+        listMaster
+    </title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+</head>
+<body bgcolor="101111">
+{% extends "home.html" %}
+{% block content %}
+<table border = 1>
+    <h3>Person</h3>
+    <thead>
+    <td>ID</td>
+    <td>Name</td>
+    <td>Email</td>
+    </thead>
+    {% for row in Person %}
+    <tr>
+        <td>{{row.prof_id}}</td>
+        <td>{{row.name}}</td>
+        <td>{{row.email}}</td>
+    </tr>
+    {% endfor %}</table>
+<table border = 5>
+    <h3>PseudoPerson</h3>
+    <thead>
+    <td>PseudoID</td>
+    <td>PName</td>
+    <td>PEmail</td>
+    </thead>
+    {% for row in Pseudo %}
+    <tr>
+        <td>{{row.pseudo_id}}</td>
+        <td>{{row.pseudo_name}}</td>
+        <td>{{row.pseudo_email}}</td>
+    </tr>
+    {% endfor %}</table>
+<table border = 1>
+    <h3>Course</h3>
+    <thead>
+    <td>CRN</td>
+    <td>Subj</td>
+    <td>Crse</td>
+    </thead>
+    {% for row in Course %}
+    <tr>
+        <td>{{row.course_id}}</td>
+        <td>{{row.subject}}</td>
+        <td>{{row.course_num}}</td>
+    </tr>
+    {% endfor %}</table>
+<table border = 1>
+    <h3>Course1</h3>
+    <thead>
+    <td>CRN</td>
+    <td>Subj</td>
+    <td>Crse</td>
+    </thead>
+    {% for row in Course1 %}
+    <tr>
+        <td>{{row.course_id}}</td>
+        <td>{{row.subject}}</td>
+        <td>{{row.course_num}}</td>
+    </tr>
+    {% endfor %}</table>
+<table border = 3>
+    <h3>Student</h3>
+    <thead>
+    <td>StudentID</td>
+    <td>SName</td>
+    <td>SEmail</td>
+    </thead>
+    {% for row in Student %}
+    <tr>
+        <td>{{row.student_id}}</td>
+        <td>{{row.student_name}}</td>
+        <td>{{row.student_email}}</td>
+    </tr>
+    {% endfor %}</table>
+<table border = 5>
+    <h3>SupervisionClass</h3>
+    <thead>
+    <td>SupervisionClassID</td>
+    <td>Description</td>
+    <td>Weight</td>
+    </thead>
+    {% for row in SupervisionClass %}
+    <tr>
+        <td>{{row.supervision_class_id}}</td>
+        <td>{{row.description}}</td>
+        <td>{{row.weight}}</td>
+    </tr>
+    {% endfor %}</table>
+<table border = 1>
+    <h3>ProjectClass</h3>
+    <thead>
+    <td>ProjectClassID</td>
+    <td>Description</td>
+    <td>Weight</td>
+    </thead>
+    {% for row in ProjectClass %}
+    <tr>
+        <td>{{row.project_class_id}}</td>
+        <td>{{row.description}}</td>
+        <td>{{row.weight}}</td>
+    </tr>
+    {% endfor %}</table>
+<table border = 1>
+    <h3>ProjectSupervision</h3>
+    <thead>
+    <td>ProjectSupervisionID</td>
+    <td>ProjectClassID</td>
+    <td>ID</td>
+    <td>PseudoID</td>
+    <td>SemesterID</td>
+    </thead>
+    {% for row in ProjectSupervision %}
+    <tr>
+        <td>{{row.project_supervision_id}}</td>
+        <td>{{row.project_class_id.project_class_id}}</td>
+        <td>{{row.prof_id.prof_id}}</td>
+        <td>{{row.pseudo_id.pseudo_id}}</td>
+        <td>{{row.semester_id.semester_id}}</td>
+    </tr>
+    {% endfor %}</table>
+<table border = 1>
+    <h3>Supervision</h3>
+    <thead>
+    <td>SupervisionID</td>
+    <td>SupervisionClassID</td>
+    <td>ID</td>
+    <td>StudentID</td>
+    <td>SemesterID</td>
+    </thead>
+    {% for row in Supervision %}
+    <tr>
+        <td>{{row.supervision_id}}</td>
+        <td>{{row.supervision_class_id.supervision_class_id}}</td>
+        <td>{{row.prof_id.prof_id}}</td>
+        <td>{{row.student_id.student_id}}</td>
+        <td>{{row.semester_id.semester_id}}</td>
+    </tr>
+    {% endfor %}</table>
+<table border = 5>
+    <h3>Adjustment</h3>
+    <thead>
+    <td>AdjustmentID</td>
+    <td>ID</td>
+    <td>ADJWeight</td>
+    <td>AUDITCOMMENT</td>
+    </thead>
+    {% for row in Adjustment %}
+    <tr>
+        <td>{{row.adjustment_id}}</td>
+        <td>{{row.prof_id.prof_id}}</td>
+        <td>{{row.adjustment_weight}}</td>
+        <td>{{row.audit_comment}}</td>
+    </tr>
+    {% endfor %}</table>
+<table border = 1>
+    <h3>RolePerson</h3>
+    <thead>
+    <td>ID</td>
+    <td>RoleID</td>
+    </thead>
+    {% for row in RolePerson %}
+    <tr>
+        <td>{{row.prof_id.prof_id}}</td>
+        <td>{{row.role_id.role_id}}</td>
+    </tr>
+    {% endfor %}</table>
+<table border = 5>
+    <h3>Role</h3>
+    <thead>
+    <td>RoleID</td>
+    <td>Name</td>
+    <td>ViewOnlyYou</td>
+    <td>ViewOnlyDept</td>
+    <td>ViewOnlyAll</td>
+    <td>EditDept</td>
+    </thead>
+    {% for row in Role %}
+    <tr>
+        <td>{{row.role_id}}</td>
+        <td>{{row.role_name}}</td>
+        <td>{{row.view_only_you}}</td>
+        <td>{{row.view_only_dept}}</td>
+        <td>{{row.view_only_All}}</td>
+        <td>{{row.edit_dept}}</td>
+    </tr>
+    {% endfor %}</table>
+<table border = 1>
+    <h3>Offering</h3>
+    <thead>
+    <td>OID</td>
+    <td>StudentsTaking</td>
+    <td>ID</td>
+    <td>SemesterID</td>
+    <td>CourseGenID</td>
+    </thead>
+    {% for row in Offering %}
+    <tr>
+        <td>{{row.offering_id}}</td>
+        <td>{{row.students_taking}}</td>
+        <td>{{row.prof_id.prof_id}}</td>
+        <td>{{row.semester_id.semester_id}}</td>
+        <td>{{row.course_gen_id.course_gen_id}}</td>
+    </tr>
+    {% endfor %}</table>
+<table border = 5>
+    <h3>Term</h3>
+    <thead>
+    <td>SemesterID</td>
+    <td>Year</td>
+    <td>Session</td>
+    </thead>
+    {% for row in Term %}
+    <tr>
+        <td>{{row.semester_id}}</td>
+        <td>{{row.year}}</td>
+        <td>{{row.session}}</td>
+    </tr>
+    {% endfor %}</table>
+<table border = 1>
+    <h3>CourseGeneration</h3>
+    <thead>
+    <td>CourseGenID</td>
+    <td>CRN</td>
+    <td>CreditHours</td>
+    <td>lecture hours</td>
+    <td>comments</td>
+    <td>exclusive</td>
+    <td>Labs</td>
+    <td>Title</td>
+    </thead>
+    {% for row in CourseGeneration %}
+    <tr>
+        <td>{{row.course_gen_id}}</td>
+        <td>{{row.course_id.course_id}}</td>
+        <td>{{row.credit_hours}}</td>
+        <td>{{row.lecture_hours}}</td>
+        <td>{{row.comments}}</td>
+        <td>{{row.exclusive}}</td>
+        <td>{{row.labs}}</td>
+        <td>{{row.title}}</td>
+    </tr>
+    {% endfor %}</table>
+<table border = 1>
+    <h3>CourseGeneration1</h3>
+    <thead>
+    <td>CourseGenID</td>
+    <td>CRN</td>
+    <td>CreditHours</td>
+    <td>lecture hours</td>
+    <td>comments</td>
+    <td>Labs</td>
+    <td>year_of_valid_generation</td>
+    <td>year_valid_to</td>
+    <td>Title</td>
+    <td>old_course_id</td>
+    <td>other_info</td>
+    </thead>
+    {% for row in CourseGeneration1 %}
+    <tr>
+        <td>{{row.course_gen_id}}</td>
+        <td>{{row.course_id.course_id}}</td>
+        <td>{{row.credit_hours}}</td>
+        <td>{{row.lecture_hours}}</td>
+        <td>{{row.comments}}</td>
+        <td>{{row.labs}}</td>
+        <td>{{row.year_of_valid_generation}}</td>
+        <td>{{row.year_valid_to}}</td>
+        <td>{{row.title}}</td>
+        <td>{{row.old_course_id}}</td>
+        <td>{{row.other_info}}</td>
+    </tr>
+    {% endfor %}</table>
+<form action = "{{ url_for('listm') }}" method = "POST">
+    <h3>CourseGen</h3>
+    Labs<br>
+    <input type = "text" name = "Labs" /><br>
+    Credit<br>
+    <input type = "text" name = "Credit" /><br>
+    Title<br>
+    <input type = "text" name = "Title" /><br>
+    CRN<br>
+    <input type = "text" name = "CRN" /><br>
+    <input type = "submit" name="subm1" value = "submit1" /><br>
+</form>
+<form action = "{{ url_for('listm') }}" method = "POST">
+    <h3>Offering</h3>
+    StudentTaking#<br>
+    <input type = "text" name = "stu" /><br>
+    ID<br>
+    <input type = "text" name = "ID1" /><br>
+    SemesterID<br>
+    <input type = "text" name = "SemesterID1" /><br>
+    CourseGenID<br>
+    <input type = "text" name = "CourseGenID" /><br>
+    <input type = "submit" name="subm1" value = "submit2" /><br>
+</form>
+<form action = "{{ url_for('listm') }}" method = "POST">
+    <h3>Supervision</h3>
+    ID<br>
+    <input type = "text" name = "ID2" /><br>
+    StudentID<br>
+    <input type = "text" name = "StudentID" /><br>
+    SupervisionClassID<br>
+    <input type = "text" name = "SupervisionClassID" /><br>
+    SemesterID<br>
+    <input type = "text" name = "SemesterID2" /><br>
+    <input type = "submit" name="subm1" value = "submit3" /><br>
+</form>
+<form action = "{{ url_for('listm') }}" method = "POST">
+    <h3>ProjectSupervision</h3>
+    ID<br>
+    <input type = "text" name = "ID3" /><br>
+    PseudoID<br>
+    <input type = "text" name = "PseudoID" /><br>
+    ProjectClassID<br>
+    <input type = "text" name = "ProjectClassID" /><br>
+    SemesterID<br>
+    <input type = "submit" name="subm1" value = "submit4" /><br>
+</form>
+<form action = "{{ url_for('listm') }}" method = "POST">
+    <h3>Adjustment</h3>
+    ID<br>
+    <input type = "text" name = "ID4" /><br>
+    ADJWeight<br>
+    <input type = "text" name = "ADJWeight" /><br>
+    NOT WORKING  COMMENTED OUT IN PeeweeClass AUDITDATE<br>
+    AUDITCOMMENT<br>
+    <input type = "text" name = "AUDITCOMMENT" /><br>
+    <input type = "submit" name="subm1" value = "submit5" /><br>
+   </form>
+{% endblock %}
+</body>
+</html>
