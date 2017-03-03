@@ -259,9 +259,11 @@ body {color: white;}
     <td>lecture hours</td>
     <td>comments</td>
     <td>Labs</td>
-    <td>useable</td>
+    <td>year_of_valid_generation</td>
+    <td>year_valid_to</td>
     <td>Title</td>
     <td>old_course_id</td>
+    <td>other_info</td>
     </thead>
     {% for row in CourseGeneration1 %}
     <tr>
@@ -271,9 +273,11 @@ body {color: white;}
         <td>{{row.lecture_hours}}</td>
         <td>{{row.comments}}</td>
         <td>{{row.labs}}</td>
-        <td>{{row.useable}}</td>
+        <td>{{row.year_of_valid_generation}}</td>
+        <td>{{row.year_valid_to}}</td>
         <td>{{row.title}}</td>
         <td>{{row.old_course_id}}</td>
+        <td>{{row.other_info}}</td>
     </tr>
     {% endfor %}</table>
 <form action = "{{ url_for('listm') }}" method = "POST">

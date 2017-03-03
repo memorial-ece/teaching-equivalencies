@@ -1,10 +1,23 @@
-from bs4 import BeautifulSoup
+# Copyright 2017 Keegan Joseph Brophy
+#
+#    Licensed under the Apache License, Version 2.0 (the "License");
+#    you may not use this file except in compliance with the License.
+#    You may obtain a copy of the License at
+#
+#        http://www.apache.org/licenses/LICENSE-2.0
+#
+#    Unless required by applicable law or agreed to in writing, software
+#    distributed under the License is distributed on an "AS IS" BASIS,
+#    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#    See the License for the specific language governing permissions and
+#    limitations under the License.
+
 import re
+from bs4 import BeautifulSoup
 
 course_number = re.compile('[0-9W]{4} [A-Z][a-z]+')
 numeric = re.compile('^[0-9]+$')
 special_topics = re.compile('[0-9]{4}-[0-9]{4} [A-Z][a-z]+')
-
 
 
 def parse_prerequisites(s, prefix):
@@ -17,15 +30,15 @@ def parse_prerequisites(s, prefix):
 			if y.startswith('permission of'):
 				continue
 
-			prereqs += [ prefix + ' ' + y if numeric.match(y) else y ]
+			prereqs += [prefix + ' ' + y if numeric.match(y) else y]
 
 	return prereqs
 
 
-_ = lambda x, _ : x
+_ = lambda x, _: x
 codes = {
 	'AR': ('attendance', _, _),
-	'CH': ('credit-hours', lambda x, _ : int(x), _),
+	'CH': ('credit-hours', lambda x, _: int(x), _),
 	'CO': ('co-requisite', _, _),
 	'CR': ('exclusive with', _, _),
 	'LC': ('lecture hours', _, _),
@@ -36,17 +49,17 @@ codes = {
 }
 
 
-def parseHTML(calfile, prefix = 'ENGI'):
+def parseHTML(calfile, prefix='ENGI'):
 	courses = {}
 	soup = BeautifulSoup(calfile, 'html.parser')
-	for block in soup.find_all(class_ = 'CourseBlock'):
-		for c in block.find_all(class_ = 'course'):
-			number = c.find(class_ = 'courseNumber').string.strip()
+	for block in soup.find_all(class_='CourseBlock'):
+		for c in block.find_all(class_='course'):
+			number = c.find(class_='courseNumber').string.strip()
 			name = '%s %s' % (prefix, number)
-			title = c.find(class_ = 'courseTitle').string.strip()
+			title = c.find(class_='courseTitle').string.strip()
 			description = ''.join([
 				d.string.strip()
-					for d in c.find(class_ = 'courseDesc').p
+					for d in c.find(class_='courseDesc').p
 					if d.string is not None
 			])
 			if 'inactive course' in description:
@@ -60,7 +73,7 @@ def parseHTML(calfile, prefix = 'ENGI'):
 				'title': title,
 			}
 			courses[name] = course
-			for attr in c.find_all(class_ = 'courseAttrs'):
+			for attr in c.find_all(class_='courseAttrs'):
 				content = ' '.join([
 					a.string.strip()
 						for a in attr
@@ -70,11 +83,12 @@ def parseHTML(calfile, prefix = 'ENGI'):
 				key = parts[0]
 				value = parts[-1].strip()
 
-				(name,parse,reformat) = codes[key]
+				(name, parse, reformat) = codes[key]
 				course[name] = parse(value, prefix)
 	return courses
 
-def parseText(calfile, prefix = 'ENGI'):
+
+def parseText(calfile, prefix='ENGI'):
 	courses = {}
 	for line in calfile:
 		line = line.strip()
@@ -97,15 +111,16 @@ def parseText(calfile, prefix = 'ENGI'):
 				raise ValueError("expected 'key: val', got '%s'" % line)
 			key = parts[0]
 			value = parts[-1].strip()
-			(name,parse,reformat) = codes[key]
+			(name, parse, reformat) = codes[key]
 			course[name] = parse(value, prefix)
 	return courses
 
+
 def format(courses, output):
-	for course in sorted(courses.values(), key = lambda c : c['number']):
+	for course in sorted(courses.values(), key=lambda c: c['number']):
 		output.write('%d %s\n' % (course['number'], course['description']))
 
-		for (code, (name,parse,reformat)) in sorted(codes.items()):
+		for (code, (name, parse, reformat)) in sorted(codes.items()):
 			if name in course:
 				output.write('\t%s: %s\n' % (code, reformat(course[name])))
 

@@ -1,10 +1,27 @@
-from Class import *
+# Copyright 2017 Keegan Joseph Brophy
+#
+#    Licensed under the Apache License, Version 2.0 (the "License");
+#    you may not use this file except in compliance with the License.
+#    You may obtain a copy of the License at
+#
+#        http://www.apache.org/licenses/LICENSE-2.0
+#
+#    Unless required by applicable law or agreed to in writing, software
+#    distributed under the License is distributed on an "AS IS" BASIS,
+#    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#    See the License for the specific language governing permissions and
+#    limitations under the License.
+
 import random
+
+from Class import *
+
+
 def Gen2():
 	random.seed(a=2)
 	count = 0
 	for x in range(1, 9):
-		while (True):
+		while True:
 			count += 1
 			WORDS = open('words').readlines()
 			ranlist = range(1, 2)
@@ -26,7 +43,7 @@ def Gen2():
 				break
 			elif 4 > count > 2:
 				person = Person.create(email=Emale, name=word)
-			elif 2> count > 0:
+			elif 2 > count > 0:
 				pseudoPeople = PseudoPeople.create(pseudo_email=Emale, pseudo_name=word)
 			elif 6 > count > 4:
 				course = Course.create(subject=Subj, course_num=Crse)
@@ -40,11 +57,13 @@ def Gen2():
 				role = Role.create(role_name=word, view_only_you=ab, view_only_dept=bb, view_only_All=cb, edit_dept=db)
 			elif 28 > count > 26:
 				student = Student.create(student_name=word, student_email=Emale)
+
+
 def Gen1():
 	random.seed(a=2)
 	print x
 	count = 0
-	while (count!=131):
+	while count != 131:
 		print count
 		count += 1
 		WORDS = open('words').readlines()
@@ -58,7 +77,7 @@ def Gen1():
 		cb = random.choice([True, False])
 		d = random.uniform(1, 12)
 		e = random.uniform(1, 200)
-		ab = random.choice([True,False])
+		ab = random.choice([True, False])
 		bb = random.choice([True, False])
 		db = random.choice([True, False])
 		word = random.choice(WORDS)
@@ -76,7 +95,7 @@ def Gen1():
 		elif 30 > count > 20:
 			course = Course.create(subject=Subj, course_num=Crse)
 		elif 40 > count > 30:
-			supervisionClass = SupervisionClass.create(description=word, weight=a )
+			supervisionClass = SupervisionClass.create(description=word, weight=a)
 		elif 50 > count > 40:
 			projectClass = ProjectClass.create(weight=a, description=word)
 		elif 60 > count > 50:
@@ -95,17 +114,19 @@ def Gen1():
 														   semester_id=ransam5)
 		elif 120 > count > 110:
 			student = Student.create(student_name=word, student_email=Emale)
-		elif 130>count>120:
-			rolePerson= RolePerson.create(prof_id=ransam1, role_id=ransam2)
+		elif 130 > count > 120:
+			rolePerson = RolePerson.create(prof_id=ransam1, role_id=ransam2)
+
+
 def Gen3():
-	year=1970
-	term1=0
+	year = 1970
+	term1 = 0
 	count = 0
-	while (True):
-		term1 +=1
+	while True:
+		term1 += 1
 		term = Term.create(year=year, session=term1)
-		if term1==5:
-			term1=0
-			year +=1
-		if year==2020:
+		if term1 == 5:
+			term1 = 0
+			year += 1
+		if year == 2020:
 			break

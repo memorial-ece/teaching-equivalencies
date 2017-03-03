@@ -1,14 +1,27 @@
-from flask import *
-import os
-from Exporter import *
-from Importer import *
-from werkzeug.utils import *
+# Copyright 2017 Keegan Joseph Brophy
+#
+#    Licensed under the Apache License, Version 2.0 (the "License");
+#    you may not use this file except in compliance with the License.
+#    You may obtain a copy of the License at
+#
+#        http://www.apache.org/licenses/LICENSE-2.0
+#
+#    Unless required by applicable law or agreed to in writing, software
+#    distributed under the License is distributed on an "AS IS" BASIS,
+#    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#    See the License for the specific language governing permissions and
+#    limitations under the License.
 import datetime
 import re
 import sys
+
+from flask import *
+from werkzeug.utils import *
+from Exporter import *
+from Importer import *
+
 reload(sys)
 sys.setdefaultencoding('utf-8')
-
 
 course_number = re.compile('[0-9W]{4} [A-Z][a-z]+')
 numeric = re.compile('^[0-9]+$')
@@ -17,20 +30,19 @@ app = Flask(__name__)
 DATABASE = 'database.db'
 db = SqliteDatabase(DATABASE)
 UPLOAD_FOLDER = ''
-ALLOWED_EXTENSIONS = set(['csv'])
+ALLOWED_EXTENSIONS = {'csv'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
 
 
 @app.route('/favicon.ico')
 def favicon():
 	return send_from_directory(os.path.join(app.root_path, 'static'),
-								'favicon.ico', mimetype='image/vnd.microsoft.icon')
+							   'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 
 def allowed_file(filename):
 	return '.' in filename and \
-		filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+		   filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 @app.route('/upload', methods=['GET', 'POST'])
@@ -72,7 +84,7 @@ def upload():
 	return render_template('upload.html')
 
 
-@app.route("/export",  methods=['GET', 'POST'])
+@app.route("/export", methods=['GET', 'POST'])
 def docustomexport():
 	if request.method == 'POST':
 		selector = request.form.get('Select')
@@ -160,27 +172,27 @@ def docustomimport_():
 def Profilehist(prof_id):
 	person = Person.get(Person.prof_id == prof_id)
 	supervision = (Supervision
-					.select()
-					.join(Person)
-					.where(Person.prof_id == prof_id)
-					.order_by(Supervision.semester_id.desc()))
+				   .select()
+				   .join(Person)
+				   .where(Person.prof_id == prof_id)
+				   .order_by(Supervision.semester_id.desc()))
 	projectsupervision = (ProjectSupervision
-					.select()
-					.join(Person)
-					.where(Person.prof_id == prof_id)
-					.order_by(ProjectSupervision.semester_id.desc()))
+						  .select()
+						  .join(Person)
+						  .where(Person.prof_id == prof_id)
+						  .order_by(ProjectSupervision.semester_id.desc()))
 	offering = (Offering
-					.select()
-					.join(Person)
-					.where(Person.prof_id == prof_id)
-					.order_by(Offering.semester_id.desc()))
-	adjustment=(Adjustment
-					.select()
-					.join(Person)
-					.where(Person.prof_id == prof_id)
-					.order_by(Adjustment.adjustment_id.desc()))
+				.select()
+				.join(Person)
+				.where(Person.prof_id == prof_id)
+				.order_by(Offering.semester_id.desc()))
+	adjustment = (Adjustment
+				  .select()
+				  .join(Person)
+				  .where(Person.prof_id == prof_id)
+				  .order_by(Adjustment.adjustment_id.desc()))
 	return render_template("profilehist.html", person=person, supervision=supervision,
-							projectsupervision=projectsupervision, offering=offering, adjustment=adjustment)
+						   projectsupervision=projectsupervision, offering=offering, adjustment=adjustment)
 
 
 @app.route("/profile/<prof_id>")
@@ -189,55 +201,55 @@ def Profile(prof_id):
 	year1 = now.year
 	person = Person.get(Person.prof_id == prof_id)
 	supervision = (Supervision.select()
-					.join(Person, on=(Supervision.prof_id == Person.prof_id))
-					.join(Term, on=(Supervision.semester_id == Term.semester_id))
-					.where(Person.prof_id == prof_id, Term.year == year1)
-					.order_by(Supervision.supervision_class_id.desc()))
-	projectsupervision  = (ProjectSupervision
-					.select()
-					.join(Person, on=(ProjectSupervision.prof_id == Person.prof_id))
-					.join(Term, on=(ProjectSupervision.semester_id == Term.semester_id))
-					.where(Person.prof_id == prof_id, Term.year == year1)
-					.order_by(ProjectSupervision.project_supervision_id.desc()))
+				   .join(Person, on=(Supervision.prof_id == Person.prof_id))
+				   .join(Term, on=(Supervision.semester_id == Term.semester_id))
+				   .where(Person.prof_id == prof_id, Term.year == year1)
+				   .order_by(Supervision.supervision_class_id.desc()))
+	projectsupervision = (ProjectSupervision
+						  .select()
+						  .join(Person, on=(ProjectSupervision.prof_id == Person.prof_id))
+						  .join(Term, on=(ProjectSupervision.semester_id == Term.semester_id))
+						  .where(Person.prof_id == prof_id, Term.year == year1)
+						  .order_by(ProjectSupervision.project_supervision_id.desc()))
 	offering = (Offering
-					.select()
-					.join(Person, on=(Offering.prof_id == Person.prof_id))
-					.join(Term, on=(Offering.semester_id == Term.semester_id))
-					.where(Person.prof_id == prof_id, Term.year == year1)
-					.order_by(Offering.offering_id.desc()))
+				.select()
+				.join(Person, on=(Offering.prof_id == Person.prof_id))
+				.join(Term, on=(Offering.semester_id == Term.semester_id))
+				.where(Person.prof_id == prof_id, Term.year == year1)
+				.order_by(Offering.offering_id.desc()))
 	adjustment = (Adjustment
-					.select()
-					.join(Person)
-					.where(Person.prof_id == prof_id)
-					.order_by(Adjustment.adjustment_id.desc()))
-	Stotal  = (Supervision
-					.select()
-					.where(Supervision.prof_id == prof_id)
-					.join(SupervisionClass)
-					.select(fn.SUM(SupervisionClass.weight))
-					.scalar())
+				  .select()
+				  .join(Person)
+				  .where(Person.prof_id == prof_id)
+				  .order_by(Adjustment.adjustment_id.desc()))
+	Stotal = (Supervision
+			  .select()
+			  .where(Supervision.prof_id == prof_id)
+			  .join(SupervisionClass)
+			  .select(fn.SUM(SupervisionClass.weight))
+			  .scalar())
 	Atotal = (Person
-					.select()
-					.where(Person.prof_id == prof_id)
-					.join(Adjustment)
-					.select(fn.SUM(Adjustment.adjustment_weight))
-					.scalar())
+			  .select()
+			  .where(Person.prof_id == prof_id)
+			  .join(Adjustment)
+			  .select(fn.SUM(Adjustment.adjustment_weight))
+			  .scalar())
 	Ptotal = (ProjectSupervision
-					.select()
-					.where(ProjectSupervision.prof_id == prof_id)
-					.join(ProjectClass)
-					.select(fn.SUM(ProjectClass.weight))
-					.scalar())
-	if Atotal==None:
+			  .select()
+			  .where(ProjectSupervision.prof_id == prof_id)
+			  .join(ProjectClass)
+			  .select(fn.SUM(ProjectClass.weight))
+			  .scalar())
+	if Atotal is None:
 		Atotal = 0
-	if Stotal==None:
+	if Stotal is None:
 		Stotal = 0
-	if Ptotal==None:
+	if Ptotal is None:
 		Ptotal = 0
 	return render_template("profile.html", person=person, supervision=supervision,
-								projectsupervision=projectsupervision, offering=offering,
-								adjustment=adjustment, Ptotal=Ptotal,
-								Stotal=Stotal, Atotal=Atotal)
+						   projectsupervision=projectsupervision, offering=offering,
+						   adjustment=adjustment, Ptotal=Ptotal,
+						   Stotal=Stotal, Atotal=Atotal)
 
 
 @app.route('/populate', methods=["GET", "POST"])
@@ -270,23 +282,25 @@ def listm():
 			superclass = request.form['SupervisionClassID']
 			semesterID2 = request.form['SemesterID2']
 			iD2 = request.form['ID2']
-			Supervision.create(prof_id=iD2, student_id=sID, supervision_class_id=superclass,semester_id=semesterID2)
+			Supervision.create(prof_id=iD2, student_id=sID, supervision_class_id=superclass, semester_id=semesterID2)
 		elif request.form['subm1'] == "submit4":
 			iD3 = request.form['ID3']
 			semesterID3 = request.form['SemesterID3']
 			pseudoID = request.form['PseudoID']
 			projectClassID = request.form['ProjectClassID']
-			ProjectSupervision.create(prof_id=iD3, pseudo_id=pseudoID, project_class_id=projectClassID,semester_id=semesterID3)
-		elif request.form['subm1']== "submit5":
+			ProjectSupervision.create(prof_id=iD3, pseudo_id=pseudoID, project_class_id=projectClassID,
+									  semester_id=semesterID3)
+		elif request.form['subm1'] == "submit5":
 			iD4 = request.form['ID4']
 			ADJWeight = request.form['ADJWeight']
 			AUDITCOMMENT = request.form['AUDITCOMMENT']
-			Adjustment.create(prof_id=iD4, adjustment_weight=ADJWeight,audit_comment=AUDITCOMMENT)
-	return render_template("masterlist.html", Person= Person, Pseudo=PseudoPeople, Course=Course,
-							SupervisionClass=SupervisionClass, ProjectClass=ProjectClass,
-							ProjectSupervision=ProjectSupervision, Supervision=Supervision, Adjustment=Adjustment,
-							RolePerson=RolePerson, Role=Role, Term=Term, Offering=Offering,
-							CourseGeneration=CourseGeneration, Student=Student,CourseGeneration1=CourseGeneration1, Course1=Course1)
+			Adjustment.create(prof_id=iD4, adjustment_weight=ADJWeight, audit_comment=AUDITCOMMENT)
+	return render_template("masterlist.html", Person=Person, Pseudo=PseudoPeople, Course=Course,
+						   SupervisionClass=SupervisionClass, ProjectClass=ProjectClass,
+						   ProjectSupervision=ProjectSupervision, Supervision=Supervision, Adjustment=Adjustment,
+						   RolePerson=RolePerson, Role=Role, Term=Term, Offering=Offering,
+						   CourseGeneration=CourseGeneration, Student=Student, CourseGeneration1=CourseGeneration1,
+						   Course1=Course1)
 
 
 @app.route('/Dashboard')
@@ -302,23 +316,27 @@ def peeweetable():
 		if request.form['Full'] == 'Drop and ReCreate':
 			db.connect()
 			db.drop_tables(
-			[Person, Course, CourseGeneration, Term, Offering, Role, RolePerson, ProjectSupervision, ProjectClass,
-			 Supervision, SupervisionClass, PseudoPeople, Student, Adjustment,Course1, CourseGeneration1],safe=True)
+				[Person, Course, CourseGeneration, Term, Offering, Role, RolePerson, ProjectSupervision, ProjectClass,
+				 Supervision, SupervisionClass, PseudoPeople, Student, Adjustment, Course1, CourseGeneration1],
+				safe=True)
 			db.create_tables(
-			[Person, Course, CourseGeneration, Term, Offering, Role, RolePerson, ProjectSupervision, ProjectClass,
-			 Supervision, SupervisionClass, PseudoPeople, Student, Adjustment,Course1, CourseGeneration1],safe=True)
+				[Person, Course, CourseGeneration, Term, Offering, Role, RolePerson, ProjectSupervision, ProjectClass,
+				 Supervision, SupervisionClass, PseudoPeople, Student, Adjustment, Course1, CourseGeneration1],
+				safe=True)
 			db.close()
 		elif request.form['Full'] == 'Create':
 			db.connect()
 			db.create_tables(
 				[Person, Course, CourseGeneration, Term, Offering, Role, RolePerson, ProjectSupervision, ProjectClass,
-				 Supervision, SupervisionClass, PseudoPeople, Student, Adjustment,Course1, CourseGeneration1],safe=True)
+				 Supervision, SupervisionClass, PseudoPeople, Student, Adjustment, Course1, CourseGeneration1],
+				safe=True)
 			db.close()
 		elif request.form['Full'] == 'Drop':
 			db.connect()
 			db.drop_tables(
 				[Person, Course, CourseGeneration, Term, Offering, Role, RolePerson, ProjectSupervision, ProjectClass,
-				 Supervision, SupervisionClass, PseudoPeople, Student, Adjustment, Course1, CourseGeneration1],safe=True)
+				 Supervision, SupervisionClass, PseudoPeople, Student, Adjustment, Course1, CourseGeneration1],
+				safe=True)
 			db.close()
 	return render_template('reset.html')
 
