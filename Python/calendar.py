@@ -66,6 +66,10 @@ def parseHTML(calfile):
 			prefix='BUSI'
 		if subj[2]=='Engineering ':
 			prefix='ENGI'
+		if subj[2]=='Human ':
+			prefix='HKR '
+		if subj[2]=='Education  ':
+			prefix='ED  '
 	except:
 		pass
 

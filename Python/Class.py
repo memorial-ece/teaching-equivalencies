@@ -68,11 +68,11 @@ class Offering(Model):
 
 class Role(Model):
 	id = IntegerField(primary_key=True)
-	role_name = TextField()
-	view_you = BooleanField()
-	view_dept = BooleanField()
-	view_All = BooleanField()
-	edit_dept = BooleanField()
+	role_name = TextField(null=False)
+	view_you = BooleanField(null=False)
+	view_dept = BooleanField(null=False)
+	view_All = BooleanField(null=False)
+	edit_dept = BooleanField(null=False)
 # These fields are meant to represent the class of the user and information they have access too, dept is short for department.
 
 
