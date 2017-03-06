@@ -1,97 +1,124 @@
+# Copyright 2017 Keegan Joseph Brophy
+#
+#    Licensed under the Apache License, Version 2.0 (the "License");
+#    you may not use this file except in compliance with the License.
+#    You may obtain a copy of the License at
+#
+#        http://www.apache.org/licenses/LICENSE-2.0
+#
+#    Unless required by applicable law or agreed to in writing, software
+#    distributed under the License is distributed on an "AS IS" BASIS,
+#    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#    See the License for the specific language governing permissions and
+#    limitations under the License.
+
 from peewee import *
 
 
 class Person(Model):
-	name = TextField()
+	name = TextField(null=False)
 	email = TextField()
-	prof_id = IntegerField(unique=True, primary_key=True, null=False)
+	id = IntegerField(primary_key=True)
+# A person in this database is a teaching professional
 
 
 class Course(Model):
-	course_id = IntegerField(unique=True, primary_key=True, null=False)
+	id = IntegerField(primary_key=True)
 	subject = TextField()
-	course_num = CharField(4)
+	code = CharField(4, unique=True)
 
 
 class CourseGeneration(Model):
-	course_gen_id = IntegerField(unique=True, primary_key=True, null=False)
-	labs = IntegerField()
-	credit_hours = IntegerField()
-	title = TextField()
-	course_id = ForeignKeyField(Course, related_name='course_gen')
+	id = IntegerField(primary_key=True)
+	labs = TextField(null=True)
+	credit_hours = TextField(null=True)
+	lecture_hours = TextField(null=True)
+	title = TextField(null=True)
+	comments = TextField(null=True)
+	course_id = ForeignKeyField(Course, related_name='course_gen', null=True)
+	other_info = TextField(null=True)
+	old_course_id = TextField(null=True)
+	year_of_valid_generation = TextField(null=False)
+	year_valid_to = TextField(null=False)
+# other_info, and old_course_id maybe inconsistent but that is because of the ripping process turned up the reported results.
 
 
 class Student(Model):
-	student_id = IntegerField(primary_key=True, unique=True, null=False)
-	student_name = TextField()
-	student_email = TextField()
+	id = IntegerField(primary_key=True)
+	name = TextField()
+	email = TextField()
+# A student is typically a non-undergrad student
 
 
 class Term(Model):
-	semester_id = IntegerField(unique=True, primary_key=True, null=False)
+	id = IntegerField(primary_key=True)
 	year = DateField()
 	session = IntegerField()
+# session refers to the fall winter and spring sessions, these are respectively represented by the numbers 1,2, and 3
 
 
 class Offering(Model):
-	offering_id = IntegerField(unique=True, primary_key=True, null=False, )
-	students_taking = IntegerField()
-	id = ForeignKeyField(Person, related_name='taking')
+	id = IntegerField(primary_key=True)
+	enrolment = IntegerField()
+	prof_id = ForeignKeyField(Person, related_name='instructor')
 	semester_id = ForeignKeyField(Term, related_name='offering')
 	course_gen_id = ForeignKeyField(CourseGeneration, related_name='offerings')
+# Display the current courses on offering during the current session
 
 
 class Role(Model):
-	role_id = IntegerField(primary_key=True, unique=True, null=False)
+	id = IntegerField(primary_key=True)
 	role_name = TextField()
-	view_only_you = BooleanField()
-	view_only_dept = BooleanField()
-	view_only_All = BooleanField()
+	view_you = BooleanField()
+	view_dept = BooleanField()
+	view_All = BooleanField()
 	edit_dept = BooleanField()
+# These fields are meant to represent the class of the user and information they have access too, dept is short for department.
 
 
 class SupervisionClass(Model):
-	supervision_class_id = IntegerField(primary_key=True, unique=True, null=False)
-	description = TextField()
-	weight = FloatField()
+	id = IntegerField(primary_key=True)
+	description = TextField(null=False)
+	weight = FloatField(null=False)
+# Supervising students
 
 
 class ProjectClass(Model):
-	project_class_id = IntegerField(primary_key=True, unique=True, null=False)
-	description = TextField()
-	weight = FloatField()
+	id = IntegerField(primary_key=True)
+	description = TextField(null=False)
+	weight = FloatField(null=False)
+# Supervising projects
 
-
-class PseudoPeople(Model):
-	pseudo_id = IntegerField(primary_key=True, unique=True, null=False)
-	pseudo_name = TextField()
-	pseudo_email = TextField()
+class ProjectTeam(Model):
+	id = IntegerField(primary_key=True)
+	name = TextField()
+	email = TextField()
 
 
 class RolePerson(Model):
-	id = ForeignKeyField(Person, related_name='people_roles')
-	role_id = ForeignKeyField(Role, related_name='roles_ofpeople')
+	prof = ForeignKeyField(Person, related_name='perosn_id')
+	role = ForeignKeyField(Role, related_name='role_id')
+# A way to tie multiple people to different roles.
 
 
 class ProjectSupervision(Model):
-	project_supervision_id = IntegerField(primary_key=True, unique=True, null=False)
+	id = IntegerField(primary_key=True)
 	prof_id = ForeignKeyField(Person, related_name='supervisied_projects')
-	pseudo_id = ForeignKeyField(PseudoPeople, related_name='projects')
+	pseudo_id = ForeignKeyField(ProjectTeam, related_name='projects')
 	project_class_id = ForeignKeyField(ProjectClass, related_name='projects')
 	semester_id = ForeignKeyField(Term, related_name='projects')
 
 
 class Supervision(Model):
-	supervision_id = IntegerField(primary_key=True, unique=True, null=False)
+	id = IntegerField(primary_key=True)
 	prof_id = ForeignKeyField(Person, related_name='supervised_people')
-	student_id = ForeignKeyField(Student, related_name='supered')
-	supervision_class_id = ForeignKeyField(SupervisionClass, related_name='supered')
-	semester_id = ForeignKeyField(Term, related_name='supered')
+	student_id = ForeignKeyField(Student, related_name='supervisions')
+	supervision_class_id = ForeignKeyField(SupervisionClass, related_name='supervisions')
+	semester_id = ForeignKeyField(Term, related_name='supervisions')
 
 
 class Adjustment(Model):
-	adjustment_id = IntegerField(primary_key=True, unique=True, null=False)
+	id = IntegerField(primary_key=True)
 	adjustment_weight = FloatField()
-	# AUDITDATE = DateTimeField()
-	audit_comment = TextField()
+	comment = TextField()
 	prof_id = ForeignKeyField(Person, related_name='made_change')

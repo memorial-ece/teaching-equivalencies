@@ -1,4 +1,19 @@
+# Copyright 2017 Keegan Joseph Brophy
+#
+#    Licensed under the Apache License, Version 2.0 (the "License");
+#    you may not use this file except in compliance with the License.
+#    You may obtain a copy of the License at
+#
+#        http://www.apache.org/licenses/LICENSE-2.0
+#
+#    Unless required by applicable law or agreed to in writing, software
+#    distributed under the License is distributed on an "AS IS" BASIS,
+#    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#    See the License for the specific language governing permissions and
+#    limitations under the License.
+
 from playhouse.csv_loader import *
+
 from Class import *
 
 
@@ -9,14 +24,14 @@ def export_profile():
 
 
 def export_supervision():
-	with open('tableSupervision.csv', 'w') as fh:
+	with open('table_Supervision.csv', 'w') as fh:
 		query = Supervision.select().order_by(Supervision.supervision_id)
 		dump_csv(query, fh)
 
 
 def export_supervision_class():
 	with open('table_SupervisionClass.csv', 'w') as fh:
-		query = Supervision_Class.select().order_by(Supervision_Class.supervision_class_id)
+		query = SupervisionClass.select().order_by(SupervisionClass.supervision_class_id)
 		dump_csv(query, fh)
 
 
@@ -28,7 +43,7 @@ def export_course():
 
 def export_course_generation():
 	with open('table_CourseGeneration.csv', 'w') as fh:
-		query = Course_Generation.select().order_by(Course_Generation.course_gen_id)
+		query = CourseGeneration.select().order_by(CourseGeneration.course_gen_id)
 		dump_csv(query, fh)
 
 
@@ -58,25 +73,25 @@ def export_role():
 
 def export_project_class():
 	with open('table_ProjectClass.csv', 'w') as fh:
-		query = Project_Class.select().order_by(Project_Class.project_class_id)
+		query = ProjectClass.select().order_by(ProjectClass.project_class_id)
 		dump_csv(query, fh)
 
 
 def export_pseudo_people():
 	with open('table_PseudoPeople.csv', 'w') as fh:
-		query = Pseudo_People.select().order_by(Pseudo_People.pseudo_id)
+		query = ProjectTeam.select().order_by(ProjectTeam.pseudo_id)
 		dump_csv(query, fh)
 
 
 def export_role_person():
 	with open('table_RolePerson.csv', 'w') as fh:
-		query = Role_Person.select().order_by(Role_Person.role_id)
+		query = RolePerson.select().order_by(RolePerson.role_id)
 		dump_csv(query, fh)
 
 
 def export_project_supervision():
 	with open('table_ProjectSupervision.csv', 'w') as fh:
-		query = Project_Supervision.select().order_by(Project_Supervision.project_supervision_id)
+		query = ProjectSupervision.select().order_by(ProjectSupervision.project_supervision_id)
 		dump_csv(query, fh)
 
 
