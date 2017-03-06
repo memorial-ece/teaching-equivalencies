@@ -170,26 +170,26 @@ def docustomimport_():
 
 @app.route("/profile/<prof_id>/history")
 def Profilehist(prof_id):
-	person = Person.get(Person.prof_id == prof_id)
+	person = Person.get(Person.id == prof_id)
 	supervision = (Supervision
 				   .select()
 				   .join(Person)
-				   .where(Person.prof_id == prof_id)
+				   .where(Person.id == prof_id)
 				   .order_by(Supervision.semester_id.desc()))
 	projectsupervision = (ProjectSupervision
 						  .select()
 						  .join(Person)
-						  .where(Person.prof_id == prof_id)
+						  .where(Person.id == prof_id)
 						  .order_by(ProjectSupervision.semester_id.desc()))
 	offering = (Offering
 				.select()
 				.join(Person)
-				.where(Person.prof_id == prof_id)
+				.where(Person.id == prof_id)
 				.order_by(Offering.semester_id.desc()))
 	adjustment = (Adjustment
 				  .select()
 				  .join(Person)
-				  .where(Person.prof_id == prof_id)
+				  .where(Person.id == prof_id)
 				  .order_by(Adjustment.id.desc()))
 	return render_template("profilehist.html", person=person, supervision=supervision,
 						   projectsupervision=projectsupervision, offering=offering, adjustment=adjustment)
@@ -199,23 +199,23 @@ def Profilehist(prof_id):
 def Profile(prof_id):
 	now = datetime.datetime.now()
 	year1 = now.year
-	person = Person.get(Person.prof_id == prof_id)
+	person = Person.get(Person.id == prof_id)
 	supervision = (Supervision.select()
-				   .join(Person, on=(Supervision.prof_id == Person.prof_id))
-				   .join(Term, on=(Supervision.semester_id == Term.semester_id))
+				   .join(Person, on=(Supervision.prof_id == Person.id))
+				   .join(Term, on=(Supervision.semester_id == Term.id))
 				   .where(Person.prof_id == prof_id, Term.year == year1)
 				   .order_by(Supervision.supervision_class_id.desc()))
 	projectsupervision = (ProjectSupervision
 						  .select()
-						  .join(Person, on=(ProjectSupervision.prof_id == Person.prof_id))
-						  .join(Term, on=(ProjectSupervision.semester_id == Term.semester_id))
+						  .join(Person, on=(ProjectSupervision.prof_id == Person.id))
+						  .join(Term, on=(ProjectSupervision.semester_id == Term.id))
 						  .where(Person.prof_id == prof_id, Term.year == year1)
 						  .order_by(ProjectSupervision.id.desc()))
 	offering = (Offering
 				.select()
-				.join(Person, on=(Offering.prof_id == Person.prof_id))
-				.join(Term, on=(Offering.semester_id == Term.semester_id))
-				.where(Person.prof_id == prof_id, Term.year == year1)
+				.join(Person, on=(Offering.prof_id == Person.id))
+				.join(Term, on=(Offering.semester_id == Term.id))
+				.where(Person.id == prof_id, Term.year == year1)
 				.order_by(Offering.id.desc()))
 	adjustment = (Adjustment
 				  .select()
@@ -295,7 +295,7 @@ def listm():
 			ADJWeight = request.form['ADJWeight']
 			AUDITCOMMENT = request.form['AUDITCOMMENT']
 			Adjustment.create(prof_id=iD4, adjustment_weight=ADJWeight, audit_comment=AUDITCOMMENT)
-	return render_template("masterlist.html", Person=Person, Pseudo=PseudoPeople, Course=Course,
+	return render_template("masterlist.html", Person=Person, Pseudo=ProjectTeam, Course=Course,
 						   SupervisionClass=SupervisionClass, ProjectClass=ProjectClass,
 						   ProjectSupervision=ProjectSupervision, Supervision=Supervision, Adjustment=Adjustment,
 						   RolePerson=RolePerson, Role=Role, Term=Term, Offering=Offering,
@@ -316,25 +316,25 @@ def peeweetable():
 			db.connect()
 			db.drop_tables(
 				[Person, Course, CourseGeneration, Term, Offering, Role, RolePerson, ProjectSupervision, ProjectClass,
-				 Supervision, SupervisionClass, PseudoPeople, Student, Adjustment],
+				 Supervision, SupervisionClass, ProjectTeam, Student, Adjustment],
 				safe=True)
 			db.create_tables(
 				[Person, Course, CourseGeneration, Term, Offering, Role, RolePerson, ProjectSupervision, ProjectClass,
-				 Supervision, SupervisionClass, PseudoPeople, Student, Adjustment],
+				 Supervision, SupervisionClass, ProjectTeam, Student, Adjustment],
 				safe=True)
 			db.close()
 		elif request.form['Full'] == 'Create':
 			db.connect()
 			db.create_tables(
 				[Person, Course, CourseGeneration, Term, Offering, Role, RolePerson, ProjectSupervision, ProjectClass,
-				 Supervision, SupervisionClass, PseudoPeople, Student, Adjustment],
+				 Supervision, SupervisionClass, ProjectTeam, Student, Adjustment],
 				safe=True)
 			db.close()
 		elif request.form['Full'] == 'Drop':
 			db.connect()
 			db.drop_tables(
 				[Person, Course, CourseGeneration, Term, Offering, Role, RolePerson, ProjectSupervision, ProjectClass,
-				 Supervision, SupervisionClass, PseudoPeople, Student, Adjustment],
+				 Supervision, SupervisionClass, ProjectTeam, Student, Adjustment],
 				safe=True)
 			db.close()
 	return render_template('reset.html')

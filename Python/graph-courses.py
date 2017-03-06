@@ -13,11 +13,12 @@ sys.setdefaultencoding('utf-8')
 args = argparse.ArgumentParser()
 args.add_argument('filename', nargs='+')
 args = args.parse_args()
-
 courses = collections.defaultdict(list)
 list_course = collections.defaultdict(dict)
 dict_gen = collections.defaultdict(dict)
 dict_view_gen = collections.defaultdict(dict)
+a=0
+
 
 for filename in args.filename:
 	p1 = re.compile(r"(\d+\b)(?!.*\1\b)")
@@ -37,8 +38,6 @@ for year, cour in courses.items():
 		dict_year[year] = courses[year][a]
 		list_course[code][year] = course
 
-a=0
-
 
 for code, details in list_course.items():
 	a+=1
@@ -46,16 +45,17 @@ for code, details in list_course.items():
 	year2 = None
 	info2 = None
 	peewee_check = None
+	print a
 	for keyyear in sorted_det:
-		a+=2
+		a+=1
 		year1, info1 = keyyear[0], keyyear[1]
 		try:
 			peewee_check = CourseGeneration.select()\
-				.join(Course).where(Course.course_num == code,CourseGeneration.year_of_valid_generation == year1).get()
+				.join(Course).where(Course.code == code,CourseGeneration.year_of_valid_generation == year1).get()
 		except:
 			pass
 		if peewee_check is not None:
-			print 'you wont see this'
+			print 'if you see this then incorrect data was entered, no data should update'
 			info2 = info1
 			year2 = year1
 			pc = peewee_check
@@ -64,6 +64,7 @@ for code, details in list_course.items():
 					or pc.comments != info1['Description'] or pc.other_info != info1['Other info'] \
 					or pc.old_course_id != info1['OldCourseCode']:
 				if pc.year_of_valid_generation == year1:
+					late_update = Course.select().where(Course.code == code).get()
 					CourseGeneration.update(labs=info1['Labs'], credit_hours=info1['Credit Hours'],
 											lecture_hours=info1['Lecture Hours'],
 											title=info1['Title'], comments=info1['Description'],
@@ -71,23 +72,20 @@ for code, details in list_course.items():
 											old_course_id=info1['OldCourseCode'], year_of_valid_generation=year1,
 											year_valid_to=year1) \
 						.where(CourseGeneration.id == pc.id)
-					print 'you shouldnt be here'
 			elif info1 != info2 and year1 > pc.year_valid_to:
 				info2 = info1
 				year2 = year1
-				late_update = Course.select().where(Course.course_num == code).get()
+				late_update = Course.select().where(Course.code == code).get()
 				CourseGeneration.create(labs=info1['Labs'], credit_hours=info1['Credit Hours'],
 										lecture_hours=info1['Lecture Hours'],
 										title=info1['Title'], comments=info1['Description'],
 										course_id=late_update, other_info=info1['Other info'],
 										old_course_id=info1['OldCourseCode'], year_of_valid_generation=year1,
 										year_valid_to=year1)
-				print 'very bad'
 			elif info1 == info2 and year1 > pc.year_valid_to:
 				update = CourseGeneration.update(year_valid_to=year1).where(
 					CourseGeneration.id == pc.id)
 				update.execute()
-				print 'bad things'
 		else:
 			print a
 			if year1 > year2:
@@ -95,17 +93,17 @@ for code, details in list_course.items():
 					info2 = info1
 					year2 = year1
 					try:
-						Course.create(subject="ENGI", course_num=code)
-						late_update = Course.select().where(Course.course_num == code).get()
+						Course.create(subject=info1['Subject'], code=code)
+						late_update = Course.select().where(Course.code == code).get()
 						CourseGeneration.create(labs=info1['Labs'], credit_hours=info1['Credit Hours'],
 												lecture_hours=info1['Lecture Hours'],
 												title=info1['Title'], comments=info1['Description'],
 												course_id=late_update, other_info=info1['Other info'],
 												old_course_id=info1['OldCourseCode'], year_of_valid_generation=year1,
 												year_valid_to=year1)
-						print 'ive done somthing new'
+						print 'ive done something new'
 					except:
-						late_update = Course.select().where(Course.course_num == code).get()
+						late_update = Course.select().where(Course.code == code).get()
 						CourseGeneration.create(labs=info1['Labs'], credit_hours=info1['Credit Hours'],
 												lecture_hours=info1['Lecture Hours'],
 												title=info1['Title'], comments=info1['Description'],
@@ -119,7 +117,3 @@ for code, details in list_course.items():
 							CourseGeneration.id.desc()).get())
 					update.execute()
 					print 'ive updated things'
-			else:
-				year2 = year1
-				info2 = info1
-				print 'error'

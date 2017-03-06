@@ -20,7 +20,7 @@ sys.setdefaultencoding('utf-8')
 
 
 def convert_parse_labs(name, course):
-	labs = course['lab hours'] if 'lab hours' in course else 0
+	labs = course['lab hours'] if 'lab hours' in course else 3
 	if labs == 'at least three 1.5-hour sessions per semester':
 		l4 = 4.5
 	if labs == 'scheduled as required':
@@ -62,7 +62,7 @@ def convert_parse_labs(name, course):
 	elif l3 == 'thirteen':
 		a = 13
 	else:
-		a = 0
+		a = 3
 	a_1 = int(a)
 	if l2 == '':
 		l2 = 0
@@ -111,24 +111,22 @@ def convert_parse_comments(name, course):
 
 
 def convert_parse_course_id(name, course):
-	course_id = course['number'] if 'number' in course else None
-	if course_id == '8801-8805 (Excluding 8804)':
-		course_id = '8801'
-	if course_id == '8090-8099':
-		course_id = '8090'
-	if course_id == '8970-8979':
-		course_id = '8970'
-	if course_id == '8790-8799':
-		course_id = '8790'
-	if course_id == '8601-8610':
-		course_id = '8601'
-	if course_id == '8806-8809':
-		course_id = '8806'
-	if course_id == '8815-8820':
-		course_id = '8790'
-	course_id1 = str(course_id)
-	return course_id1
+	course_id1 = course['number'] if 'number' in course else None
+	p1 = re.compile(r"(\d+\-\d+)")
+	course_id2 = ''.join(p1.findall(course_id1))
+	if course_id2=='':
+		return course_id1
+	else:
+		p2 = re.compile(r"(\d+)")
+		course_id4 = p2.findall(course_id2)
+		return course_id4[0]
 
+def convert_parse_name(name,Course):
+	p2 = re.compile(r"([A-Z]{4})")
+	name1 = str(name)
+	sub = p2.findall(name1)
+	subject = ''.join(map(str,sub))
+	return subject
 
 def convert_parse_other(name, course):
 	other = course['other information'] if 'other information' in course else None
@@ -136,13 +134,14 @@ def convert_parse_other(name, course):
 
 
 def convert_parse_exclusive(name, course):
+	prefix = convert_parse_name(name,course)
 	exclusive = course['exclusive with'] if 'exclusive with' in course else None
 	if exclusive is not None:
-		p = re.compile('\d+')
+		p = re.compile(r"\d+")
 		exc = str(exclusive)
 		excl = p.findall(exc)
 		excl1 = ''.join(map(str, excl))
-		if exclusive == ('the former ENGI ' + excl1):
+		if exclusive == ('the former '+prefix+' '+ excl1):
 			exclusive = excl1
 		else:
 			exclusive = None
@@ -150,9 +149,6 @@ def convert_parse_exclusive(name, course):
 
 
 def obscure_refference(name, course):
-	sem1 = open('fun').readlines()
-	sem2 = random.choice(sem1)
-	print sem2
 	labs = convert_parse_labs(name, course)
 	id = convert_parse_course_id(name, course)
 	credit_hours = convert_parse_credit_hours(name, course)
@@ -161,7 +157,8 @@ def obscure_refference(name, course):
 	comments = convert_parse_comments(name, course)
 	other_info = convert_parse_other(name, course)
 	exclusive = convert_parse_exclusive(name, course)
-	dict_course_gen = {'Name': id, 'OldCourseCode': exclusive, 'Description': comments, 'Title': title,
+	subject = convert_parse_name(name,course)
+	dict_course_gen = {'Subject': subject, 'Name': id, 'OldCourseCode': exclusive, 'Description': comments, 'Title': title,
 					   'Lecture Hours': lecture_hours, 'Credit Hours': credit_hours, 'Labs': labs,
 					   'Other info': other_info}
 	return dict_course_gen

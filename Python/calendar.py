@@ -18,11 +18,11 @@ from bs4 import BeautifulSoup
 course_number = re.compile('[0-9W]{4} [A-Z][a-z]+')
 numeric = re.compile('^[0-9]+$')
 special_topics = re.compile('[0-9]{4}-[0-9]{4} [A-Z][a-z]+')
+prefix=None
 
 
 def parse_prerequisites(s, prefix):
 	prereqs = []
-
 	for x in s.split(' or '):
 		for y in x.split(','):
 			y = y.strip()
@@ -49,9 +49,26 @@ codes = {
 }
 
 
-def parseHTML(calfile, prefix='ENGI'):
+def parseHTML(calfile):
 	courses = {}
 	soup = BeautifulSoup(calfile, 'html.parser')
+	subj = str(soup.find('br'))
+	if subj=='<br/>':
+		subj = str(soup.find("div", {"id": "printtitle"}))
+		p = re.compile(r"(\w+\s)")
+		subj = p.findall(subj)
+		prefix = subj[6]
+	subj = str(subj)
+	p= re.compile(r"(\w+\s)")
+	subj = p.findall(subj)
+	try:
+		if subj[2]=='Business ':
+			prefix='BUSI'
+		if subj[2]=='Engineering ':
+			prefix='ENGI'
+	except:
+		pass
+
 	for block in soup.find_all(class_='CourseBlock'):
 		for c in block.find_all(class_='course'):
 			number = c.find(class_='courseNumber').string.strip()
