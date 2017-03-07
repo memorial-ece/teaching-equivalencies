@@ -14,7 +14,6 @@
 import datetime
 import re
 import sys
-
 from flask import *
 from werkzeug.utils import *
 from Exporter import *
@@ -168,6 +167,68 @@ def docustomimport_():
 	return render_template('import.html')
 
 
+@app.route("/course/<id>")
+def Coursehist(id):
+	first_run_var=1
+	list1=[]
+	course = Course.get(Course.id==id)
+	generation = (CourseGeneration.select().join(Course).where(Course.id == id))
+	for x in generation:
+		a=x.labs
+		b=x.credit_hours
+		c=x.lecture_hours
+		d=x.title
+		e=x.comments
+		f=x.course_id
+		g=x.other_info
+		h=x.old_course_id
+		if first_run_var==1:
+			aa=a
+			ab=b
+			ac=c
+			ad=d
+			ae=e
+			af=f
+			ag=g
+			ah=h
+			first_run_var=2
+		else:
+			i=str(x.id)
+			if aa!=a:
+				list1.append(i+':'+'labs')
+				aa=a
+			if ab!=b:
+				list1.append(i+':'+'credithours')
+				ab=b
+				print'b'
+			if ac!=c:
+				list1.append(i+':'+'lecturehours')
+				ac=c
+				print'c'
+			if ad!=d:
+				list1.append(i+':'+'title')
+				ad=d
+				print'd'
+			if ae!=e:
+				list1.append(i+':'+'comments')
+				ae=e
+				print'e'
+			if af!=f:
+				list1.append(i+':'+'courseid')
+				af=f
+				print'f'
+			if ag!=g:
+				list1.append(i+':'+'other info')
+				ag=g
+				print'g'
+			if ah!=h:
+				ah=str(ah)
+				print ah
+				list1.append(i+':'+'old id')
+				ah=h
+	return render_template("course.html", course=course,generation=generation,list1=list1)
+
+
 @app.route("/profile/<prof_id>/history")
 def Profilehist(prof_id):
 	person = Person.get(Person.id == prof_id)
@@ -316,26 +377,22 @@ def peeweetable():
 			db.connect()
 			db.drop_tables(
 				[Person, Course, CourseGeneration, Term, Offering, Role, RolePerson, ProjectSupervision, ProjectClass,
-				 Supervision, SupervisionClass, ProjectTeam, Student, Adjustment],
-				safe=True)
+				 Supervision, SupervisionClass, ProjectTeam, Student, Adjustment],safe=True)
 			db.create_tables(
 				[Person, Course, CourseGeneration, Term, Offering, Role, RolePerson, ProjectSupervision, ProjectClass,
-				 Supervision, SupervisionClass, ProjectTeam, Student, Adjustment],
-				safe=True)
+				 Supervision, SupervisionClass, ProjectTeam, Student, Adjustment],safe=True)
 			db.close()
 		elif request.form['Full'] == 'Create':
 			db.connect()
 			db.create_tables(
 				[Person, Course, CourseGeneration, Term, Offering, Role, RolePerson, ProjectSupervision, ProjectClass,
-				 Supervision, SupervisionClass, ProjectTeam, Student, Adjustment],
-				safe=True)
+				 Supervision, SupervisionClass, ProjectTeam, Student, Adjustment],safe=True)
 			db.close()
 		elif request.form['Full'] == 'Drop':
 			db.connect()
 			db.drop_tables(
 				[Person, Course, CourseGeneration, Term, Offering, Role, RolePerson, ProjectSupervision, ProjectClass,
-				 Supervision, SupervisionClass, ProjectTeam, Student, Adjustment],
-				safe=True)
+				 Supervision, SupervisionClass, ProjectTeam, Student, Adjustment],safe=True)
 			db.close()
 	return render_template('reset.html')
 

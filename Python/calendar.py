@@ -57,7 +57,15 @@ def parseHTML(calfile):
 		subj = str(soup.find("div", {"id": "printtitle"}))
 		p = re.compile(r"(\w+\s)")
 		subj = p.findall(subj)
-		prefix = subj[6]
+		prefix1 = subj[6]
+		if prefix1=='Engineering ':
+			prefix = 'ENGI'
+		if prefix1 == 'Business ':
+			prefix = 'BUSI'
+		if prefix1 == 'Human ':
+			prefix = 'HKR '
+		if prefix1 == 'Education  ':
+			prefix = 'ED  '
 	subj = str(subj)
 	p= re.compile(r"(\w+\s)")
 	subj = p.findall(subj)
@@ -72,7 +80,6 @@ def parseHTML(calfile):
 			prefix='ED  '
 	except:
 		pass
-
 	for block in soup.find_all(class_='CourseBlock'):
 		for c in block.find_all(class_='course'):
 			number = c.find(class_='courseNumber').string.strip()
@@ -106,34 +113,6 @@ def parseHTML(calfile):
 
 				(name, parse, reformat) = codes[key]
 				course[name] = parse(value, prefix)
-	return courses
-
-
-def parseText(calfile, prefix='ENGI'):
-	courses = {}
-	for line in calfile:
-		line = line.strip()
-		if special_topics.match(line):
-			continue
-		if course_number.match(line):
-			number = line.split()[0]
-			name = '%s %s' % (prefix, number)
-			course = {
-				'credit-hours': 3,
-				'description': line[5:].strip(),
-				'lecture hours': 3,
-				'name': name,
-				'number': number,
-			}
-			courses[name] = course
-		else:
-			parts = line.split(':')
-			if len(parts) < 2:
-				raise ValueError("expected 'key: val', got '%s'" % line)
-			key = parts[0]
-			value = parts[-1].strip()
-			(name, parse, reformat) = codes[key]
-			course[name] = parse(value, prefix)
 	return courses
 
 

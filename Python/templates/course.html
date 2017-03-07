@@ -1,0 +1,72 @@
+<!doctype html>
+<html>
+   <head>
+           <style>
+body {color: white;}
+</style>
+      <title>
+         profile
+      </title>
+       <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+   </head>
+   <body bgcolor="101111">
+   {% extends "home.html" %}
+   {% block content %}
+<table border = 1>
+    <h3>Course</h3>
+    <thead>
+        <td>CRN</td>
+        <td>Subj</td>
+        <td>Crse</td>
+    </thead>
+    <tr>
+        <td>{{course.id}}</td>
+        <td>{{course.subject}}</td>
+        <td>{{course.code}}</td>
+    </tr>
+</table>
+<table border = 1>
+    <h3>Course</h3>
+    <thead>
+        <td>Gen</td>
+        <td>labs</td>
+        <td>credit_hours</td>
+        <td>lecture_hours</td>
+        <td>title</td>
+        <td>comments</td>
+        <td>course_id</td>
+        <td>other_info</td>
+        <td>old_course_id</td>
+        <td>year_of_valid_generation</td>
+        <td>year_valid_to</td>
+    </thead>
+    <p>Changes Between Generations</p>
+    <p>+++++++++++++++++++++++++++</p>
+    <p>{{list1}}</p>
+    <p>===========================</p>
+    {% for row in generation %}
+    <tr>
+        <td>{{row.id}}</td>
+        <td>{{row.labs}}</td>
+        <td>{{row.credit_hours}}</td>
+        <td>{{row.lecture_hours}}</td>
+        <td>{{row.title}}</td>
+        <td>{{row.comments}}</td>
+        <td>{{row.course_id.id}}</td>
+        <td>{{row.other_info}}</td>
+        <td>{{row.old_course_id}}</td>
+        <td>{{row.year_of_valid_generation}}</td>
+        <td>{{row.year_valid_to}}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+
+
+
+
+
+
+   </body>
+{%endblock%}
+</html>
