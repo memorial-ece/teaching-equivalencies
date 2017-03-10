@@ -38,6 +38,7 @@ body {color: white;}
        <td>SemesterYear</td>
        <td>SemesterSection</td>
        </thead>
+       {{Stotal}}
        {% for row in supervision %}
        <tr>
            <td>{{row.id}}</td>
@@ -80,8 +81,11 @@ body {color: white;}
        <td>Labs</td>
        <td>SemesterYear</td>
        <td>SemesterSection</td>
+       <td>credithours</td>
+       <td>Courseid</td>
+       <td>weight</td>
        </thead>
-       {{3/4}}
+       {{Ototal}}
        {% for row in offering %}
        <tr>
            <td>{{row.id}}</td>
@@ -112,4 +116,13 @@ body {color: white;}
        {% endfor %}
     </table>
    {{total}}
+
+    <form action = "{{ url_for('Profilehist',prof_id=prof_id,) }}" method = "POST">
+    <h3>Offering</h3>
+    wegt
+    <input type = "text" name = "weight" /><br>
+    weight<br>
+    <input type = "text" name = "myid" /><br>
+    <input type = "submit" name="subm1" value = "submit2" /><br>
+    </form>
    {% endblock %}

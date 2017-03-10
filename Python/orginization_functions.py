@@ -15,6 +15,7 @@ import re
 from Class import *
 import datetime
 import sys
+import random
 reload(sys)
 sys.setdefaultencoding('utf-8')
 def informationXchange(generation,list1):
@@ -46,157 +47,148 @@ def informationXchange(generation,list1):
 			if ab != b:
 				list1.append(i + ':' + 'credithours')
 				ab = b
-				print'b'
 			if ac != c:
 				list1.append(i + ':' + 'lecturehours')
 				ac = c
-				print'c'
 			if ad != d:
 				list1.append(i + ':' + 'title')
 				ad = d
-				print'd'
 			if ae != e:
 				list1.append(i + ':' + 'comments')
 				ae = e
-				print'e'
 			if af != f:
 				list1.append(i + ':' + 'courseid')
 				af = f
-				print'f'
 			if ag != g:
 				list1.append(i + ':' + 'other info')
 				ag = g
-				print'g'
 			if ah != h:
 				ah = str(ah)
-				print ah
 				list1.append(i + ':' + 'old id')
 				ah = h
 	return list1
 
 
-def gen_offering():
+def semester_quick_gen(fromD):
 	now = str(datetime.datetime.now())
 	year= now.split()
 	p=re.compile(r"\d+")
 	year=p.findall(year[0])
-	if year[1]>=8:
-		year=int(year[0])-1
-	offering = CourseGeneration.select().where(CourseGeneration.year_of_valid_generation==year)
-	for x in offering:
-		for y in Term.select().where(Term.year==year):
-
-			Offering.create(semester_id=y.session,course_gen_id=x.id)
-
-
-def semester_quick_gen():
-	now = str(datetime.datetime.now())
-	year= now.split()
-	p=re.compile(r"\d+")
-	year=p.findall(year[0])
-	start=2007
+	start=fromD
 	while int(start)<=int(year[0]):
-		print year[0]
-		print start
 		session=0
 		while session!=5:
 			session+=1
 			try:
-				Term.create_or_get(year=start,session=session)
+				Term.get_or_create(year=start,session=session)
 			except:
 				pass
-			print session
 		else:
 			start+=1
 		if start == 2020:
 			break
 
-def offer():
-	fall_2015=Term.select().where(Term.year==2015,Term.session==1).get()
-	winter_2015=Term.select().where(Term.year==2015,Term.session==2).get()
-	sprint_2015=Term.select().where(Term.year==2015,Term.session==3).get()
-	c3891=CourseGeneration.select().join(Course).where(Course.code==3891).order_by(CourseGeneration.year_valid_to.desc()).get()
-	b1 = c3891.lecture_hours
-	c1 = c3891.labs
-	d1= c3891.other_info
-	wb1 = int(b1) / 3
-	wc1 = int(c1) / 3
-	wd1 = 0
-	if d1 == 'up to eight tutorial sessions per semester':
-		wd1 = .07
-	if d1 == 'tutorial one hour per week':
-		wd1 = .14
-	if d1 == 'tutorial 1 hour per week':
-		wd1 = .14
-	if d1 == 'one tutorial hour per week':
-		wd1 = .14
-	if d1 == '1 client meeting per week, 1 tutorial per week':
-		wd1 = .14
-	weight1 = wb1 + wc1 + wd1
-	c1020=CourseGeneration.select().join(Course).where(Course.code==1020).order_by(CourseGeneration.year_valid_to.desc()).get()
-	b2 = c1020.lecture_hours
-	c2 = c1020.labs
-	d2= c1020.other_info
-	wb2 = int(b2) / 3
-	wc2 = int(c2) / 3
-	wd2 = 0
-	if d2 == 'up to eight tutorial sessions per semester':
-		wd2 = .07
-	if d2 == 'tutorial one hour per week':
-		wd2 = .14
-	if d2 == 'tutorial 1 hour per week':
-		wd2 = .14
-	if d2 == 'one tutorial hour per week':
-		wd2 = .14
-	if d2 == '1 client meeting per week, 1 tutorial per week':
-		wd2 = .14
-	weight2 = wb2 + wc2 + wd2
-	c8894=CourseGeneration.select().join(Course).where(Course.code==8894).order_by(CourseGeneration.year_valid_to.desc()).get()
-	b = c8894.lecture_hours
-	c = c8894.labs
-	d= c8894.other_info
-	wb = int(b) / 3
-	wc = int(c)/ 3
-	wd = 0
-	if d == 'up to eight tutorial sessions per semester':
-		wd = .07
-	if d == 'tutorial one hour per week':
-		wd = .14
-	if d == 'tutorial 1 hour per week':
-		wd = .14
-	if d == 'one tutorial hour per week':
-		wd = .14
-	if d == '1 client meeting per week, 1 tutorial per week':
-		wd = .14
-	weight = wb + wc + wd
-	# Offering.create_or_get(enrolment=1,prof_id=1,semester_id=fall_2015,course_gen_id=c3891,weight=weight1)
-	# Offering.create_or_get(enrolment=1,prof_id=1,semester_id=winter_2015,course_gen_id=c1020,weight=weight2)
-	# Offering.create_or_get(enrolment=1,prof_id=1,semester_id=winter_2015,course_gen_id=c8894,weight=weight)
+def offer(year,code,session,profid,numberofstudents,sectionnumbers):
+	for x in CourseGeneration.select().join(Course).where(Course.code==code).order_by(CourseGeneration.year_valid_to.asc()):
+		if int(x.year_valid_to)>=int(year):
+			year2=x.year_valid_to
+			ses=Term.select().where(Term.year==year2,Term.session==session).get()
+			b1 = x.credit_hours
+			c1 = x.labs
+			d1= x.other_info
+			wb1 = float(b1) / 3
+			wc1 = float(c1) / 36 *.27 * sectionnumbers
+			wd1 = 0
+			if d1 == 'up to eight tutorial sessions per semester':
+				wd1 = float(.07)
+			if d1 == 'tutorial one hour per week':
+				wd1 = float(.14)
+			if d1 == 'tutorial 1 hour per week':
+				wd1 = float(.14)
+			if d1 == 'one tutorial hour per week':
+				wd1 = float(.14)
+			if d1 == '1 client meeting per week, 1 tutorial per week':
+				wd1 = float(.14)
+			print wb1
+			print wc1
+			print wd1
+			weight1 = wb1 + wc1 + wd1
+			print weight1
+			Offering.get_or_create(enrolment=1,prof_id=1,semester_id=ses,course_gen_id=x.id,weight=weight1)
+			break
 
 
-def superC():
-	SupervisionClass.create(description='test stuff', weight=0.047)
 
-def supera():
-	fall_2015=Term.select().where(Term.year==2015,Term.session==1).get()
-	winter_2015=Term.select().where(Term.year==2015,Term.session==2).get()
-	sprint_2015=Term.select().where(Term.year==2015,Term.session==3).get()
-	Supervision.create(prof_id=1,student_id=1,supervision_class_id=1,semester_id=fall_2015)
-	Supervision.create(prof_id=1,student_id=2,supervision_class_id=1,semester_id=winter_2015)
-	Supervision.create(prof_id=1,student_id=2,supervision_class_id=1,semester_id=sprint_2015)
-	Supervision.create(prof_id=1,student_id=3,supervision_class_id=1,semester_id=sprint_2015)
-	Supervision.create(prof_id=1,student_id=1,supervision_class_id=1,semester_id=sprint_2015)
+def Psuper():
+	ProjectClass.get_or_create(description='Undergraduate project course', weight=0.5)
+	ProjectClass.get_or_create(description='senior project supervision of a group of 4 students', weight=(float(0.125)/3))
+	ProjectClass.get_or_create(description='Case by Case', weight=2)
 
 
-def person():
+def superC(BOOLDoyouwanttocreateanewone,Description,Weight):
+	SupervisionClass.get_or_create(description='Gradstudent 1 term', weight=0.047)
+	SupervisionClass.get_or_create(description='Masters 1 term', weight=0.07)
+	SupervisionClass.get_or_create(description='Doctoral 1 term', weight=(float(.32)/3))
+	if BOOLDoyouwanttocreateanewone==True:
+		SupervisionClass.get_or_create(description=Description, weight=Weight)
+
+
+def supera(TermS,profid,Studentid,supervisoncalss,session):
+	ses=Term.select().where(Term.year==TermS,Term.session==session).get()
+	Supervision.get_or_create(prof_id=profid,student_id=Studentid,supervision_class_id=supervisoncalss,semester_id=ses)
+
+
+def person(name,email,staryear,startsem):
 	# can't hear
-	Person.create_or_get(name='Mr. Anderson',email='jonathan.anderson@mun.ca')
+	ses=Term.select().where(Term.year==staryear,Term.session==startsem).get()
+	Person.get_or_create(name='Mr. Anderson',email='jonathan.anderson@mun.ca', start=ses.id)
 
-def student():
+
+def student(name,email):
 	# use sign language
-	Student.create_or_get(name='Juteau',email='2011205085')
-	Student.create_or_get(name='Derakhshan Nik',email='201509962')
-	Student.create_or_get(name='Nguyen',email='201051471')
+	Student.get_or_create(name='Juteau',email='2011205085')
+	Student.get_or_create(name='Derakhshan Nik',email='201509962')
+	Student.get_or_create(name='Nguyen',email='201051471')
+
+
+def deficit(prof_id):
+	personal = Person.get(Person.id == prof_id)
+	now = datetime.datetime.now()
+	year = now.year
+	startYear = personal.start.year
+	startsem = personal.start.session
+	sem=currentsem()
+	timeyear=year-startYear
+	timesemester=sem-startsem
+	if timesemester<0:
+		timeyear-=1
+		timesemester=-timesemester
+		timesemester=3-timesemester
+	deduction=0
+	duty_for_first_two_year=3.3333333333
+	duty_for_normal=4.0
+	if timeyear>=3:
+		deduction=duty_for_first_two_year * 2
+		timefix=timeyear-2
+		deduction+=duty_for_normal*timefix
+	elif timeyear<3:
+		deduction=duty_for_first_two_year * 2
+	if deduction==0:
+		print 'keegan you dicked up'
+	return deduction
+
+def currentsem():
+	now = datetime.datetime.now()
+	month = now.month
+	if month>=7:
+		sem=1
+	elif month<=4:
+		sem=2
+	else:
+		sem=3
+	return sem
+
+
 
 # def weight():
 # 	offering = Offering.select()
@@ -210,12 +202,12 @@ def student():
 # 		if d=='up to eight tutorial sessions per semester':
 # 			wd=.07
 # 		if d=='tutorial one hour per week':
-# 			wd=.14
+# 			wd=float(.14)
 # 		if d=='tutorial 1 hour per week':
-# 			wd =.14
+# 			wd =float(.14)
 # 		if d=='one tutorial hour per week':
-# 			wd = .14
+# 			wd = float(.14)
 # 		if d=='1 client meeting per week, 1 tutorial per week':
-# 			wd = .14
+# 			wd = float(.14)
 # 		weight=wb+wc+wd
 # 		Offering.update(weight=weight).where(Offering.id==z)

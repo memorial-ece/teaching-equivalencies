@@ -3,7 +3,7 @@
 import argparse
 import collections
 import operator
-import calendar as cal
+import reader as cal
 from Class import *
 from ConvertParse import *
 
@@ -93,7 +93,7 @@ for code, details in list_course.items():
 					info2 = info1
 					year2 = year1
 					try:
-						Course.create(subject=info1['Subject'], code=code)
+						Course.get_or_create(subject=info1['Subject'], code=code)
 						late_update = Course.select().where(Course.code == code).get()
 						CourseGeneration.create(labs=info1['Labs'], credit_hours=info1['Credit Hours'],
 												lecture_hours=info1['Lecture Hours'],

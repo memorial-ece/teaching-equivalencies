@@ -15,17 +15,25 @@
 from peewee import *
 
 
+class Term(Model):
+	id = IntegerField(primary_key=True)
+	year = DateField()
+	session = IntegerField()
+# session refers to the fall winter and spring sessions, these are respectively represented by the numbers 1,2, and 3
+
+
 class Person(Model):
 	name = TextField(null=False)
 	email = TextField(unique=True)
 	id = IntegerField(primary_key=True)
+	start = ForeignKeyField(Term, related_name='startdate',null=False)
 # A person in this database is a teaching professional
 
 
 class Course(Model):
 	id = IntegerField(primary_key=True)
 	subject = TextField()
-	code = CharField(4, unique=True)
+	code = CharField(4)
 
 
 class CourseGeneration(Model):
@@ -48,13 +56,6 @@ class Student(Model):
 	name = TextField()
 	email = TextField()
 # A student is typically a non-undergrad student
-
-
-class Term(Model):
-	id = IntegerField(primary_key=True)
-	year = DateField()
-	session = IntegerField()
-# session refers to the fall winter and spring sessions, these are respectively represented by the numbers 1,2, and 3
 
 
 class Offering(Model):
@@ -120,6 +121,6 @@ class Supervision(Model):
 
 class Adjustment(Model):
 	id = IntegerField(primary_key=True)
-	adjustment_weight = FloatField()
+	weight = FloatField()
 	comment = TextField()
 	prof_id = ForeignKeyField(Person, related_name='made_change')

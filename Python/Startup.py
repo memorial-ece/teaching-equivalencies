@@ -15,7 +15,6 @@ import re
 import sys
 from flask import *
 from werkzeug.utils import *
-from Python.Tempdead.Importer import *
 from orginization_functions import *
 from Exporter import *
 reload(sys)
@@ -78,7 +77,7 @@ def docustomexport():
 			export_project_class()
 			return send_file('table_ProjectClass.csv')
 		if selector == 'PseudoPeople':
-			export_pseudo_people()
+			export_ProjectTeam()
 			return send_file('table_PseudoPeople.csv')
 		if selector == 'RolePerson':
 			export_role_person()
@@ -92,24 +91,32 @@ def docustomexport():
 	return render_template('export.html')
 
 
-@app.route('/semestergen')
-def semestergen():
-	semester_quick_gen()
-	return render_template('home.html')
-
-
 @app.route('/offering')
 def offergen():
-	# semester_quick_gen()
-	# person()
-	# student()
-	offer()
-	# superC()
-	# supera()
-	return render_template('home.html')
+	# semester_quick_gen(fromD)
+	semester_quick_gen(2010)
+	# person(name,email)
+	person('Mr. Anderson','jonathan.anderson@mun.ca',2012,3)
+	# student(name, email)
+	student('Juteau','2011205085')
+	student('Derakhshan Nik','201509962')
+	student('Nguyen','201051471')
+	# superC(BOOLDoyouwanttocreateanewone,Description,Weight)
+	superC(False,'lol',400)
+	# supera(TermS,profid,Studentid,supervisoncalss,session)
+	supera(2015,1,1,1,1)
+	supera(2015,1,2,1,2)
+	supera(2015,1,1,1,3)
+	supera(2015,1,2,1,3)
+	supera(2015,1,3,1,3)
+	# offer(year,code,session,profid,numberofstudents)
+	offer(2015,1020,2,1,1,3)
+	offer(2015,3891,1,1,1,1)
+	offer(2015,8894,2,1,1,1)
+	return redirect('/listm')
 
 
-@app.route("/course/<id>")
+@app.route("/course/<id>", methods=['GET', 'POST'])
 def Coursehist(id):
 	list2=[]
 	course = Course.get(Course.id==id)
@@ -118,7 +125,7 @@ def Coursehist(id):
 	return render_template("course.html", course=course,generation=generation,list1=list1)
 
 
-@app.route("/c/<id>")
+@app.route("/c/<id>", methods=['GET', 'POST'])
 def Courseh(id):
 	list2=[]
 	course = Course.get(Course.code==id)
@@ -127,7 +134,7 @@ def Courseh(id):
 	return render_template("course.html", course=course,generation=generation,list1=list1)
 
 
-@app.route("/profile/<prof_id>/history")
+@app.route("/profile/<prof_id>/history", methods=['GET', 'POST'])
 def Profilehist(prof_id):
 	person = Person.get(Person.id == prof_id)
 	supervision = (Supervision
@@ -153,102 +160,125 @@ def Profilehist(prof_id):
 	Stotal = 0
 	Atotal = 0
 	Ptotal = 0
-	# Stotal = (Supervision
-	# 		  .select()
-	# 		  .where(Supervision.prof_id == prof_id)
-	# 		  .join(SupervisionClass)
-	# 		  .select(fn.SUM(SupervisionClass.weight))
-	# 		  .scalar())
-	# Atotal = (Person
-	# 		  .select()
-	# 		  .where(Person.id == prof_id)
-	# 		  .join(Adjustment)
-	# 		  .select(fn.SUM(Adjustment.weight))
-	# 		  .scalar())
-	Ptotal = 4.155
-	# some function
-	# Ptotal = (ProjectSupervision
-	# 		  .select()
-	# 		  .where(ProjectSupervision.prof_id == prof_id)
-	# 		  .join(ProjectClass)
-	# 		  .select(fn.SUM(ProjectClass.weight))
-	# 		  .scalar())
-	deficit = (3.333 + 0.074)
 	Ototal = 0
+	Stotal = (Supervision
+			  .select()
+			  .where(Supervision.prof_id == prof_id)
+			  .join(SupervisionClass)
+			  .select(fn.SUM(SupervisionClass.weight))
+			  .scalar())
+	Atotal = (Person
+			  .select()
+			  .where(Person.id == prof_id)
+			  .join(Adjustment)
+			  .select(fn.SUM(Adjustment.weight))
+			  .scalar())
+	Ototal = (Offering
+			  .select()
+			  .where(Offering.prof_id == prof_id)
+			  .select(fn.SUM(Offering.weight))
+			  .scalar())
+	Ptotal = (ProjectSupervision
+			  .select()
+			  .where(ProjectSupervision.prof_id == prof_id)
+			  .join(ProjectClass)
+			  .select(fn.SUM(ProjectClass.weight))
+			  .scalar())
+	defi=deficit(prof_id)
 	if Atotal is None:
 		Atotal = 0
 	if Stotal is None:
 		Stotal = 0
 	if Ptotal is None:
 		Ptotal = 0
-	total = Ptotal + Atotal + Stotal - deficit
-	return render_template("profilehist.html", person=person, supervision=supervision,
-						   projectsupervision=projectsupervision, offering=offering, adjustment=adjustment,total=total)
+	total = Ptotal + Atotal + Stotal + Ototal - defi
+	if request.method == 'POST':
+		if request.form['subm1'] == "submit2":
+			# semesterID1 = request.form['SemesterID1']
+			# student = request.form['stu']
+			# iD1 = request.form['ID1']
+			# courseGenID = request.form['CourseGenID']
+			weight = request.form['weight']
+			myid = request.form['myid']
+			update=Offering.update(weight=weight).where(Offering.id==myid)
+			update.execute()
+	return render_template("profilehist.html", person=person, supervision=supervision,prof_id=prof_id,
+						   projectsupervision=projectsupervision, offering=offering, adjustment=adjustment,total=total,Stotal=Stotal,Ototal=Ototal)
 
 
-@app.route("/profile/<prof_id>")
+@app.route("/profile/<prof_id>", methods=['GET', 'POST'])
 def Profile(prof_id):
 	now = datetime.datetime.now()
 	year1 = now.year
 	person = Person.get(Person.id == prof_id)
-	supervision = (Supervision.select()
-				   .join(Person, on=(Supervision.prof_id == Person.id))
-				   .join(Term, on=(Supervision.semester_id == Term.id))
-				   .where(Person.id == prof_id, Term.year == year1)
-				   .order_by(Supervision.supervision_class_id.desc()))
+	supervision = (Supervision
+				   .select()
+				   .join(Person)
+				   .where(Person.id == prof_id)
+				   .order_by(Supervision.semester_id.desc()))
 	projectsupervision = (ProjectSupervision
 						  .select()
-						  .join(Person, on=(ProjectSupervision.prof_id == Person.id))
-						  .join(Term, on=(ProjectSupervision.semester_id == Term.id))
-						  .where(Person.id == prof_id, Term.year == year1)
-						  .order_by(ProjectSupervision.id.desc()))
+						  .join(Person)
+						  .where(Person.id == prof_id)
+						  .order_by(ProjectSupervision.semester_id.desc()))
 	offering = (Offering
 				.select()
-				.join(Person, on=(Offering.prof_id == Person.id))
-				.join(Term, on=(Offering.semester_id == Term.id))
-				.where(Person.id == prof_id, Term.year == year1)
-				.order_by(Offering.id.desc()))
+				.join(Person)
+				.where(Person.id == prof_id)
+				.order_by(Offering.semester_id.desc()))
 	adjustment = (Adjustment
 				  .select()
 				  .join(Person)
 				  .where(Person.id == prof_id)
 				  .order_by(Adjustment.id.desc()))
-	Stotal=0
-	Atotal=0
-	Ptotal=0
-	# Stotal = (Supervision
-	# 		  .select()
-	# 		  .where(Supervision.prof_id == prof_id)
-	# 		  .join(SupervisionClass)
-	# 		  .select(fn.SUM(SupervisionClass.weight))
-	# 		  .scalar())
-	# Atotal = (Person
-	# 		  .select()
-	# 		  .where(Person.id == prof_id)
-	# 		  .join(Adjustment)
-	# 		  .select(fn.SUM(Adjustment.weight))
-	# 		  .scalar())
-	Ptotal=4.155
-	# some function
-	# Ptotal = (ProjectSupervision
-	# 		  .select()
-	# 		  .where(ProjectSupervision.prof_id == prof_id)
-	# 		  .join(ProjectClass)
-	# 		  .select(fn.SUM(ProjectClass.weight))
-	# 		  .scalar())
-	deficit=(3.333+0.074)
-	Ototal=0
+	Stotal = 0
+	Atotal = 0
+	Ptotal = 0
+	Ototal = 0
+	Stotal = (Supervision
+			  .select()
+			  .where(Supervision.prof_id == prof_id)
+			  .join(SupervisionClass)
+			  .select(fn.SUM(SupervisionClass.weight))
+			  .scalar())
+	Atotal = (Person
+			  .select()
+			  .where(Person.id == prof_id)
+			  .join(Adjustment)
+			  .select(fn.SUM(Adjustment.weight))
+			  .scalar())
+	Ototal = (Offering
+			  .select()
+			  .where(Offering.prof_id == prof_id)
+			  .select(fn.SUM(Offering.weight))
+			  .scalar())
+	Ptotal = (ProjectSupervision
+			  .select()
+			  .where(ProjectSupervision.prof_id == prof_id)
+			  .join(ProjectClass)
+			  .select(fn.SUM(ProjectClass.weight))
+			  .scalar())
+	defi = deficit(prof_id)
 	if Atotal is None:
 		Atotal = 0
 	if Stotal is None:
 		Stotal = 0
 	if Ptotal is None:
 		Ptotal = 0
-	total=Ptotal+Atotal+Stotal-deficit
-	return render_template("profile.html", person=person, supervision=supervision,
-						   projectsupervision=projectsupervision, offering=offering,
-						   adjustment=adjustment, total=total)
-
+	total = Ptotal + Atotal + Stotal + Ototal - defi
+	if request.method == 'POST':
+		if request.form['subm1'] == "submit2":
+			# semesterID1 = request.form['SemesterID1']
+			# student = request.form['stu']
+			# iD1 = request.form['ID1']
+			# courseGenID = request.form['CourseGenID']
+			weight = request.form['weight']
+			myid = request.form['myid']
+			update = Offering.update(weight=weight).where(Offering.id == myid)
+			update.execute()
+	return render_template("profile.html", person=person, supervision=supervision, prof_id=prof_id,
+						   projectsupervision=projectsupervision, offering=offering, adjustment=adjustment, total=total,
+						   Stotal=Stotal, Ototal=Ototal)
 
 
 @app.route('/listm', methods=['GET', 'POST'])
@@ -303,23 +333,24 @@ def peeweetable():
 	if request.method == 'POST':
 		if request.form['Full'] == 'Drop and ReCreate':
 			db.connect()
+			# removed Course and CourseGeneration
 			db.drop_tables(
-				[Person, Course, CourseGeneration, Term, Offering, Role, RolePerson, ProjectSupervision, ProjectClass,
+				[Person,  Term, Offering, Role, RolePerson, ProjectSupervision, ProjectClass,
 				 Supervision, SupervisionClass, ProjectTeam, Student, Adjustment],safe=True)
 			db.create_tables(
-				[Person, Course, CourseGeneration, Term, Offering, Role, RolePerson, ProjectSupervision, ProjectClass,
+				[Person, Term, Offering, Role, RolePerson, ProjectSupervision, ProjectClass,
 				 Supervision, SupervisionClass, ProjectTeam, Student, Adjustment],safe=True)
 			db.close()
 		elif request.form['Full'] == 'Create':
 			db.connect()
 			db.create_tables(
-				[Person, Course, CourseGeneration, Term, Offering, Role, RolePerson, ProjectSupervision, ProjectClass,
+				[Person, Term, Offering, Role, RolePerson, ProjectSupervision, ProjectClass,
 				 Supervision, SupervisionClass, ProjectTeam, Student, Adjustment],safe=True)
 			db.close()
 		elif request.form['Full'] == 'Drop':
 			db.connect()
 			db.drop_tables(
-				[Person, Course, CourseGeneration, Term, Offering, Role, RolePerson, ProjectSupervision, ProjectClass,
+				[Person, Term, Offering, Role, RolePerson, ProjectSupervision, ProjectClass,
 				 Supervision, SupervisionClass, ProjectTeam, Student, Adjustment],safe=True)
 			db.close()
 	return render_template('reset.html')

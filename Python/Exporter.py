@@ -13,7 +13,7 @@
 #    limitations under the License.
 
 from playhouse.csv_loader import *
-from Python.Class import *
+from Class import *
 
 
 def export_profile():
