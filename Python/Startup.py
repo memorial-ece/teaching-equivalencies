@@ -20,9 +20,7 @@ from Exporter import *
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
-course_number = re.compile('[0-9W]{4} [A-Z][a-z]+')
-numeric = re.compile('^[0-9]+$')
-special_topics = re.compile('[0-9]{4}-[0-9]{4} [A-Z][a-z]+')
+
 app = Flask(__name__)
 DATABASE = 'database.db'
 db = SqliteDatabase(DATABASE)
@@ -94,9 +92,10 @@ def docustomexport():
 @app.route('/offering')
 def offergen():
 	# semester_quick_gen(fromD)
-	semester_quick_gen(2010)
+	semester_quick_gen(2008)
 	# person(name,email)
 	person('Mr. Anderson','jonathan.anderson@mun.ca',2012,3)
+	lang()
 	# student(name, email)
 	student('Juteau','2011205085')
 	student('Derakhshan Nik','201509962')
@@ -131,6 +130,15 @@ def Courseh(id):
 	course = Course.get(Course.code==id)
 	generation = (CourseGeneration.select().join(Course).where(Course.code == id))
 	list1=informationXchange(generation,list2)
+	return render_template("course.html", course=course,generation=generation,list1=list1)
+
+
+@app.route("/gen/<id>", methods=['GET', 'POST'])
+def gen(id):
+	# list2=[]
+	# course = Course.get(Course.code==id)
+	# generation = (CourseGeneration.select().join(Course).where(CourseGeneration.id == id))
+	# list1=informationXchange(generation,list2)
 	return render_template("course.html", course=course,generation=generation,list1=list1)
 
 
@@ -185,13 +193,15 @@ def Profilehist(prof_id):
 			  .select(fn.SUM(ProjectClass.weight))
 			  .scalar())
 	defi=deficit(prof_id)
+	if Ototal is None:
+		Ototal = 0
 	if Atotal is None:
 		Atotal = 0
 	if Stotal is None:
 		Stotal = 0
 	if Ptotal is None:
 		Ptotal = 0
-	total = Ptotal + Atotal + Stotal + Ototal - defi
+	total = (Ptotal) + (Atotal) + (Stotal) + (Ototal) - defi
 	if request.method == 'POST':
 		if request.form['subm1'] == "submit2":
 			# semesterID1 = request.form['SemesterID1']
@@ -211,21 +221,23 @@ def Profile(prof_id):
 	now = datetime.datetime.now()
 	year1 = now.year
 	person = Person.get(Person.id == prof_id)
-	supervision = (Supervision
-				   .select()
-				   .join(Person)
-				   .where(Person.id == prof_id)
-				   .order_by(Supervision.semester_id.desc()))
+	supervision = (Supervision.select()
+				   .join(Person, on=(Supervision.id == Person.id))
+				   .join(Term, on=(Supervision.id == Term.id))
+				   .where(Person.id == prof_id, Term.year == year1)
+				   .order_by(Supervision.id.desc()))
 	projectsupervision = (ProjectSupervision
 						  .select()
-						  .join(Person)
-						  .where(Person.id == prof_id)
-						  .order_by(ProjectSupervision.semester_id.desc()))
+						  .join(Person, on=(ProjectSupervision.id == Person.id))
+						  .join(Term, on=(ProjectSupervision.id == Term.id))
+						  .where(Person.id == prof_id, Term.year == year1)
+						  .order_by(ProjectSupervision.id.desc()))
 	offering = (Offering
 				.select()
-				.join(Person)
-				.where(Person.id == prof_id)
-				.order_by(Offering.semester_id.desc()))
+				.join(Person, on=(Offering.id == Person.id))
+				.join(Term, on=(Offering.id == Term.id))
+				.where(Person.id == prof_id, Term.year == year1)
+				.order_by(Offering.id.desc()))
 	adjustment = (Adjustment
 				  .select()
 				  .join(Person)
@@ -265,7 +277,7 @@ def Profile(prof_id):
 		Stotal = 0
 	if Ptotal is None:
 		Ptotal = 0
-	total = Ptotal + Atotal + Stotal + Ototal - defi
+	total = (Ptotal) + (Atotal) + (Stotal) + (Ototal) - (defi)
 	if request.method == 'POST':
 		if request.form['subm1'] == "submit2":
 			# semesterID1 = request.form['SemesterID1']

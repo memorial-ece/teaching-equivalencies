@@ -18,6 +18,51 @@ import sys
 import random
 reload(sys)
 sys.setdefaultencoding('utf-8')
+
+namestrip = re.compile(r"(?<=Primary - )...\S+")
+stripprimary = re.compile(r"[a-zA-Z0-9._-]{2,}")
+crsnumber= re.compile(r"(?<=ENGI )(\d+)")
+
+def lang():
+	starttear=2006
+	while starttear!=2015:
+		starttear+=1
+		startsem = 0
+		while startsem!=3:
+			startsem+=1
+			try:
+				x_file = list((open('All the records/'+str(starttear)+'0'+str(startsem)+'.html').readlines()))
+				for w in (x_file):
+					w = str(w.splitlines())
+					file1 = str((namestrip.findall(w)))
+					file3 = str(crsnumber.findall(w))
+					if file1[1]!=']' and file3[1]!=']':
+						file1 = str(file1).strip("[]'")
+						file3 = str(file3).strip("'[]")
+						person(file1,file1+'@why.ca',starttear,startsem)
+						pid=Person.select().where(Person.name==file1).get()
+						offer(starttear,file3,startsem,pid.id,1,1)
+						print file3
+			except:
+				print 'no latest semester'
+
+# def lang2():
+# 	starttear = 2007
+# 	while starttear != 2010:
+# 		starttear += 1
+# 		startsem = 0
+# 		while startsem != 3:
+# 			startsem += 1
+# 			x_file = str((open('All the records/' + str(starttear) + '0' + str(startsem) + '.html').readlines()))
+# 			file3 = str(crsnumber.findall(x_file))
+# 			a=0
+# 			for y in file3:
+# 				a+=1
+# 				y = y.strip("',[]")
+# 				pid = Person.select().where(Person.name == a).get()
+# 				offer(starttear, y, startsem, pid, 1, 1)
+
+
 def informationXchange(generation,list1):
 	first_run_var=1
 	for x in generation:
@@ -92,7 +137,7 @@ def offer(year,code,session,profid,numberofstudents,sectionnumbers):
 	for x in CourseGeneration.select().join(Course).where(Course.code==code).order_by(CourseGeneration.year_valid_to.asc()):
 		if int(x.year_valid_to)>=int(year):
 			year2=x.year_valid_to
-			ses=Term.select().where(Term.year==year2,Term.session==session).get()
+			ses=Term.select().where(Term.year==year,Term.session==session).get()
 			b1 = x.credit_hours
 			c1 = x.labs
 			d1= x.other_info
@@ -109,12 +154,8 @@ def offer(year,code,session,profid,numberofstudents,sectionnumbers):
 				wd1 = float(.14)
 			if d1 == '1 client meeting per week, 1 tutorial per week':
 				wd1 = float(.14)
-			print wb1
-			print wc1
-			print wd1
 			weight1 = wb1 + wc1 + wd1
-			print weight1
-			Offering.get_or_create(enrolment=1,prof_id=1,semester_id=ses,course_gen_id=x.id,weight=weight1)
+			Offering.get_or_create(enrolment=numberofstudents,prof_id=profid,semester_id=ses,course_gen_id=x.id,weight=weight1)
 			break
 
 
@@ -141,8 +182,10 @@ def supera(TermS,profid,Studentid,supervisoncalss,session):
 def person(name,email,staryear,startsem):
 	# can't hear
 	ses=Term.select().where(Term.year==staryear,Term.session==startsem).get()
-	Person.get_or_create(name='Mr. Anderson',email='jonathan.anderson@mun.ca', start=ses.id)
-
+	try:
+		Person.get_or_create(name=name,email=email,start=ses.id)
+	except:
+		pass
 
 def student(name,email):
 	# use sign language
@@ -190,24 +233,3 @@ def currentsem():
 
 
 
-# def weight():
-# 	offering = Offering.select()
-# 	for x in offering:
-# 		b=x.course_gen_id.lecture_hours
-# 		c=x.course_gen_id.labs
-# 		d=x.course_gen_id.other_info
-# 		wb=b/3
-# 		wc=c/3
-# 		wd=0
-# 		if d=='up to eight tutorial sessions per semester':
-# 			wd=.07
-# 		if d=='tutorial one hour per week':
-# 			wd=float(.14)
-# 		if d=='tutorial 1 hour per week':
-# 			wd =float(.14)
-# 		if d=='one tutorial hour per week':
-# 			wd = float(.14)
-# 		if d=='1 client meeting per week, 1 tutorial per week':
-# 			wd = float(.14)
-# 		weight=wb+wc+wd
-# 		Offering.update(weight=weight).where(Offering.id==z)

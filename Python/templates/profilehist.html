@@ -21,11 +21,13 @@ body {color: white;}
        <td>ID</td>
        <td>Name</td>
        <td>Email</td>
+       <td>start</td>
        </thead>
        <tr>
            <td>{{person.id}}</td>
            <td>{{person.name}}</td>
            <td>{{person.email}}</td>
+           <td>{{person.start.year}}</td>
        </tr>
    </table>
    <h3>Supervisions</h3>
@@ -65,7 +67,7 @@ body {color: white;}
            <td>{{row.project_supervision_id}}</td>
            <td>{{row.project_class_id.description}}</td>
            <td>{{row.project_class_id.weight}}</td>
-           <td>{{row.pseudo_id.pseudo_id}}</td>
+           <td>{{row.pseudo_id.id}}</td>
            <td>{{row.semester_id.year}}</td>
            <td>{{row.semester_id.session}}</td>
        </tr>

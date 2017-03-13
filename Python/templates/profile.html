@@ -26,6 +26,7 @@ body {color: white;}
            <td>{{person.id}}</td>
            <td>{{person.name}}</td>
            <td>{{person.email}}</td>
+           <td>{{person.start.year}}</td>
        </tr>
    </table>
    <h3>Supervisions</h3>
@@ -43,7 +44,7 @@ body {color: white;}
            <td>{{row.id}}</td>
            <td>{{row.supervision_class_id.description}}</td>
            <td>{{row.supervision_class_id.weight}}</td>
-           <td>{{row.student_id.student_id}}</td>
+           <td>{{row.student_id.id}}</td>
            <td>{{row.semester_id.year}}</td>
            <td>{{row.semester_id.session}}</td>
        </tr>
@@ -80,19 +81,22 @@ body {color: white;}
        <td>Labs</td>
        <td>SemesterYear</td>
        <td>SemesterSection</td>
-       <td>Complex function example of weight generation</td>
+       <td>credithours</td>
+       <td>Courseid</td>
+       <td>weight</td>
        </thead>
        {% for row in offering %}
        <tr>
            <td>{{row.id}}</td>
            <td>{{row.enrolment}}</td>
-           <td>{{row.course_gen_id.course_id.course_num}}</td>
+           <td>{{row.course_gen_id.course_id.code}}</td>
            <td>{{row.course_gen_id.course_id.subject}}</td>
            <td>{{row.course_gen_id.labs}}</td>
            <td>{{row.semester_id.year}}</td>
            <td>{{row.semester_id.session}}</td>
-           <td>{{row.course_gen_id.course_id.course_num}}</td>
-       </tr>
+           <td>{{row.course_gen_id.credit_hours}}</td>
+           <td>{{row.course_gen_id.course_id.id}}</td>
+           <td>{{row.weight}}</td>
        {% endfor %}</table>
    <table border = 5>
        <h3>Adjustment</h3>
