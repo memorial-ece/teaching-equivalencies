@@ -135,10 +135,11 @@ def Courseh(id):
 
 @app.route("/gen/<id>", methods=['GET', 'POST'])
 def gen(id):
-	# list2=[]
-	# course = Course.get(Course.code==id)
-	# generation = (CourseGeneration.select().join(Course).where(CourseGeneration.id == id))
-	# list1=informationXchange(generation,list2)
+	list2=[]
+	gen=CourseGeneration.get(CourseGeneration.id == id)
+	course = Course.get(Course.code == gen.course_id.code)
+	generation = (CourseGeneration.select().join(Course).where(Course.code == gen.course_id.code))
+	list1=informationXchange(generation,list2)
 	return render_template("course.html", course=course,generation=generation,list1=list1)
 
 

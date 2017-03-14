@@ -1,20 +1,13 @@
 <!doctype html>
 <html>
    <head>
-           <style>
-body {color: white;}
-</style>
       <title>
          profile
       </title>
        <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
    </head>
-   <body bgcolor="101111">
    {% extends "home.html" %}
    {% block content %}
-   {% if error %}
-   <p><strong>Error:</strong> {{ error }}
-       {% endif %}
    <h3>Personal Info</h3>
    <table border = 1>
        <thead>
