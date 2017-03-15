@@ -61,7 +61,7 @@ class Student(Model):
 class Offering(Model):
 	id = IntegerField(primary_key=True)
 	enrolment = IntegerField()
-	prof_id = ForeignKeyField(Person, related_name='instructor')
+	# prof_id = ForeignKeyField(Person, related_name='instructor')
 	semester_id = ForeignKeyField(Term, related_name='offering')
 	course_gen_id = ForeignKeyField(CourseGeneration, related_name='offerings')
 	weight = FloatField()
@@ -97,15 +97,8 @@ class ProjectTeam(Model):
 	email = TextField()
 
 
-class RolePerson(Model):
-	prof = ForeignKeyField(Person, related_name='perosn_id')
-	role = ForeignKeyField(Role, related_name='role_id')
-# A way to tie multiple people to different roles.
-
-
 class ProjectSupervision(Model):
 	id = IntegerField(primary_key=True)
-	prof_id = ForeignKeyField(Person, related_name='supervisied_projects')
 	pTeam_id = ForeignKeyField(ProjectTeam, related_name='projects')
 	project_class_id = ForeignKeyField(ProjectClass, related_name='projects')
 	semester_id = ForeignKeyField(Term, related_name='projects')
@@ -113,7 +106,6 @@ class ProjectSupervision(Model):
 
 class Supervision(Model):
 	id = IntegerField(primary_key=True)
-	prof_id = ForeignKeyField(Person, related_name='supervised_people')
 	student_id = ForeignKeyField(Student, related_name='supervisions')
 	supervision_class_id = ForeignKeyField(SupervisionClass, related_name='supervisions')
 	semester_id = ForeignKeyField(Term, related_name='supervisions')
@@ -124,3 +116,11 @@ class Adjustment(Model):
 	weight = FloatField()
 	comment = TextField()
 	prof_id = ForeignKeyField(Person, related_name='made_change')
+
+
+class Halberd(Model):
+	prof_id = ForeignKeyField(Person, related_name='person_id')
+	oid = ForeignKeyField(Offering, related_name='offering_id',null=True)
+	sid = ForeignKeyField(Supervision, related_name='supervision_id',null=True)
+	pid = ForeignKeyField(ProjectSupervision, related_name='project_id',null=True)
+	rid = ForeignKeyField(Role, related_name='role_id',null=True)

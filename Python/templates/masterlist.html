@@ -115,7 +115,6 @@
     <thead>
     <td>SupervisionID</td>
     <td>SupervisionClassID</td>
-    <td>ID</td>
     <td>StudentID</td>
     <td>SemesterID</td>
     </thead>
@@ -123,7 +122,6 @@
     <tr>
         <td>{{row.id}}</td>
         <td>{{row.supervision_class_id.id}}</td>
-        <td>{{row.prof_id.id}}</td>
         <td>{{row.student_id.id}}</td>
         <td>{{row.semester_id.id}}</td>
     </tr>
@@ -142,18 +140,6 @@
         <td>{{row.prof_id.id}}</td>
         <td>{{row.weight}}</td>
         <td>{{row.comment}}</td>
-    </tr>
-    {% endfor %}</table>
-<table border = 1>
-    <h3>RolePerson</h3>
-    <thead>
-    <td>ID</td>
-    <td>RoleID</td>
-    </thead>
-    {% for row in RolePerson %}
-    <tr>
-        <td>{{row.prof_id.id}}</td>
-        <td>{{row.role.id}}</td>
     </tr>
     {% endfor %}</table>
 <table border = 5>
@@ -181,7 +167,6 @@
     <thead>
     <td>OID</td>
     <td>StudentsTaking</td>
-    <td>ID</td>
     <td>SemesterID</td>
     <td>CourseGenID</td>
     <td>weight</td>
@@ -190,11 +175,29 @@
     <tr>
         <td>{{row.id}}</td>
         <td>{{row.enrolment}}</td>
-        <td>{{row.prof_id.id}}</td>
         <td>{{row.semester_id.id}}</td>
         <td>{{row.course_gen_id.id}}</td>
         <td>{{row.weight}}</td>
     </tr>
+
+    {% endfor %}</table>
+<table border = 1>
+    <h3>teaching</h3>
+    <thead>
+    <td>prof_id</td>
+    <td>oid</td>
+    <td>sid</td>
+    <td>pid</td>
+    <td>rid</td>
+    </thead>
+    {% for row in Halberd %}
+    <tr>
+        <td>{{row.prof_id.id}}</td>
+        <td>{{row.oid.id}}</td>
+        <td>{{row.sid.id}}</td>
+        <td>{{row.pid.id}}</td>
+        <td>{{row.rid.id}}</td>
+
     {% endfor %}</table>
 <table border = 5>
     <h3>Term</h3>

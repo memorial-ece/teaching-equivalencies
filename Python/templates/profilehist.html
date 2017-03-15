@@ -92,7 +92,7 @@
            <td>{{row.semester_id.session}}</td>
            <td>{{row.course_gen_id.credit_hours}}</td>
            <td>{{row.course_gen_id.course_id.id}}</td>
-           <td>{{row.weight}}</td>
+           <td>{{(row.weight)}}</td>
        </tr>
        {% endfor %}</table>
    <table border = 5>
@@ -114,9 +114,9 @@
 
     <form action = "{{ url_for('Profilehist',prof_id=prof_id,) }}" method = "POST">
     <h3>Offering</h3>
-    wegt
+    weight
     <input type = "text" name = "weight" /><br>
-    weight<br>
+    oid<br>
     <input type = "text" name = "myid" /><br>
     <input type = "submit" name="subm1" value = "submit2" /><br>
     </form>

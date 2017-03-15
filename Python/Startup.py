@@ -95,7 +95,10 @@ def offergen():
 	semester_quick_gen(2008)
 	# person(name,email)
 	person('Mr. Anderson','jonathan.anderson@mun.ca',2012,3)
-	lang()
+	person('Mr. Anderson','jonathan.anderson@mun.ca',2008,3)
+	person('Mr. Anon','jonathan.arson@mun.ca',2013,3)
+
+	# lang()
 	# student(name, email)
 	student('Juteau','2011205085')
 	student('Derakhshan Nik','201509962')
@@ -106,12 +109,14 @@ def offergen():
 	supera(2015,1,1,1,1)
 	supera(2015,1,2,1,2)
 	supera(2015,1,1,1,3)
-	supera(2015,1,2,1,3)
+	supera(2015,2,2,1,3)
 	supera(2015,1,3,1,3)
-	# offer(year,code,session,profid,numberofstudents)
-	offer(2015,1020,2,1,1,3)
-	offer(2015,3891,1,1,1,1)
-	offer(2015,8894,2,1,1,1)
+	# offer(year,code,session,profid,numberofstudents,sectionnumbers):
+	offer(2015,1020,2,1,80,3)
+	offer(2015,3891,1,1,80,1)
+	offer(2015,8894,2,1,70,1)
+	offer(2015,3891,1,2,80,1)
+	offer(2015,8894,2,2,70,1)
 	return redirect('/listm')
 
 
@@ -148,50 +153,38 @@ def Profilehist(prof_id):
 	person = Person.get(Person.id == prof_id)
 	supervision = (Supervision
 				   .select()
-				   .join(Person)
-				   .where(Person.id == prof_id)
+				   .join(Halberd)
+				   .where(Halberd.prof_id == prof_id)
 				   .order_by(Supervision.semester_id.desc()))
 	projectsupervision = (ProjectSupervision
 						  .select()
-						  .join(Person)
-						  .where(Person.id == prof_id)
+						  .join(Halberd)
+						  .where(Halberd.prof_id == prof_id)
 						  .order_by(ProjectSupervision.semester_id.desc()))
 	offering = (Offering
 				.select()
-				.join(Person)
-				.where(Person.id == prof_id)
+				.join(Halberd)
+				.where(Halberd.prof_id == prof_id)
 				.order_by(Offering.semester_id.desc()))
 	adjustment = (Adjustment
 				  .select()
 				  .join(Person)
 				  .where(Person.id == prof_id)
 				  .order_by(Adjustment.id.desc()))
+	halberd=Halberd.select().where(Halberd.prof_id==prof_id)
 	Stotal = 0
 	Atotal = 0
 	Ptotal = 0
 	Ototal = 0
-	Stotal = (Supervision
-			  .select()
-			  .where(Supervision.prof_id == prof_id)
-			  .join(SupervisionClass)
-			  .select(fn.SUM(SupervisionClass.weight))
-			  .scalar())
+	# Stotal=sup_totals(prof_id)
+	Ototal=off_totals(prof_id)
+	# Ptotal=pro_totals(prof_id)
+	bad_updater(prof_id)
 	Atotal = (Person
 			  .select()
 			  .where(Person.id == prof_id)
 			  .join(Adjustment)
 			  .select(fn.SUM(Adjustment.weight))
-			  .scalar())
-	Ototal = (Offering
-			  .select()
-			  .where(Offering.prof_id == prof_id)
-			  .select(fn.SUM(Offering.weight))
-			  .scalar())
-	Ptotal = (ProjectSupervision
-			  .select()
-			  .where(ProjectSupervision.prof_id == prof_id)
-			  .join(ProjectClass)
-			  .select(fn.SUM(ProjectClass.weight))
 			  .scalar())
 	defi=deficit(prof_id)
 	if Ototal is None:
@@ -203,6 +196,7 @@ def Profilehist(prof_id):
 	if Ptotal is None:
 		Ptotal = 0
 	total = (Ptotal) + (Atotal) + (Stotal) + (Ototal) - defi
+	peopleteach=people_also_teaching(prof_id)
 	if request.method == 'POST':
 		if request.form['subm1'] == "submit2":
 			# semesterID1 = request.form['SemesterID1']
@@ -214,7 +208,8 @@ def Profilehist(prof_id):
 			update=Offering.update(weight=weight).where(Offering.id==myid)
 			update.execute()
 	return render_template("profilehist.html", person=person, supervision=supervision,prof_id=prof_id,
-						   projectsupervision=projectsupervision, offering=offering, adjustment=adjustment,total=total,Stotal=Stotal,Ototal=Ototal)
+						   projectsupervision=projectsupervision, offering=offering, adjustment=adjustment,total=total,
+						   Stotal=Stotal,Ototal=Ototal,)
 
 
 @app.route("/profile/<prof_id>", methods=['GET', 'POST'])
@@ -235,9 +230,9 @@ def Profile(prof_id):
 						  .order_by(ProjectSupervision.id.desc()))
 	offering = (Offering
 				.select()
-				.join(Person, on=(Offering.id == Person.id))
+				.join(Halberd, on=(Offering.id == Halberd.prof_id))
 				.join(Term, on=(Offering.id == Term.id))
-				.where(Person.id == prof_id, Term.year == year1)
+				.where(Halberd.id == prof_id, Term.year == year1)
 				.order_by(Offering.id.desc()))
 	adjustment = (Adjustment
 				  .select()
@@ -262,7 +257,8 @@ def Profile(prof_id):
 			  .scalar())
 	Ototal = (Offering
 			  .select()
-			  .where(Offering.prof_id == prof_id)
+			  .join(Halberd)
+			  .where(Halberd.prof_id == prof_id)
 			  .select(fn.SUM(Offering.weight))
 			  .scalar())
 	Ptotal = (ProjectSupervision
@@ -289,7 +285,7 @@ def Profile(prof_id):
 			myid = request.form['myid']
 			update = Offering.update(weight=weight).where(Offering.id == myid)
 			update.execute()
-	return render_template("profile.html", person=person, supervision=supervision, prof_id=prof_id,
+	return render_template("profilehist.html", person=person, supervision=supervision, prof_id=prof_id,
 						   projectsupervision=projectsupervision, offering=offering, adjustment=adjustment, total=total,
 						   Stotal=Stotal, Ototal=Ototal)
 
@@ -327,11 +323,12 @@ def listm():
 			ADJWeight = request.form['ADJWeight']
 			AUDITCOMMENT = request.form['AUDITCOMMENT']
 			Adjustment.create(prof_id=iD4, weight=ADJWeight, audit_comment=AUDITCOMMENT)
+	halberd = Halberd.select().order_by(Halberd.oid.asc())
 	return render_template("masterlist.html", Person=Person, ProjectTeam=ProjectTeam, Course=Course,
 						   SupervisionClass=SupervisionClass, ProjectClass=ProjectClass,
 						   ProjectSupervision=ProjectSupervision, Supervision=Supervision, Adjustment=Adjustment,
-						   RolePerson=RolePerson, Role=Role, Term=Term, Offering=Offering,
-						   CourseGeneration=CourseGeneration, Student=Student)
+						   Role=Role, Term=Term, Offering=Offering,
+						   CourseGeneration=CourseGeneration, Student=Student,Halberd=halberd)
 
 
 @app.route('/Dashboard')
@@ -348,22 +345,22 @@ def peeweetable():
 			db.connect()
 			# removed Course and CourseGeneration
 			db.drop_tables(
-				[Person,  Term, Offering, Role, RolePerson, ProjectSupervision, ProjectClass,
+				[Person,Halberd, Offering, Role, ProjectSupervision, ProjectClass,
 				 Supervision, SupervisionClass, ProjectTeam, Student, Adjustment],safe=True)
 			db.create_tables(
-				[Person, Term, Offering, Role, RolePerson, ProjectSupervision, ProjectClass,
+				[Person,Halberd, Offering, Role, ProjectSupervision, ProjectClass,
 				 Supervision, SupervisionClass, ProjectTeam, Student, Adjustment],safe=True)
 			db.close()
 		elif request.form['Full'] == 'Create':
 			db.connect()
 			db.create_tables(
-				[Person, Term, Offering, Role, RolePerson, ProjectSupervision, ProjectClass,
+				[Person, Halberd,Offering, Role, ProjectSupervision, ProjectClass,
 				 Supervision, SupervisionClass, ProjectTeam, Student, Adjustment],safe=True)
 			db.close()
 		elif request.form['Full'] == 'Drop':
 			db.connect()
 			db.drop_tables(
-				[Person, Term, Offering, Role, RolePerson, ProjectSupervision, ProjectClass,
+				[Person, Halberd,Offering, Role, ProjectSupervision, ProjectClass,
 				 Supervision, SupervisionClass, ProjectTeam, Student, Adjustment],safe=True)
 			db.close()
 	return render_template('reset.html')

@@ -24,8 +24,8 @@ stripprimary = re.compile(r"[a-zA-Z0-9._-]{2,}")
 crsnumber= re.compile(r"(?<=ENGI )(\d+)")
 
 def lang():
-	starttear=2006
-	while starttear!=2015:
+	starttear=2010
+	while starttear!=2012:
 		starttear+=1
 		startsem = 0
 		while startsem!=3:
@@ -39,28 +39,11 @@ def lang():
 					if file1[1]!=']' and file3[1]!=']':
 						file1 = str(file1).strip("[]'")
 						file3 = str(file3).strip("'[]")
-						person(file1,file1+'@why.ca',starttear,startsem)
+						person(file1,file1+'@mun.ca',starttear,startsem)
 						pid=Person.select().where(Person.name==file1).get()
 						offer(starttear,file3,startsem,pid.id,1,1)
-						print file3
 			except:
 				print 'no latest semester'
-
-# def lang2():
-# 	starttear = 2007
-# 	while starttear != 2010:
-# 		starttear += 1
-# 		startsem = 0
-# 		while startsem != 3:
-# 			startsem += 1
-# 			x_file = str((open('All the records/' + str(starttear) + '0' + str(startsem) + '.html').readlines()))
-# 			file3 = str(crsnumber.findall(x_file))
-# 			a=0
-# 			for y in file3:
-# 				a+=1
-# 				y = y.strip("',[]")
-# 				pid = Person.select().where(Person.name == a).get()
-# 				offer(starttear, y, startsem, pid, 1, 1)
 
 
 def informationXchange(generation,list1):
@@ -136,13 +119,10 @@ def semester_quick_gen(fromD):
 def offer(year,code,session,profid,numberofstudents,sectionnumbers):
 	for x in CourseGeneration.select().join(Course).where(Course.code==code).order_by(CourseGeneration.year_valid_to.asc()):
 		if int(x.year_valid_to)>=int(year):
-			year2=x.year_valid_to
 			ses=Term.select().where(Term.year==year,Term.session==session).get()
 			b1 = x.credit_hours
 			c1 = x.labs
 			d1= x.other_info
-			wb1 = float(b1) / 3
-			wc1 = float(c1) / 36 *.27 * sectionnumbers
 			wd1 = 0
 			if d1 == 'up to eight tutorial sessions per semester':
 				wd1 = float(.07)
@@ -154,11 +134,29 @@ def offer(year,code,session,profid,numberofstudents,sectionnumbers):
 				wd1 = float(.14)
 			if d1 == '1 client meeting per week, 1 tutorial per week':
 				wd1 = float(.14)
-			weight1 = wb1 + wc1 + wd1
-			Offering.get_or_create(enrolment=numberofstudents,prof_id=profid,semester_id=ses,course_gen_id=x.id,weight=weight1)
+			weight1=fix(numberofstudents,sectionnumbers,b1,c1,wd1)
+			try:
+				Offering.get_or_create(enrolment=numberofstudents,semester_id=ses,course_gen_id=x.id,weight=weight1)
+				A=Offering.select().where(Offering.enrolment==numberofstudents,Offering.semester_id==ses,Offering.course_gen_id==x.id,Offering.weight==weight1).get()
+			except:
+				A=Offering.select().where(Offering.enrolment==numberofstudents,Offering.semester_id==ses,Offering.course_gen_id==x.id,Offering.weight==weight1).get()
+			Halberd.get_or_create(prof_id=profid,oid=A)
 			break
 
 
+def fix(numberofstudents,sectionnumbers,b1,c1,wd1,):
+	wa1=float(float(b1)/float(3))
+	numberofstudents=float(numberofstudents)
+	if numberofstudents > 75:
+		we = float((((float(b1) + ((numberofstudents) - float(75))) / float(75 ))* .5))
+	else:
+		we = 0
+	wb1 = ((((float(b1) + float(c1)) / float(36))* .27))*float(sectionnumbers)
+	wc1 = ((((float(b1) + float(wd1)) / float(12) )* .14))
+	weight1 = wb1 + wc1 + we+wa1
+	if numberofstudents < 5:
+		weight1 = 0
+	return weight1
 
 def Psuper():
 	ProjectClass.get_or_create(description='Undergraduate project course', weight=0.5)
@@ -176,13 +174,16 @@ def superC(BOOLDoyouwanttocreateanewone,Description,Weight):
 
 def supera(TermS,profid,Studentid,supervisoncalss,session):
 	ses=Term.select().where(Term.year==TermS,Term.session==session).get()
-	Supervision.get_or_create(prof_id=profid,student_id=Studentid,supervision_class_id=supervisoncalss,semester_id=ses)
+	Supervision.get_or_create(student_id=Studentid,supervision_class_id=supervisoncalss,semester_id=ses)
+	A=Supervision.select().where(Supervision.student_id==Studentid,Supervision.supervision_class_id==supervisoncalss,Supervision.semester_id==ses).get()
+	Halberd.get_or_create(prof_id=profid, sid=A)
 
 
 def person(name,email,staryear,startsem):
 	# can't hear
 	ses=Term.select().where(Term.year==staryear,Term.session==startsem).get()
 	try:
+		B=Person.get_or_create(name=name,email=email,start=ses.id)
 		Person.get_or_create(name=name,email=email,start=ses.id)
 	except:
 		pass
@@ -231,5 +232,56 @@ def currentsem():
 		sem=3
 	return sem
 
+def sup_totals(prof_id):
+	Stotal = (Supervision
+			  .select(SupervisionClass)
+			  .join(Halberd, on=Supervision.id==Halberd.sid)
+			  .join(SupervisionClass.id,on=SupervisionClass.id==Supervision.id)
+			  .where(Halberd.id==prof_id)
+			  .select(fn.SUM(SupervisionClass.weight))
+			  .scalar())
+	print Stotal
+	return Stotal
 
+def off_totals(prof_id):
+	Ototal = (Offering
+			  .select()
+			  .join(Halberd)
+			  .where(Halberd.prof_id == prof_id)
+			  .select(fn.SUM(Offering.weight))
+			  .scalar())
+	return Ototal
 
+def pro_totals(prof_id):
+	Ptotal = (ProjectSupervision
+			  .select()
+			  .where(ProjectSupervision.prof_id == prof_id)
+			  .join(ProjectClass)
+			  .select(fn.SUM(ProjectClass.weight)))
+	return Ptotal
+
+def people_also_teaching(prof_id):
+	offering = (Offering
+				.select()
+				.join(Halberd)
+				.where(Halberd.prof_id == prof_id)
+				.order_by(Offering.semester_id.desc()))
+	peopleteaching1=list()
+	n=0
+	for x in offering:
+		peopleteaching2=list()
+		teaching=Halberd.select().where(Halberd.oid==x.id)
+		b=0
+		for y in teaching:
+			n+=1
+			a=y.prof_id.id
+			peopleteaching2.append(a)
+		peopleteaching1.append(len(peopleteaching2))
+	return peopleteaching1
+
+def bad_updater(prof_id):
+	offering = (Offering
+				.select()
+				.join(Halberd)
+				.where(Halberd.prof_id == prof_id)
+				.order_by(Offering.semester_id.desc()))
