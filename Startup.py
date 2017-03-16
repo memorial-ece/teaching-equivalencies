@@ -13,8 +13,6 @@
 #    limitations under the License.
 from flask import *
 from werkzeug.utils import *
-
-from Python.Tempdead.Exporter import *
 from orginization_functions import *
 
 reload(sys)
@@ -38,55 +36,6 @@ def favicon():
 def allowed_file(filename):
 	return '.' in filename and \
 		   filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
-
-@app.route("/export", methods=['GET', 'POST'])
-def docustomexport():
-	if request.method == 'POST':
-		selector = request.form.get('Select')
-		if selector == 'Person':
-			export_profile()
-			return send_file('table_Person.csv')
-		if selector == 'Supervision':
-			export_supervision()
-			return send_file('table_Supervision.csv')
-		if selector == 'SupervisionClass':
-			export_supervision_class()
-			return send_file('table_SupervisionClass.csv')
-		if selector == 'Course':
-			export_course()
-			return send_file('table_Course.csv')
-		if selector == 'CourseGeneration':
-			export_course_generation()
-			return send_file('table_CourseGeneration.csv')
-		if selector == 'Student':
-			export_student()
-			return send_file('table_Student.csv')
-		if selector == 'Term':
-			export_term()
-			return send_file('table_Term.csv')
-		if selector == 'Offering':
-			export_offering()
-			return send_file('table_Offering.csv')
-		if selector == 'Role':
-			export_role()
-			return send_file('table_Role.csv')
-		if selector == 'ProjectClass':
-			export_project_class()
-			return send_file('table_ProjectClass.csv')
-		if selector == 'PseudoPeople':
-			export_ProjectType()
-			return send_file('table_PseudoPeople.csv')
-		if selector == 'RolePerson':
-			export_role_person()
-			return send_file('table_RolePerson.csv')
-		if selector == 'ProjectSupervision':
-			export_project_supervision()
-			return send_file('table_ProjectSupervision.csv')
-		if selector == 'Adjustment':
-			export_adjustment()
-			return send_file('table_Adjustment.csv')
-	return render_template('export.html')
 
 
 @app.route('/offering')
