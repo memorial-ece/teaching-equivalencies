@@ -15,11 +15,11 @@ import re
 from Class import *
 import datetime
 import sys
+from itertools import *
 import random
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
-namestrip = re.compile(r"(?<=Primary - )...\S+")
 stripprimary = re.compile(r"[a-zA-Z0-9._-]{2,}")
 crsnumber= re.compile(r"(?<=ENGI )(\d+)")
 
@@ -36,12 +36,56 @@ def test():
 			targ.write('calendar/'+str(a)+str(b)+'.html ')
 
 
-def lang():
-	starttear=2010
-	while starttear!=2012:
-		starttear+=1
+def lazy_lang(year):
+	rightline = re.compile(r"\bPrimary.*\b")
+	namestrip = re.compile(r"\w+\s\w+\.*$")
+	starttear = 2007
+	while starttear != year:
+		starttear += 1
+		startsem = 0
+		while startsem != 3:
+			var = 0
+			startsem += 1
+			try:
+				x_file = list((open('offerings/' + str(starttear) + '0' + str(startsem) + '.html').readlines()))
+				for w in (x_file):
+					w =w.splitlines()
+					w=''.join(w).strip()
+					try:
+						var+=1
+						file2 = ''.join(rightline.findall(w))
+						file2=str(file2)
+						file1 = (namestrip.findall(file2))
+						file3 = (crsnumber.findall(w))
+						if file1[0] != ']':
+							file1=''.join(file1)
+							file3=''.join(file3).strip()
+							person(file1,file1+'@mun.ca',starttear,startsem)
+							real=Person.get(Person.name==file1)
+							gen=CourseGeneration.select().join(Course).where(Course.code == file3,(starttear>=CourseGeneration.start_year and starttear<=CourseGeneration.end_year)).get()
+							ses = Term.select().where(Term.year == starttear, Term.session == startsem).get()
+							offer=Offering.get(Offering.generation==gen.id,Offering.semester==ses.id)
+							Mastermany.get_or_create(instructor=real.id, oid=offer.id, split=1)
+							print 'works'
+
+					except:pass
+			except:
+				print 'no latest semester'
+
+
+
+def lang(year):
+	namestrip = re.compile(r"(?<=Primary - )...\S+")
+	starttear=2007
+	while starttear!=year:
+		starttear += 1
 		startsem = 0
 		while startsem!=3:
+			list1 = list()
+			list2 = list()
+			list3 = list()
+			list4 = list()
+			var = -1
 			startsem+=1
 			try:
 				x_file = list((open('offerings/'+str(starttear)+'0'+str(startsem)+'.html').readlines()))
@@ -49,15 +93,32 @@ def lang():
 					w = str(w.splitlines())
 					file1 = str((namestrip.findall(w)))
 					file3 = str(crsnumber.findall(w))
-					if file1[1]!=']' and file3[1]!=']':
+					if file1[1]!=']':
+						var+=1
+						list1.append(file1)
 						file1 = str(file1).strip("[]'")
-						file3 = str(file3).strip("'[]")
-						person(file1,file1+'@mun.ca',starttear,startsem)
-						pid=Person.select().where(Person.name==file1).get()
-						offer(starttear,file3,startsem,pid.id,1,1)
+						file4 = str(file3).strip("'[]")
+						var3=[len(list(group)) for key, group in groupby(list1)]
+						list2.append(file1)
+						list3.append(file4)
+						if file3[1]!=']':
+							list4.append(file1)
 			except:
 				print 'no latest semester'
 
+			var5=-1
+			var4=-1
+			var6=var5
+			for x in var3:
+				var4+=1
+				var5+=1
+				person(list4[var5],list4[var5]+'@mun.ca',starttear,startsem)
+				pid=Person.select().where(Person.name==list4[var5]).get()
+				if list3[var6]!='':
+					var6+=1
+					while list3[var6]=='':
+						var6+=1
+					offer(starttear,list3[var5],startsem,pid.id,80,x)
 
 def informationXchange(generation,list1):
 	first_run_var=1
@@ -196,9 +257,9 @@ def supera(TermS,profid,Studentid,supervisoncalss,session):
 
 def person(name,email,staryear,startsem):
 	# can't hear
+
 	ses=Term.select().where(Term.year==staryear,Term.session==startsem).get()
 	try:
-		B=Person.get_or_create(name=name,email=email,start=ses.id)
 		Person.get_or_create(name=name,email=email,start=ses.id)
 	except:
 		pass
@@ -255,40 +316,36 @@ def check(code1,code2,code3):
 		check1 = Mastermany.select().where(Mastermany.oid==code1)
 		n=0
 		for a in check1:
-			n=a.split
+			n+=a.split
 		return n
 	if code2!=0:
 		check1=Mastermany.select().where(Mastermany.pid==code2)
 		n=0
 		for a in check1:
-			n=a.split
+			n+=a.split
 		return n
 	if code3!=0:
 		check1=Mastermany.select().where(Mastermany.sid==code3)
 		n=0
 		for a in check1:
-			n=a.split
+			n+=a.split
 		return n
 
 
 def splitting(number_of_people,code,what_to_update):
 	var=float(float(1)/float(number_of_people))
-	print code
 	if what_to_update=='offering':
 		a=check(code,0,0)
-		print a
 		if a >1:
 			update = Mastermany.update(split=var).where(Mastermany.oid == code)
 			update.execute()
 	if what_to_update=='projectsupervision':
 		a=check(0,code,0)
-		print a
 		if a >1:
 			update = Mastermany.update(split=var).where(Mastermany.pid == code)
 			update.execute()
 	if what_to_update=='supervision':
 		a=check(0,0,code)
-		print a
 		if a>1:
 			update = Mastermany.update(split=var).where(Mastermany.sid == code)
 			update.execute()

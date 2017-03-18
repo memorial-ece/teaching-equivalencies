@@ -38,6 +38,11 @@ def allowed_file(filename):
 		   filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
+@app.route('/splits')
+def splits():
+	start_splitting()
+	return redirect('/listm')
+
 @app.route('/offering')
 def offergen():
 	# ######################semester_quick_gen(fromD)
@@ -46,7 +51,8 @@ def offergen():
 	person('Mr. Anderson','jonathan.anderson@mun.ca',2012,3)
 	person('Mr. Anders54on','jon56athan.anderson@mun.ca',2008,3)
 	person('Mr. Anon','jonathan.arson@mun.ca',2013,3)
-	lang()
+	lang(2015)
+	lazy_lang(2015)
 	# ################student(name, email)
 	student('Juteau','2011205085')
 	student('Derakhshan Nik','201509962')
@@ -70,7 +76,6 @@ def offergen():
 	offer(2015,8894,2,3,70,1)
 	offer(2015,3891,1,2,80,1)
 	offer(2015,8894,2,2,70,1)
-	# start_splitting()
 	return redirect('/listm')
 
 
@@ -315,46 +320,46 @@ def peeweetable():
 			# removed Course and CourseGeneration
 			db.drop_tables(
 				[Person,Mastermany,
-				 Term,
+				 # Term,
 				 Offering,
-				 Course,
+				 # Course,
 				 Role, ProjectSupervision, ProjectClass,
 				 Supervision,
-				 CourseGeneration,
+				 # CourseGeneration,
 				 SupervisionClass, ProjectType,
 				 Student, Adjustment],safe=True)
 			db.create_tables(
 				[Person,Mastermany,
-				 Term,
+				 # Term,
 				 Offering,
-				 Course,
+				 # Course,
 				 Role, ProjectSupervision, ProjectClass,
 				 Supervision,
-				 CourseGeneration,
+				 # CourseGeneration,
 					SupervisionClass, ProjectType, Student, Adjustment],safe=True)
 			db.close()
 		elif request.form['Full'] == 'Create':
 			db.connect()
 			db.create_tables(
 				[Person, Mastermany,
-				 Term,
+				 # Term,
 				 Offering,
-				 Course,
+				 # Course,
 					Role, ProjectSupervision, ProjectClass,
 				 Supervision,
-				 CourseGeneration,
+				 # CourseGeneration,
 				 SupervisionClass, ProjectType, Student, Adjustment],safe=True)
 			db.close()
 		elif request.form['Full'] == 'Drop':
 			db.connect()
 			db.drop_tables(
 				[Person, Mastermany,
-				 Term,
+				 # Term,
 				 Offering,
-				 Course,
+				 # Course,
 				 Role, ProjectSupervision, ProjectClass,
 				 Supervision,
-				 CourseGeneration,
+				 # CourseGeneration,
 				 SupervisionClass, ProjectType, Student, Adjustment],safe=True)
 			db.close()
 	return render_template('reset.html')

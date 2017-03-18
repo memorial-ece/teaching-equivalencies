@@ -43,6 +43,9 @@ for code, details in list_course.items():
 	for keyyear in sorted_det:
 		Progress_counter+=1
 		year1, info1 = keyyear[0], keyyear[1]
+		var1=re.compile(r"....")
+		year1=str(var1.findall(str(year1)))
+		year1=year1.strip("'[]")
 		try:
 			peewee_check = CourseGeneration.select()\
 				.join(Course).where(Course.code == code,CourseGeneration.start_year == year1).get()
