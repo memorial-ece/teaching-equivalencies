@@ -346,12 +346,12 @@ def splitting(number_of_people,code,what_to_update):
 	var=float(float(1)/float(number_of_people))
 	if what_to_update=='offering':
 		a=check(code,0,0)
-		if a >1:
+		if a>1:
 			update = Mastermany.update(split=var).where(Mastermany.oid == code)
 			update.execute()
 	if what_to_update=='projectsupervision':
 		a=check(0,code,0)
-		if a >1:
+		if a>1:
 			update = Mastermany.update(split=var).where(Mastermany.pid == code)
 			update.execute()
 	if what_to_update=='supervision':
@@ -376,24 +376,22 @@ def start_splitting():
 					p= a[1][loop_num]
 					o=x
 					splitting(o,p,'offering')
-			# for id in person:
-			# 	a = people_also_teaching(id, 'projectsupervision')
-			# 	loop_num = -1
-			# 	for x in a[0]:
-			# 		loop_num += 1
-			# 		if x > 1:
-			# 			p = a[1][loop_num]
-			# 			o = x
-			# 			splitting(o,p,'projectsupervision')
-			# for id in person:
-			# 	a=people_also_teaching(id,'supervision')
-			# 	loop_num = -1
-			# 	for x in a[0]:
-			# 		loop_num += 1
-			# 		if x > 1:
-			# 			p = a[1][loop_num]
-			# 			o = x
-			# 			splitting(o,p,'supervision')
+			a = people_also_teaching(id, 'projectsupervision')
+			loop_num = -1
+			for x in a[0]:
+				loop_num += 1
+				if x > 1:
+					p = a[1][loop_num]
+					o = x
+					splitting(o,p,'projectsupervision')
+			a=people_also_teaching(id,'supervision')
+			loop_num = -1
+			for x in a[0]:
+				loop_num += 1
+				if x > 1:
+					p = a[1][loop_num]
+					o = x
+					splitting(o,p,'supervision')
 
 def people_also_teaching(prof_id,activator):
 	if activator=='offering':
