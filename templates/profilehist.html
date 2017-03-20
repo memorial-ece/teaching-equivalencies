@@ -8,6 +8,8 @@
    </head>
    {% extends "home.html" %}
    {% block content %}
+   <h4>deficit</h4>
+   <h2>{{deficit}}</h2>
    <h3>Personal Info</h3>
    <table border = 1>
        <thead>
@@ -84,15 +86,15 @@
        {% for row in offering %}
        <tr>
            <td>{{row.id}}</td>
-           <td>{{row.enrolment}}</td>
-           <td><a href="/c/{{row.generation.course.code}}">{{row.generation.course.code}}</a></td>
-           <td>{{row.generation.course.subject}}</td>
-           <td>{{row.generation.labs}}</td>
-           <td>{{row.semester.year}}</td>
-           <td>{{row.semester.session}}</td>
-           <td>{{row.generation.credit_hours}}</td>
-           <td><a href="/course/{{row.generation.course.id}}">{{row.generation.course.id}}</a></td>
-           <td>{{row.weight}}</td>
+           <td>{{row.oid.enrolment}}</td>
+           <td><a href="/c/{{row.oid.generation.course.code}}">{{row.oid.generation.course.code}}</a></td>
+           <td>{{row.oid.generation.course.subject}}</td>
+           <td>{{row.oid.generation.labs}}</td>
+           <td>{{row.oid.semester.year}}</td>
+           <td>{{row.oid.semester.session}}</td>
+           <td>{{row.oid.generation.credit_hours}}</td>
+           <td><a href="/course/{{row.oid.generation.course.id}}">{{row.oid.generation.course.id}}</a></td>
+           <td>{{row.oid.weight*row.split}}</td>
        </tr>
        {% endfor %}</table>
    <table border = 5>

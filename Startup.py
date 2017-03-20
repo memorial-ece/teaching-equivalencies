@@ -143,9 +143,9 @@ def Profilehist(prof_id):
 						  .join(Mastermany)
 						  .where(Mastermany.instructor == prof_id)
 						  .order_by(ProjectSupervision.semester.desc()))
-	offering = (Offering
+	offering = (Mastermany
 				.select()
-				.join(Mastermany)
+				.join(Offering)
 				.where(Mastermany.instructor == prof_id)
 				.order_by(Offering.semester.desc()))
 	adjustment = (Adjustment
@@ -158,18 +158,24 @@ def Profilehist(prof_id):
 	Atotal = 0
 	Ptotal = 0
 	Ototal = 0
-	# Stotal = (Supervision
-	# 			  .select()
-	# 			  .where(Supervision.prof_id == prof_id)
-	# 			  .select(fn.SUM(SupervisionClass.weight))
-	# 			  .scalar())
-	# Ototal = (Offering
-	# 			  .select()
-	# 			  .join(Mastermany)
-	# 			  .where(Mastermany.prof_id == prof_id)
-	# 			  .select(fn.SUM(Offering.weight))
-	# 			  .scalar())
-	#
+	Snum = (Supervision
+				  .select()
+				  .join(Mastermany)
+				  .where(Mastermany.instructor == prof_id))
+	for num in Snum:
+		Ssum=Mastermany.select().where(Mastermany.sid==num.id).get()
+		Stotal+=num.supervision_class_id.weight*Ssum.split
+
+	Onum = (Offering
+				  .select()
+				  .join(Mastermany)
+				  .where(Mastermany.instructor == prof_id))
+	for num in Onum:
+		Osum=Mastermany.select().where(Mastermany.oid==num.id).get()
+		print num.weight
+		print Osum.split
+		Ototal+=num.weight*Osum.split
+
 	# Ptotal = (ProjectSupervision
 	# 			  .select()
 	# 			  .where(ProjectSupervision.prof_id == prof_id)
@@ -206,7 +212,7 @@ def Profilehist(prof_id):
 			update.execute()
 	return render_template("profilehist.html", person=person, supervision=supervision,instructor=prof_id,
 						   projectsupervision=projectsupervision, offering=offering, adjustment=adjustment,total=total,
-						   Stotal=Stotal,Ototal=Ototal,)
+						   Stotal=Stotal,Ototal=Ototal,Onum=Onum,deficit=defi)
 
 
 @app.route("/profile/<prof_id>", methods=['GET', 'POST'])
