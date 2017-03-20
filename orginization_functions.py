@@ -15,6 +15,7 @@ import re
 from Class import *
 import datetime
 import sys
+from playhouse.csv_loader import *
 from itertools import *
 import random
 reload(sys)
@@ -65,7 +66,7 @@ def lazy_lang(year):
 							gen=CourseGeneration.select().join(Course).where(Course.code == file3,(starttear>=CourseGeneration.start_year and starttear<=CourseGeneration.end_year)).get()
 							ses = Term.select().where(Term.year == starttear, Term.session == startsem).get()
 							offer=Offering.get(Offering.generation==gen.id,Offering.semester==ses.id)
-							Mastermany.get_or_create(instructor=real.id, oid=offer.id, split=1)
+							Mastermany.get_or_create(instructor=real.id, oid=offer.id)
 							print 'works'
 
 					except:pass
@@ -215,7 +216,7 @@ def offer(year,code,session,profid,numberofstudents,sectionnumbers):
 				A=Offering.select().where(Offering.enrolment==numberofstudents,Offering.semester==ses,Offering.generation==x.id,Offering.weight==weight1).get()
 			except:
 				A=Offering.select().where(Offering.enrolment==numberofstudents,Offering.semester==ses,Offering.generation==x.id,Offering.weight==weight1).get()
-			Mastermany.get_or_create(instructor=profid,oid=A, split=1)
+			Mastermany.get_or_create(instructor=profid,oid=A)
 			break
 
 
@@ -315,20 +316,29 @@ def check(code1,code2,code3):
 	if code1!=0:
 		check1 = Mastermany.select().where(Mastermany.oid==code1)
 		n=0
-		for a in check1:
-			n+=a.split
+		if check1==None:
+			n=2
+		else:
+			for a in check1:
+				n+=a.split
 		return n
 	if code2!=0:
 		check1=Mastermany.select().where(Mastermany.pid==code2)
 		n=0
-		for a in check1:
-			n+=a.split
+		if check1==None:
+			n=2
+		else:
+			for a in check1:
+				n+=a.split
 		return n
 	if code3!=0:
 		check1=Mastermany.select().where(Mastermany.sid==code3)
 		n=0
-		for a in check1:
-			n+=a.split
+		if check1==None:
+			n=2
+		else:
+			for a in check1:
+				n+=a.split
 		return n
 
 
@@ -352,35 +362,38 @@ def splitting(number_of_people,code,what_to_update):
 
 
 def start_splitting():
-	person=Person.select()
-	for id in person:
-		a=people_also_teaching(id,'offering')
-		loop_num=-1
-		for x in a[0]:
-			loop_num+=1
-			if x>1:
-				p= a[1][loop_num]
-				o=x
-				splitting(o,p,'offering')
-	for id in person:
-		a = people_also_teaching(id, 'projectsupervision')
-		loop_num = -1
-		for x in a[0]:
-			loop_num += 1
-			if x > 1:
-				p = a[1][loop_num]
-				o = x
-				splitting(o,p,'projectsupervision')
-	for id in person:
-		a=people_also_teaching(id,'supervision')
-		loop_num = -1
-		for x in a[0]:
-			loop_num += 1
-			if x > 1:
-				p = a[1][loop_num]
-				o = x
-				splitting(o,p,'supervision')
-
+	pers=Mastermany.select().join(Person).where(Mastermany.instructor==Person.id)
+	for any in pers:
+		if any.split < 1:
+			print 'splitskip works'
+			pass
+		else:
+			a=people_also_teaching(any.instructor.id,'offering')
+			loop_num=-1
+			for x in a[0]:
+				loop_num+=1
+				if x>1:
+					p= a[1][loop_num]
+					o=x
+					splitting(o,p,'offering')
+			# for id in person:
+			# 	a = people_also_teaching(id, 'projectsupervision')
+			# 	loop_num = -1
+			# 	for x in a[0]:
+			# 		loop_num += 1
+			# 		if x > 1:
+			# 			p = a[1][loop_num]
+			# 			o = x
+			# 			splitting(o,p,'projectsupervision')
+			# for id in person:
+			# 	a=people_also_teaching(id,'supervision')
+			# 	loop_num = -1
+			# 	for x in a[0]:
+			# 		loop_num += 1
+			# 		if x > 1:
+			# 			p = a[1][loop_num]
+			# 			o = x
+			# 			splitting(o,p,'supervision')
 
 def people_also_teaching(prof_id,activator):
 	if activator=='offering':
@@ -425,3 +438,81 @@ def people_also_teaching(prof_id,activator):
 		return courseteaching1,a2
 	except:
 		return 'error'
+
+
+def import_file(selector):
+	name = selector+'.csv'
+	if selector == 'Person':
+		load_csv(Person, name)
+	if selector == 'Supervision':
+		load_csv(Supervision, name)
+	if selector == 'SupervisionClass':
+		load_csv(SupervisionClass, name)
+	if selector == 'Course':
+		load_csv(Course, name)
+	if selector == 'CourseGeneration':
+		load_csv(CourseGeneration, name)
+	if selector == 'Student':
+		load_csv(Student, name)
+	if selector == 'Term':
+		load_csv(Term, name)
+	if selector == 'Offering':
+		load_csv(Offering, name)
+	if selector == 'Role':
+		load_csv(Role, name)
+	if selector == 'ProjectClass':
+		load_csv(ProjectClass, name)
+	if selector == 'ProjectType':
+		load_csv(ProjectType, name)
+	if selector == 'Mastermany':
+		load_csv(Mastermany, name)
+	if selector == 'ProjectSupervision':
+		load_csv(ProjectSupervision, name)
+	if selector == 'Adjustment':
+		load_csv(Adjustment, name)
+
+
+def export_file(selector):
+	with open(selector+'.csv', 'w') as fh:
+		if selector == 'Person':
+			query = Person.select().order_by(Person.id)
+			dump_csv(query, fh)
+		if selector == 'Supervision':
+			query = Supervision.select().order_by(Supervision.id)
+			dump_csv(query, fh)
+		if selector == 'SupervisionClass':
+			query = SupervisionClass.select().order_by(SupervisionClass.id)
+			dump_csv(query, fh)
+		if selector == 'Course':
+			query = Course.select().order_by(Course.course_num)
+			dump_csv(query, fh)
+		if selector == 'CourseGeneration':
+			query = CourseGeneration.select().order_by(CourseGeneration.id)
+			dump_csv(query, fh)
+		if selector == 'Student':
+			query = Student.select().order_by(Student.id)
+			dump_csv(query, fh)
+		if selector == 'Term':
+			query = Term.select().order_by(Term.id)
+			dump_csv(query, fh)
+		if selector == 'Offering':
+			query = Offering.select().order_by(Offering.id)
+			dump_csv(query, fh)
+		if selector == 'Role':
+			query = Role.select().order_by(Role.id)
+			dump_csv(query, fh)
+		if selector == 'ProjectClass':
+			query = ProjectClass.select().order_by(ProjectClass.id)
+			dump_csv(query, fh)
+		if selector == 'ProjectType':
+			query = ProjectType.select().order_by(ProjectType.id)
+			dump_csv(query, fh)
+		if selector == 'Mastermany':
+			query = Mastermany.select().order_by(Mastermany.instructor)
+			dump_csv(query, fh)
+		if selector == 'ProjectSupervision':
+			query = ProjectSupervision.select().order_by(ProjectSupervision.id)
+			dump_csv(query, fh)
+		if selector == 'Adjustment':
+			query = Adjustment.select().order_by(Adjustment.id)
+			dump_csv(query, fh)

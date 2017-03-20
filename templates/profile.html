@@ -19,9 +19,9 @@
        <td>Email</td>
        </thead>
        <tr>
-           <td>{{person.id}}</td>
+           <td><a href="/profile/{{person.id}}/history">{{person.id}}</td>
            <td>{{person.name}}</td>
-           <td>{{person.email}}</td>
+           <td><a href="mailto:{{person.email}}?Subject=Hello%20HALBRED" target="_top">{{person.email}}</a></td>
            <td>{{person.start.year}}</td>
        </tr>
    </table>
@@ -85,13 +85,13 @@
        <tr>
            <td>{{row.id}}</td>
            <td>{{row.enrolment}}</td>
-           <td>{{row.generation.course.code}}</td>
+           <td><a href="/c/{{row.generation.course.code}}">{{row.generation.course.code}}</a></td>
            <td>{{row.generation.course.subject}}</td>
            <td>{{row.generation.labs}}</td>
            <td>{{row.semester.year}}</td>
            <td>{{row.semester.session}}</td>
            <td>{{row.generation.credit_hours}}</td>
-           <td>{{row.generation.course.id}}</td>
+           <td><a href="/course/{{row.generation.course.id}}">{{row.generation.course.id}}</a></td>
            <td>{{row.weight}}</td>
        {% endfor %}</table>
    <table border = 5>

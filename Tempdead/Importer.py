@@ -15,57 +15,60 @@
 from playhouse.csv_loader import *
 from Python.Class import *
 
+import_file
+
+
 def import_profile():
-	load_csv(Person, 'account-Person.csv')
+	load_csv(Person, 'Person.csv')
 
 
 def import_course():
-	load_csv(Course, 'account-Course.csv')
+	load_csv(Course, 'Course.csv')
 
 
 def import_course_generation():
-	load_csv(CourseGeneration, 'account-CourseGeneration.csv')
+	load_csv(CourseGeneration, 'CourseGeneration.csv')
 
 
 def import_student():
-	load_csv(Student, 'account-Student.csv')
+	load_csv(Student, 'Student.csv')
 
 
 def import_term():
-	load_csv(Term, 'account-Term.csv')
+	load_csv(Term, 'Term.csv')
 
 
 def import_offering():
-	load_csv(Offering, 'account-Offering.csv')
+	load_csv(Offering, 'Offering.csv')
 
 
 def import_role():
-	load_csv(Role, 'account-Role.csv')
+	load_csv(Role, 'Role.csv')
 
 
 def import_supervision_class():
-	load_csv(SupervisionClass, 'account-SupervisionClass.csv')
+	load_csv(SupervisionClass, 'SupervisionClass.csv')
 
 
 def import_project_class():
-	load_csv(ProjectClass, 'account-ProjectClass.csv')
+	load_csv(ProjectClass, 'ProjectClass.csv')
 
 
 def import_ProjectTeam():
-	load_csv(ProjectTeam, 'account-PseudoPeople.csv')
+	load_csv(ProjectTeam, 'PseudoPeople.csv')
 	
 	
 def import_role_person():
-	load_csv(RolePerson, 'account-RolePerson.csv')
+	load_csv(RolePerson, 'RolePerson.csv')
 
 
 def import_project_supervision():
-	load_csv(ProjectSupervision, 'account-ProjectSupervision.csv')
+	load_csv(ProjectSupervision, 'ProjectSupervision.csv')
 
 
 def import_supervision():
-	load_csv(Supervision, 'account-Supervision.csv')
+	load_csv(Supervision, 'Supervision.csv')
 
 
 def import_adjustment():
-	load_csv(Adjustment, 'account-Adjustment.csv')
+	load_csv(Adjustment, 'Adjustment.csv')

@@ -13,6 +13,7 @@
 #    limitations under the License.
 from flask import *
 from werkzeug.utils import *
+
 from orginization_functions import *
 
 reload(sys)
@@ -27,15 +28,33 @@ ALLOWED_EXTENSIONS = {'csv'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
+def allowed_file(filename):
+	return '.' in filename and \
+		   filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+@app.route('/export', methods=['GET','POST'])
+def docustomexport():
+	if request.method == 'POST':
+		selector = request.form.get('Select')
+		export_file(selector)
+		name = selector+'.csv'
+		return send_file(name,mimetype=None,as_attachment=True)
+	return render_template('export.html')
+
+
+@app.route('/import', methods=['GET', 'POST'])
+def docustomimport():
+	if request.method == 'POST':
+		selector = request.form.get('Select')
+		import_file(selector)
+	return render_template('import.html')
+
+
 @app.route('/favicon.ico')
 def favicon():
 	return send_from_directory(os.path.join(app.root_path, 'static'),
 							   'favicon.ico', mimetype='image/vnd.microsoft.icon')
-
-
-def allowed_file(filename):
-	return '.' in filename and \
-		   filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 @app.route('/splits')
@@ -76,6 +95,10 @@ def offergen():
 	offer(2015,8894,2,3,70,1)
 	offer(2015,3891,1,2,80,1)
 	offer(2015,8894,2,2,70,1)
+	person1=Person.select()
+	for ixd in person1:
+		update=Mastermany.update(split=1).where(Mastermany.instructor == ixd.id)
+		update.execute()
 	return redirect('/listm')
 
 

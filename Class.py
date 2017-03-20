@@ -162,4 +162,4 @@ class Mastermany(Model):
 	sid = ForeignKeyField(Supervision, related_name='supervision_id',null=True)
 	pid = ForeignKeyField(ProjectSupervision, related_name='project_id',null=True)
 	rid = ForeignKeyField(Role, related_name='role_id',null=True)
-	split = FloatField()
+	split = FloatField(null=True)
