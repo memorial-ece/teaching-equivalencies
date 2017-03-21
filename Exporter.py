@@ -1,5 +1,5 @@
+from db import *
 from playhouse.csv_loader import *
-from Class import *
 
 
 def export_profile():

@@ -4,8 +4,8 @@ import argparse
 import collections
 import operator
 import reader as cal
-from Class import *
 from ConvertParse import *
+from db import *
 
 args = argparse.ArgumentParser()
 args.add_argument('filename', nargs='+')
