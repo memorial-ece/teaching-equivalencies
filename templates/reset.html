@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Reset</title>
+</head>
+{% extends "home.html" %}
+{% block content %}
+<form action = "{{ url_for('peeweetable') }}" method = "POST">
+    <input type="submit" name="Full" value="Drop and ReCreate" />
+    <input type="submit" name="Full" value="Drop" />
+    <input type="submit" name="Full" value="Create" />
+</form>
+<h3>Table reseting</h3>
+{% endblock %}
+</body>
+</html>
