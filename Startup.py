@@ -14,7 +14,8 @@
 #    limitations under the License.
 
 """Usage:
-	Startup.py (FUNC) [ARGS]
+	Startup.py execute (FUNCTION) [ARGS] [<FILE>]...
+	Startup.py offergen [<FILE>]...
 	Startup.py -h --help
 
 Options:
@@ -31,22 +32,29 @@ from orginization_functions import *
 if __name__ == '__main__':
 	arguments = docopt(__doc__)
 	try:
-		function = (arguments['FUNC'])
+		function = (arguments['FUNCTION'])
 		arg = str(arguments['ARGS'])
+		filename = arguments['<FILE>']
 		if function == 'docustomexport':
 			docustomexport(arg)
 		if function == 'docustomimport':
 			docustomimport(arg)
 		if function == 'error':
 			error()
-		if function == 'offergen':
-			offergen(arg)
 		if function == 'peeweetable':
 			peeweetable(arg)
+		if function == 'test1':
+			test1()
+		if function == 'test2':
+			test2()
+		if function == 'test3':
+			test3()
+		if filename != []:
+			print 'working'
+			offergen(filename)
 
 
 	except docopt.DocoptExit as e:
-		print 'lol'
 		print e.message
 
 

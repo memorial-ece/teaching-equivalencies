@@ -13,6 +13,7 @@
 #    limitations under the License.
 import re
 from Class import *
+import time
 import datetime
 import sys
 from playhouse.csv_loader import *
@@ -25,7 +26,7 @@ stripprimary = re.compile(r"[a-zA-Z0-9._-]{2,}")
 crsnumber= re.compile(r"(?<=ENGI )(\d+)")
 
 
-def test():
+def test1():
 	targ=open('terminalcode','w')
 	targ.write('./Calendar.py ')
 	a=2007
@@ -37,79 +38,106 @@ def test():
 			targ.write('calendar/'+str(a)+str(b)+'.html ')
 
 
-def lang(year):
-	list6=list()
+def test2():
+	targ=open('terminalcode','w')
+	targ.write('./Startup.py offergen ')
+	a=2007
+	while a<2016:
+		b=0
+		a+=1
+		while b<3:
+			b+=1
+			targ.write('offerings/'+str(a)+'0'+str(b)+'.html ')
+
+
+def test3():
+	targ = open('terminalcode', 'w')
+	a=1
+	while a !=100:
+		a+=1
+		targ.write('<tr>'+'\n'+'\t'+'<td>click</td>'+'\n'+'\t'+'<td>//div[@id="app"]/div/div/div/div/div[3]/div/div/div[2]/div[2]/div[2]/div/div/div['+str(a)+']/div/div[2]/div[2]/div[2]/div/i</td>'+'\n'+'\t'+'<td></td>'+'\n'+'</tr>'+'\n')
+
+def intake(year):
+	list11=year
+	varlen = len(year)
+	counter=0
+	last_selester=0
+	list6 = list()
 	list7 = list()
-	list8=list()
-	namestrip = re.compile(r"(?<=Primary - )...\S+")
-	namestrip2= re.compile(r"(?<=Primary - )\w+\s+\w+\s+\w+\s+\w+")
-	starttear=2007
 	try:
-		while starttear!=year:
-			progress(starttear,year)
-			starttear += 1
-			startsem = 0
-			while startsem!=3:
-				list1 = list()
-				list2 = list()
-				list3 = list()
-				list4 = list()
-				list5 = list()
-				var = -1
-				startsem+=1
-				try:
-					x_file = list((open('offerings/'+str(starttear)+'0'+str(startsem)+'.html').readlines()))
-					for w in (x_file):
-						w = str(w.splitlines())
-						file1 = str((namestrip.findall(w)))
-						file3 = str(crsnumber.findall(w))
-						list7.append(file3)
-						file2 = str((namestrip2.findall(w)))
-						if file1[1]!=']':
-							var+=1
-							list1.append(file1)
-							file1 = str(file1).strip("[]'")
-							file2 = str(file2).strip("[]'")
-							file4 = str(file3).strip("'[]")
-							list5.append(file2)
-							var3=[len(list(group)) for key, group in groupby(list1)]
-							list2.append(file1)
-							list3.append(file4)
-
-							if file3[1]!=']':
-								list4.append(file1)
-				except:
-					print 'no latest semester'
-
-				var5=-1
-				for x in var3:
-					var5+=1
-					if list5[var5]!='':
-						patch=str(list5[var5]).split()
-						person((patch[2]+' '+patch[3]),(patch[2]+' '+patch[3])+'@mun.ca',starttear,startsem)
-						pid2=Person.select().where(Person.name==(patch[2]+' '+patch[3])).get()
-						offer(starttear, list3[var5], startsem, pid2.id, 80, x)
-						person((patch[0]+' '+patch[1]),(patch[0]+' '+patch[1])+'@mun.ca',starttear,startsem)
-						pid1=Person.select().where(Person.name==(patch[0]+' '+patch[1])).get()
-						var12=offer(starttear, list3[var5], startsem, pid1.id, 80, x)
-						list6.append(var12)
-					else:
-						person(list4[var5],list4[var5]+'@mun.ca',starttear,startsem)
-						pid1=Person.select().where(Person.name==list4[var5]).get()
-						offer(starttear,list3[var5],startsem,pid1.id,80,x)
-	except:
+		for filename in list11:
+			counter+=1
+			list8 = list()
+			list1 = list()
+			list2 = list()
+			list3 = list()
+			list4 = list()
+			list5 = list()
+			var = -1
+			progress(counter,varlen)
+			namestrip = re.compile(r"(?<=Primary - )...\S+")
+			namestrip2 = re.compile(r"(?<=Primary - )\w+\s+\w+\s+\w+\s+\w+")
+			semstrip = re.compile(r".\d$")
+			yearstrip = re.compile(r"^\d...")
+			p1 = re.compile(r"(\d+\b)(?!.*\1\b)")
+			filen2 = int(''.join(p1.findall(str(filename))))
+			filen3 = str(filen2)
+			starttear = (yearstrip.findall(filen3))
+			startsem = (semstrip.findall(filen3))
+			starttear = str(starttear).strip("[]'")
+			startsem = str(startsem).strip("[]'")
+			last_selester=starttear+startsem
+			x_file = list(open('offerings/'+filen3+'.html').readlines())
+			for w in (x_file):
+				w = str(w.splitlines())
+				file1 = str((namestrip.findall(w)))
+				file3 = str(crsnumber.findall(w))
+				list7.append(file3)
+				file2 = str((namestrip2.findall(w)))
+				if file1[1]!=']':
+					var+=1
+					list1.append(file1)
+					file1 = str(file1).strip("[]'")
+					file2 = str(file2).strip("[]'")
+					file4 = str(file3).strip("'[]")
+					list5.append(file2)
+					var3=[len(list(group)) for key, group in groupby(list1)]
+					list2.append(file1)
+					list3.append(file4)
+					if file3[1]!=']':
+						list4.append(file1)
+			var5 = -1
+			for x in var3:
+				var5+=1
+				if list5[var5]!='':
+					patch=str(list5[var5]).split()
+					person((patch[2]+' '+patch[3]),(patch[2]+' '+patch[3])+'@mun.ca',starttear,startsem)
+					pid2=Person.select().where(Person.name==(patch[2]+' '+patch[3])).get()
+					offer(starttear, list3[var5], startsem, pid2.id, 80, x)
+					person((patch[0]+' '+patch[1]),(patch[0]+' '+patch[1])+'@mun.ca',starttear,startsem)
+					pid1=Person.select().where(Person.name==(patch[0]+' '+patch[1])).get()
+					var12=offer(starttear, list3[var5], startsem, pid1.id, 80, x)
+					list6.append(var12)
+				else:
+					person(list4[var5],list4[var5]+'@mun.ca',starttear,startsem)
+					pid1=Person.select().where(Person.name==list4[var5]).get()
+					offer(starttear,list3[var5],startsem,pid1.id,80,x)
 		print 'completed files in parameters'
-	list8.append(list6)
-	list8.append(list7)
-	return list8
+		list8.append(list6)
+		list8.append(list7)
+		return list8
+	except:
+		print
+		print 'The file '+last_selester+".html does not exist."
+		return 'error'
 
 
 def splitting(pid1):
-		var2=pid1[0]
-		for var1 in var2:
-			if var1 is not None:
-				update1=Mastermany.update(split=float(0.5)).where(Mastermany.oid==var1)
-				update1.execute()
+	var2=pid1[0]
+	for var1 in var2:
+		if var1 is not None:
+			update1=Mastermany.update(split=float(0.5)).where(Mastermany.oid==var1)
+			update1.execute()
 
 
 def informationXchange(generation,list1):
@@ -261,6 +289,7 @@ def Psupera(TermS,profid,team_id,supervisoncalss,session):
 	ProjectSupervision.get_or_create(team_id=team_id,project_class_id=supervisoncalss,semester=ses)
 	A=ProjectSupervision.select().where(ProjectSupervision.team_id==team_id,ProjectSupervision.project_class_id==supervisoncalss,ProjectSupervision.semester==ses).get()
 	Mastermany.get_or_create(instructor=profid,pid=A, split=1)
+
 
 def person(name,email,staryear,startsem):
 	# can't hear
@@ -417,6 +446,7 @@ def docustomimport(Table):
 
 
 def error():
+	print 'here'
 	for term in Term.select():
 		a = 0
 		for courses in Offering.select().where(Offering.semester==term.id):
@@ -434,7 +464,13 @@ def offergen(year):
 	person('Mr. Anderson','jonathan.anderson@mun.ca',2012,3)
 	person('Mr. Anders54on','jon56athan.anderson@mun.ca',2008,3)
 	# person('Mr. Anon','jonathan.arson@mun.ca',2013,3)
-	var1=lang(year)
+	start_time=time.time()
+	var1=intake(year)
+	print
+	print "My program took", time.time() - start_time, "to run"
+	if var1=='error':
+		#this breaks the function saving you 2 min
+		var2=var1[9999]
 	# ################student(name, email)
 	student('Juteau','2011205085')
 	student('Derakhshan Nik','201509962')
@@ -468,12 +504,18 @@ def offergen(year):
 	offer(2015,8894,2,3,70,1)
 	offer(2015,3891,1,2,80,1)
 	offer(2015,8894,2,2,70,1)
+	start_time = time.time()
 	person1=Person.select()
+	counter=0
+	varlen = len(person1)
 	for ixd in person1:
+		counter+=1
+		progress(counter,varlen)
 		update=Mastermany.update(split=1).where(Mastermany.instructor == ixd.id)
 		update.execute()
 		update1=Mastermany.update(split=.5).where(Mastermany.oid == 904)
 		update1.execute()
+	print "My program took", time.time() - start_time, "to run"
 	splitting(var1)
 
 
@@ -504,24 +546,24 @@ def peeweetable(Droptype):
 		db.connect()
 		db.create_tables(
 			[Person, Mastermany,
-			 # Term,
+			 Term,
 			 Offering,
-			 # Course,
-				Role, ProjectSupervision, ProjectClass,
+			 Course,
+			 Role, ProjectSupervision, ProjectClass,
 			 Supervision,
-			 # CourseGeneration,
+			 CourseGeneration,
 			 SupervisionClass, ProjectType, Student, Adjustment],safe=True)
 		db.close()
 	elif Droptype == 'Drop':
 		db.connect()
 		db.drop_tables(
 			[Person, Mastermany,
-			 # Term,
+			 Term,
 			 Offering,
-			 # Course,
+			 Course,
 			 Role, ProjectSupervision, ProjectClass,
 			 Supervision,
-			 # CourseGeneration,
+			 CourseGeneration,
 			 SupervisionClass, ProjectType, Student, Adjustment],safe=True)
 		db.close()
 
