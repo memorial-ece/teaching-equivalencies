@@ -34,10 +34,14 @@ for year, cour in courses.items():
 
 
 Progress_counter=0
+prog2=0
 for code, details in list_course.items():
+	prog2+=1
+	try:
+		progress(prog2, len(list_course))
+	except:
+		pass
 	Progress_counter+=1
-	try:progress(Progress_counter,len(list_course))
-	except:pass
 	sorted_det = sorted(details.items(), key=operator.itemgetter(0))
 	year2 = None
 	info2 = None

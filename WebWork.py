@@ -170,15 +170,16 @@ def Profile(prof_id):
 	if request.method == 'POST':
 		if request.form['subm1']=="Supervisions CSV":
 			print ' works'
-			tryplot(list31,'super for id '+str(prof_id),list32)
+			print list31
+			anyplot(list31,'super for id '+str(prof_id),list22)
 			return send_file('super for id '+str(prof_id)+'.pdf')
 		if request.form['subm1']=="Project Supervisions CSV":
-			print ' works'
-			tryplot(list21,'project for id '+str(prof_id),list22)
+			print list21
+			anyplot(list21,'project for id '+str(prof_id),list22)
 			return send_file('project for id '+str(prof_id)+'.pdf')
 		if request.form['subm1']=="Offerings CSV":
 			print ' works'
-			tryplot(dict_temp2,'offer for id '+str(prof_id))
+			offerplot(dict_temp2,'offer for id '+str(prof_id))
 			return send_file('offer for id '+str(prof_id)+'.pdf')
 		if request.form['subm1'] == "submit2":
 			weight = request.form['weight']

@@ -22,8 +22,11 @@ Options:
 	(docustomexport)[Table] 	Any table form class.py
 	(docustomimport)[Table]	Any table form class.py
 	(error)[]	no args aditional used for helping humans check values of generation tables.
-	(offergen)[year] gen all data from offerings folder year years piror to 2020 please
+	offergen [file location] gen all data from offerings folder year years piror to 2020 please
 	(peeweetable)[DropType] droptypes are 'DropReCreate' 'Drop' 'Create'
+	(test1) prints teststring file
+	(test2) prints teststring file
+	(test3) prints a timer
 """
 from docopt import docopt
 from Core import *

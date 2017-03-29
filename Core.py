@@ -32,7 +32,7 @@ crsnumber= re.compile(r"(?<=ENGI )(\d+)")
 
 def test1():
 	targ=open('terminalcode','w')
-	targ.write('./Calendar.py ')
+	targ.write('./import-courses ')
 	a=2007
 	while a<2016:
 		b=0
@@ -475,8 +475,8 @@ def offergen(files):
 	team('Derakhshan Nik','test2')
 	team('Nguyen','test3')
 	# ##################superC(BOOLDoyouwanttocreateanewone,Description,Weight)
-	superC(True,'example of custom descriptions',400)
-	Psuper(True,'example of custom descriptions',4050)
+	superC(True,'example of custom descriptions',.3232323)
+	Psuper(True,'example of custom descriptions',.23232232323232)
 	# #############supera(TermS,profid,Studentid,supervisoncalss,session)
 	supera(2016,1,1,1,1)
 	supera(2016,1,2,2,1)
@@ -609,7 +609,51 @@ def matching(list1,list2):
 		list3.append(list2[counter])
 
 
-def tryplot(dict_temp2,name):
+def anyplot(semester,name,weights):
+	p1=re.compile(r"\w+")
+	p2=p1.findall(name)
+	listany=list()
+	counter=-1
+	for x,y in enumerate(semester):
+		if x % 2==0:
+			var=y
+		else:
+			counter+=1
+			listany.append(str(var)+'0'+str(y))
+			listany.append(weights[counter])
+	list1=list()
+	list2=list()
+	for i, j in enumerate(listany):
+		if i %2==0:
+			try:
+				var=list1.index(j)
+			except:
+				var=-2
+				list1.append(j)
+		else:
+			if var != -2:
+				list2[var]+=j
+			else:
+				list2.append(j)
+	list3=list()
+	list4=list()
+	for (y, x) in sorted(zip(list1, list2)):
+		list3.append(x)
+		list4.append(y)
+	width = 1
+	N = len(list4)
+	ind = np.arange(N)
+	print ind
+	plt.bar(left=ind, height=list3, width=width, color='#d62728')
+	plt.ylabel('Credit Value')
+	plt.xlabel('Semester id this is temp till i figure out a yearly system')
+	plt.title(p2[0])
+	plt.yticks(np.arange(0, 6, 0.25))
+	plt.xticks(ind, (list4), rotation='vertical')
+	plt.savefig(str(name) + '.pdf', bbox_inches='tight')
+	plt.close()
+
+def offerplot(dict_temp2,name):
 	print dict_temp2
 	p1=re.compile(r"\w+")
 	p2=p1.findall(name)
@@ -633,8 +677,6 @@ def tryplot(dict_temp2,name):
 	for (y, x) in sorted(zip(list1, list2)):
 		list3.append(x)
 		list4.append(y)
-	print list3
-	print list4
 	width = 1
 	N=len(list4)
 	ind=np.arange(N)
@@ -647,12 +689,6 @@ def tryplot(dict_temp2,name):
 	plt.xticks(ind,(list4),rotation='vertical')
 	plt.savefig(str(name)+'.pdf',bbox_inches='tight')
 	plt.close()
-
-#
-# def webplot(semester,load,name):
-# 	plt.bar(semester,load)
-# 	mpld3.show()
-
 
 
 def test3():
