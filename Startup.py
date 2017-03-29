@@ -26,7 +26,7 @@ Options:
 	(peeweetable)[DropType] droptypes are 'DropReCreate' 'Drop' 'Create'
 """
 from docopt import docopt
-from orginization_functions import *
+from Core import *
 
 
 if __name__ == '__main__':
@@ -52,6 +52,7 @@ if __name__ == '__main__':
 		if filename != []:
 			print 'working'
 			offergen(filename)
+			split(filename)
 
 
 	except docopt.DocoptExit as e:

@@ -2,10 +2,11 @@
 
 import argparse
 import collections
+from Core import *
 import operator
 import reader as cal
-from ConvertParse import *
 from db import *
+from ConvertParse import *
 
 args = argparse.ArgumentParser()
 args.add_argument('filename', nargs='+')
@@ -35,6 +36,8 @@ for year, cour in courses.items():
 Progress_counter=0
 for code, details in list_course.items():
 	Progress_counter+=1
+	try:progress(Progress_counter,len(list_course))
+	except:pass
 	sorted_det = sorted(details.items(), key=operator.itemgetter(0))
 	year2 = None
 	info2 = None

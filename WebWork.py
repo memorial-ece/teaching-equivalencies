@@ -13,7 +13,7 @@
 #    limitations under the License.
 from flask import *
 from werkzeug.utils import *
-from orginization_functions import *
+from Core import *
 app = Flask(__name__)
 DATABASE = 'database.db'
 db = SqliteDatabase(DATABASE)
@@ -79,8 +79,8 @@ def gen(id):
 	return render_template("course.html", course=course,generation=generation,list1=list1)
 
 
-@app.route("/profile/<prof_id>/history", methods=['GET', 'POST'])
-def Profilehist(prof_id):
+@app.route("/profile/<prof_id>/", methods=['GET', 'POST'])
+def Profile(prof_id):
 	person = Person.get(Person.id == prof_id)
 	supervision = (Supervision
 				   .select()
@@ -99,7 +99,8 @@ def Profilehist(prof_id):
 				.order_by(Offering.semester.desc()))
 	list1=list()
 	for x in offering:
-		list1.append(x.id)
+		list1.append(x.oid.id)
+		list1.sort()
 	adjustment = (Adjustment
 				  .select()
 				  .join(Person)
@@ -113,26 +114,33 @@ def Profilehist(prof_id):
 				  .select()
 				  .join(Mastermany)
 				  .where(Mastermany.instructor == prof_id))
+	list31=list()
+	list32=list()
 	for num in Snum:
 		Ssum=Mastermany.select().where(Mastermany.sid==num.id).get()
 		Stotal+=num.supervision_class_id.weight*Ssum.split
-
+		list31.append(Ssum.sid.semester.year)
+		list31.append(Ssum.sid.semester.session)
+		list32.append(num.supervision_class_id.weight * Ssum.split)
 	Onum = (Offering
 				  .select()
 				  .join(Mastermany)
 				  .where(Mastermany.instructor == prof_id))
 	list_forviewer = dict()
 	list_split = dict()
+	dict_temp2=list()
 	counter=-1
 	for num in Onum:
 		counter+=1
 		Osum=Mastermany.select().where(Mastermany.oid==num.id).get()
-		var1=weight_calc(Osum.oid)
+		var1=weight_calc(Osum.oid.id)
 		Ototal+=var1*Osum.split
-		list_forviewer[list1[counter]]=var1
-		list_split[list1[counter]]=Osum.split
-
-
+		list_forviewer[Osum.oid.id]=var1
+		list_split[Osum.oid.id]=Osum.split
+		dict_temp2.append((str(Osum.oid.semester.year)+'0'+str(Osum.oid.semester.session)))
+		dict_temp2.append(var1*Osum.split)
+	list21=list()
+	list22=list()
 	Pnum = (ProjectSupervision
 				  .select()
 				  .join(Mastermany)
@@ -140,6 +148,9 @@ def Profilehist(prof_id):
 	for num in Pnum:
 		Psum=Mastermany.select().where(Mastermany.pid==num.id).get()
 		Ptotal+=num.project_class_id.weight*Psum.split
+		list21.append(Psum.pid.semester.year)
+		list21.append(Psum.pid.semester.session)
+		list22.append(num.project_class_id.weight * Psum.split)
 	Atotal = (Person
 			  .select()
 			  .where(Person.id == prof_id)
@@ -157,13 +168,24 @@ def Profilehist(prof_id):
 		Ptotal = 0
 	total = (Ptotal) + (Atotal) + (Stotal) + (Ototal) - defi
 	if request.method == 'POST':
+		if request.form['subm1']=="Supervisions CSV":
+			print ' works'
+			tryplot(list31,'super for id '+str(prof_id),list32)
+			return send_file('super for id '+str(prof_id)+'.pdf')
+		if request.form['subm1']=="Project Supervisions CSV":
+			print ' works'
+			tryplot(list21,'project for id '+str(prof_id),list22)
+			return send_file('project for id '+str(prof_id)+'.pdf')
+		if request.form['subm1']=="Offerings CSV":
+			print ' works'
+			tryplot(dict_temp2,'offer for id '+str(prof_id))
+			return send_file('offer for id '+str(prof_id)+'.pdf')
 		if request.form['subm1'] == "submit2":
-
 			weight = request.form['weight']
 			weight = float(weight)
 			AUDITCOMMENT = request.form['AUDITCOMMENT']
-			print AUDITCOMMENT
 			Adjustment.create(instructor=prof_id, weight=weight, comment=AUDITCOMMENT)
+
 	return render_template("profilehist.html", person=person, supervision=supervision,instructor=prof_id,
 						   projectsupervision=projectsupervision, offering=offering, adjustment=adjustment,total=total,
 						   Stotal=Stotal,Ptotal=Ptotal,Ototal=Ototal,Onum=Onum,deficit=defi,list_forviewer=list_forviewer,list_split=list_split)
@@ -174,26 +196,26 @@ To be worked on
 """
 # @app.route("/profile/<prof_id>", methods=['GET', 'POST'])
 # def Profile(prof_id):
-	# now = datetime.datetime.now()
-	# year1 = now.year
-	# person = Person.get(Person.id == prof_id)
-	# supervision = (Supervision.select()
-	# 			   .join(Person, on=(Supervision.id == Person.id))
-	# 			   .join(Term, on=(Supervision.id == Term.id))
-	# 			   .where(Person.id == prof_id, Term.year == year1)
-	# 			   .order_by(Supervision.id.desc()))
-	# projectsupervision = (ProjectSupervision
-	# 					  .select()
-	# 					  .join(Person, on=(ProjectSupervision.id == Person.id))
-	# 					  .join(Term, on=(ProjectSupervision.id == Term.id))
-	# 					  .where(Person.id == prof_id, Term.year == year1)
-	# 					  .order_by(ProjectSupervision.id.desc()))
-	# offering = (Offering
-	# 			.select()
-	# 			.join(Mastermany, on=(Offering.id == Mastermany.instructor))
-	# 			.join(Term, on=(Offering.id == Term.id))
-	# 			.where(Mastermany.id == prof_id, Term.year == year1)
-	# 			.order_by(Offering.id.desc()))
+# 	now = datetime.datetime.now()
+# 	year1 = now.year
+# 	person = Person.get(Person.id == prof_id)
+# 	supervision = (Supervision.select()
+# 				   .join(Person, on=(Supervision.id == Person.id))
+# 				   .join(Term, on=(Supervision.id == Term.id))
+# 				   .where(Person.id == prof_id, Term.year == year1)
+# 				   .order_by(Supervision.id.desc()))
+# 	projectsupervision = (ProjectSupervision
+# 						  .select()
+# 						  .join(Person, on=(ProjectSupervision.id == Person.id))
+# 						  .join(Term, on=(ProjectSupervision.id == Term.id))
+# 						  .where(Person.id == prof_id, Term.year == year1)
+# 						  .order_by(ProjectSupervision.id.desc()))
+# 	offering = (Offering
+# 				.select()
+# 				.join(Mastermany, on=(Offering.id == Mastermany.instructor))
+# 				.join(Term, on=(Offering.id == Term.id))
+# 				.where(Mastermany.id == prof_id, Term.year == year1)
+# 				.order_by(Offering.id.desc()))
 	# list1=list()
 	# for x in offering:
 	# 	list1.append(x.id)
@@ -202,12 +224,11 @@ To be worked on
 	# 			  .join(Person)
 	# 			  .where(Person.id == prof_id)
 	# 			  .order_by(Adjustment.id.desc()))
-	# mastermany=Mastermany.select().where(Mastermany.instructor==prof_id)
 	# Stotal = 0
 	# Atotal = 0
 	# Ptotal = 0
 	# Ototal = 0
-	# Snum = (supervision
+	# Snum = (Supervision
 	# 			  .select()
 	# 			  .join(Mastermany)
 	# 			  .where(Mastermany.instructor == prof_id))
@@ -229,6 +250,8 @@ To be worked on
 	# 	Ototal+=var1*Osum.split
 	# 	list_forviewer[list1[counter]]=var1
 	# 	list_split[list1[counter]]=Osum.split
+	#
+	#
 	# Pnum = (ProjectSupervision
 	# 			  .select()
 	# 			  .join(Mastermany)
@@ -254,18 +277,15 @@ To be worked on
 	# total = (Ptotal) + (Atotal) + (Stotal) + (Ototal) - defi
 	# if request.method == 'POST':
 	# 	if request.form['subm1'] == "submit2":
-	#
 	# 		weight = request.form['weight']
 	# 		weight = float(weight)
-	# 		myid = request.form['myid']
-	# 		overide_address = request.form['overide_address']
-	# 		overide_value = request.form['overide_value']
 	# 		AUDITCOMMENT = request.form['AUDITCOMMENT']
-	# 		print AUDITCOMMENT
-	# 		Adjustment.create(instructor=prof_id, weight=weight, comment=AUDITCOMMENT)
+	# # 		Adjustment.create(instructor=prof_id, weight=weight, comment=AUDITCOMMENT)
 	# return render_template("profilehist.html", person=person, supervision=supervision,instructor=prof_id,
-	# 					   projectsupervision=projectsupervision, offering=offering, adjustment=adjustment,total=total,
-	# 					   Stotal=Stotal,Ptotal=Ptotal,Ototal=Ototal,Onum=Onum,deficit=defi,list_forviewer=list_forviewer,list_split=list_split)
+	# 					   projectsupervision=projectsupervision, offering=offering,
+	# 					   # adjustment=adjustment,total=total,
+	# 					   # Stotal=Stotal,Ptotal=Ptotal,Ototal=Ototal,Onum=Onum,deficit=defi,list_forviewer=list_forviewer,list_split=list_split
+	# 					   )
 
 
 @app.route('/listm', methods=['GET', 'POST'])

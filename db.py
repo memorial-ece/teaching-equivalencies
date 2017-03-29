@@ -81,7 +81,7 @@ class Offering(Model):
 	# prof_id = ForeignKeyField(Person, related_name='instructor')
 	semester = ForeignKeyField(Term, related_name='semester')
 	generation = ForeignKeyField(CourseGeneration, related_name='generation')
-	weight = FloatField(null=True)
+	sections = IntegerField(null=True)
 
 
 class Role(Model):
@@ -148,9 +148,11 @@ class Adjustment(Model):
 	A human entry in that overrides the automatic data
 	"""
 	id = IntegerField(primary_key=True)
-	weight = FloatField()
-	comment = TextField()
-	instructor = ForeignKeyField(Person, related_name='made_change')
+	weight = FloatField(null=True)
+	comment = TextField(null=True)
+	overide_value = FloatField(null=True)
+	overide_address = TextField(null=True)
+	instructor = ForeignKeyField(Person, related_name='made_change',null=True)
 
 
 class Mastermany(Model):
