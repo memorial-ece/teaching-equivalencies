@@ -186,7 +186,6 @@ def Profile(prof_id):
 			weight = float(weight)
 			AUDITCOMMENT = request.form['AUDITCOMMENT']
 			Adjustment.create(instructor=prof_id, weight=weight, comment=AUDITCOMMENT)
-
 	return render_template("profilehist.html", person=person, supervision=supervision,instructor=prof_id,
 						   projectsupervision=projectsupervision, offering=offering, adjustment=adjustment,total=total,
 						   Stotal=Stotal,Ptotal=Ptotal,Ototal=Ototal,Onum=Onum,deficit=defi,list_forviewer=list_forviewer,list_split=list_split)

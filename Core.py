@@ -28,6 +28,10 @@ from itertools import *
 import random
 stripprimary = re.compile(r"[a-zA-Z0-9._-]{2,}")
 crsnumber= re.compile(r"(?<=ENGI )(\d+)")
+DATABASE = 'database.db'
+db = SqliteDatabase(DATABASE)
+UPLOAD_FOLDER = ''
+ALLOWED_EXTENSIONS = {'csv'}
 
 
 def test1():
@@ -42,19 +46,21 @@ def test1():
 			targ.write('calendar/'+str(a)+str(b)+'.html ')
 
 
-# def test2():
-# 	targ=open('terminalcode','w')
-# 	targ.write('./Startup.py offergen ')
-# 	a=2007
-# 	while a<2016:
-# 		b=0
-# 		a+=1
-# 		while b<3:
-# 			b+=1
-# 			targ.write('offerings/'+str(a)+'0'+str(b)+'.html ')
+def test2():
+	targ=open('terminalcode','w')
+	targ.write('./Startup.py offergen ')
+	a=2007
+	while a<2016:
+		b=0
+		a+=1
+		while b<3:
+			b+=1
+			targ.write('offerings/'+str(a)+'0'+str(b)+'.html ')
 
 
 def intake(year):
+	list_of_error_types=list()
+	list_Errors = list()
 	list11=year
 	varlen = len(year)
 	counter=0
@@ -72,6 +78,8 @@ def intake(year):
 			list5 = list()
 			var = -1
 			progress(counter,varlen)
+			crsnumber = re.compile(r"(?<=ENGI )(\d+)")
+			crosslist = re.compile(r"(?<=CROSS LISTED)(\W)")
 			namestrip = re.compile(r"(?<=Primary - )...\S+")
 			namestrip2 = re.compile(r"(?<=Primary - )\w+\s+\w+\s+\w+\s+\w+")
 			semstrip = re.compile(r".\d$")
@@ -88,9 +96,18 @@ def intake(year):
 			for w in (x_file):
 				w = str(w.splitlines())
 				file1 = str((namestrip.findall(w)))
+				crosscheck = str((crosslist.findall(w)))
 				file3 = str(crsnumber.findall(w))
 				list7.append(file3)
 				file2 = str((namestrip2.findall(w)))
+				if file3[1]!=']' and file1=='[]':
+					if crosscheck[1] == "'":
+						list_of_error_types.append('cross listed:')
+					else:
+						list_of_error_types.append('no prof')
+					file4 = str(file3).strip("'[]")
+					list_Errors.append('offerings/'+filen3+'.html')
+					list_Errors.append(file4)
 				if file1[1]!=']':
 					var+=1
 					list1.append(file1)
@@ -119,10 +136,12 @@ def intake(year):
 					person(list4[var5],list4[var5]+'@mun.ca',starttear,startsem)
 					pid1=Person.select().where(Person.name==list4[var5]).get()
 					offer(starttear,list3[var5],startsem,pid1.id,80,x)
+		print
 		print 'completed files in parameters'
+		print
 		list8.append(list6)
 		list8.append(list7)
-		return list8
+		return list8,list_Errors,list_of_error_types
 	except:
 		print
 		print 'The file '+last_selester+".html does not exist."
@@ -130,8 +149,8 @@ def intake(year):
 
 
 def splitting(pid1):
-	var2=pid1[0]
-	for var1 in var2:
+	var22=pid1[0]
+	for var1 in var22:
 		if var1 is not None:
 			update1=Mastermany.update(split=float(0.5)).where(Mastermany.oid==var1)
 			update1.execute()
@@ -204,7 +223,7 @@ def semester_quick_gen(fromD):
 				pass
 		else:
 			start+=1
-		if start == 2020:
+		if start == 2030:
 			break
 
 
@@ -425,15 +444,10 @@ def export_file(selector, name='default'):
 			dump_csv(selector, fh)
 
 
-DATABASE = 'database.db'
-db = SqliteDatabase(DATABASE)
-UPLOAD_FOLDER = ''
-ALLOWED_EXTENSIONS = {'csv'}
-
-
 def allowed_file(filename):
 	return '.' in filename and \
 		   filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 
 def docustomexport(Table):
 	export_file(Table)
@@ -443,25 +457,38 @@ def docustomimport(Table):
 	import_file(Table)
 
 
-def error():
-	for term in Term.select():
-		a = 0
-		for courses in Offering.select().where(Offering.semester==term.id):
-			a+=1
-		if a<15:
-			print 'i think there is an error in courses offered with the id of '+str(term.id)+' becasue there are only '+str(a)+' records and im looking for at least 20'
-		else:
-			pass
+def error(var1,var2,list_of_error_types):
+	print 'please see that these errors are attended to '
+	print 'list of error types found'
+	counter=-1
+	var=len(var2)
+	var=var/2
+	for x in list_of_error_types:
+		print x
+	print'locations of errors'
+	while counter!=var:
+		counter+=1
+		if  counter==var:
+			break
+		var3=counter*2
+		var4=var3+1
+		print var2[var3]
+		print var2[var4]
+	print 'view the HTML files to correct'
+
 
 def offergen(files):
 	# ######################semester_quick_gen(fromD)
-	semester_quick_gen(2007)
+	semester_quick_gen(2000)
 	# #####################person(name,email)
 	person('Mr. Anderson','jonathan.anderson@mun.ca',2012,3)
 	person('Mr. Anders54on','jon56athan.anderson@mun.ca',2008,3)
 	# person('Mr. Anon','jonathan.arson@mun.ca',2013,3)
 	start_time=time.time()
-	var1=intake(files)
+	var1,var2,list_of_error_types=intake(files)
+	if var2[0]!='':
+		print
+		print "please check on the errors function, I have some results"
 	print
 	print "My program took", time.time() - start_time, "to run"
 	if var1=='error':
@@ -500,10 +527,10 @@ def offergen(files):
 	offer(2016,8894,2,3,70,1)
 	offer(2016,3891,1,2,80,1)
 	offer(2016,8894,2,2,70,1)
-
+	return var1,var2,list_of_error_types
 
 def split(files):
-	var1=intake(files)
+	# var1,var2=intake(files)
 	start_time = time.time()
 	person1=Person.select()
 	counter=0
@@ -517,7 +544,7 @@ def split(files):
 		update1.execute()
 	print
 	print "My program took", time.time() - start_time, "to run"
-	splitting(var1)
+	splitting(files)
 
 
 def peeweetable(Droptype):
@@ -594,10 +621,7 @@ def double_list_split(list2,):
 			print x
 			var2=x
 			list1.append(str(var1)+'0'+str(var2))
-
 	return list1
-		# var1=list[x]
-		# var2=list[x+1]
 
 
 def matching(list1,list2):
@@ -643,7 +667,6 @@ def anyplot(semester,name,weights):
 	width = 1
 	N = len(list4)
 	ind = np.arange(N)
-	print ind
 	plt.bar(left=ind, height=list3, width=width, color='#d62728')
 	plt.ylabel('Credit Value')
 	plt.xlabel('Semester id this is temp till i figure out a yearly system')
@@ -653,8 +676,8 @@ def anyplot(semester,name,weights):
 	plt.savefig(str(name) + '.pdf', bbox_inches='tight')
 	plt.close()
 
+
 def offerplot(dict_temp2,name):
-	print dict_temp2
 	p1=re.compile(r"\w+")
 	p2=p1.findall(name)
 	list1=list()
@@ -680,7 +703,6 @@ def offerplot(dict_temp2,name):
 	width = 1
 	N=len(list4)
 	ind=np.arange(N)
-	print ind
 	plt.bar(left=ind,height=list3,width=width,color='#d62728')
 	plt.ylabel('Credit Value')
 	plt.xlabel('Semester id this is temp till i figure out a yearly system')
@@ -698,13 +720,7 @@ def test3():
 		a+=1
 	print "My program took", time.time() - start_time, "to run"
 
-
-def test2():
-	start_time=time.time()
-	a=0
-	while a<5000:
-		b=0
-		while b<5000:
-			b+=1
-		a+=1
-	print "My program took", time.time() - start_time, "to run"
+def populate(files):
+		var1,var2,list_of_error_types=offergen(files)
+		split(var1)
+		error(var1,var2,list_of_error_types)
