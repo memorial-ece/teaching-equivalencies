@@ -509,6 +509,8 @@ def offergen(files):
 	supera(2016,1,2,2,1)
 	supera(2016,1,2,2,2)
 	supera(2016,1,1,1,3)
+	supera(2014,1,1,1,3)
+	supera(2015,1,1,1,3)
 	supera(2016,1,3,3,3)
 	supera(2016,1,3,4,3)
 	supera(2016,1,3,3,3)
@@ -665,13 +667,17 @@ def anyplot(semester,name,weights):
 		list3.append(x)
 		list4.append(y)
 	width = 1
+	if p2[0]=='project':
+		stack=3
+	else:
+		stack=1.5
 	N = len(list4)
 	ind = np.arange(N)
 	plt.bar(left=ind, height=list3, width=width, color='#d62728')
 	plt.ylabel('Credit Value')
-	plt.xlabel('Semester id this is temp till i figure out a yearly system')
+	plt.xlabel('Semester in format (year)(semester id)')
 	plt.title(p2[0])
-	plt.yticks(np.arange(0, 6, 0.25))
+	plt.yticks(np.arange(0, stack, 0.125))
 	plt.xticks(ind, (list4), rotation='vertical')
 	plt.savefig(str(name) + '.pdf', bbox_inches='tight')
 	plt.close()

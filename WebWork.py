@@ -171,10 +171,12 @@ def Profile(prof_id):
 		if request.form['subm1']=="Supervisions CSV":
 			print ' works'
 			print list31
-			anyplot(list31,'super for id '+str(prof_id),list22)
+			print list32
+			anyplot(list31,'super for id '+str(prof_id),list32)
 			return send_file('super for id '+str(prof_id)+'.pdf')
 		if request.form['subm1']=="Project Supervisions CSV":
 			print list21
+			print list22
 			anyplot(list21,'project for id '+str(prof_id),list22)
 			return send_file('project for id '+str(prof_id)+'.pdf')
 		if request.form['subm1']=="Offerings CSV":
