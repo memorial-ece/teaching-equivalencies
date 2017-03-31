@@ -15,6 +15,7 @@ import re
 from db import *
 import time
 import csv
+import os
 import datetime
 import numpy as np
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
@@ -34,50 +35,25 @@ UPLOAD_FOLDER = ''
 ALLOWED_EXTENSIONS = {'csv'}
 
 
-def test1():
-	targ=open('terminalcode','w')
-	targ.write('./import-courses ')
-	a=2007
-	while a<2016:
-		b=0
-		a+=1
-		while b<7:
-			b+=1
-			targ.write('calendar/'+str(a)+str(b)+'.html ')
-
-
-def test2():
-	targ=open('terminalcode','w')
-	targ.write('./Startup.py offergen ')
-	a=2007
-	while a<2016:
-		b=0
-		a+=1
-		while b<3:
-			b+=1
-			targ.write('offerings/'+str(a)+'0'+str(b)+'.html ')
-
-
 def intake(year):
 	list_of_error_types=list()
 	list_Errors = list()
-	list11=year
-	varlen = len(year)
+	varlen_for_progress = len(year)
 	counter=0
 	last_selester=0
 	list6 = list()
 	list7 = list()
 	try:
-		for filename in list11:
+		for filename in year:
 			counter+=1
-			list8 = list()
+			list_of_passin_ordered_courses = list()
 			list1 = list()
 			list2 = list()
 			list3 = list()
 			list4 = list()
 			list5 = list()
 			var = -1
-			progress(counter,varlen)
+			progress(counter,varlen_for_progress)
 			crsnumber = re.compile(r"(?<=ENGI )(\d+)")
 			crosslist = re.compile(r"(?<=CROSS LISTED)(\W)")
 			namestrip = re.compile(r"(?<=Primary - )...\S+")
@@ -87,12 +63,12 @@ def intake(year):
 			p1 = re.compile(r"(\d+\b)(?!.*\1\b)")
 			filen2 = int(''.join(p1.findall(str(filename))))
 			filen3 = str(filen2)
-			starttear = (yearstrip.findall(filen3))
+			startyear = (yearstrip.findall(filen3))
 			startsem = (semstrip.findall(filen3))
-			starttear = str(starttear).strip("[]'")
+			startyear = str(startyear).strip("[]'")
 			startsem = str(startsem).strip("[]'")
-			last_selester=starttear+startsem
-			x_file = list(open('offerings/'+filen3+'.html').readlines())
+			last_selester=startyear+startsem
+			x_file = open(filename).readlines()
 			for w in (x_file):
 				w = str(w.splitlines())
 				file1 = str((namestrip.findall(w)))
@@ -106,7 +82,7 @@ def intake(year):
 					else:
 						list_of_error_types.append('no prof')
 					file4 = str(file3).strip("'[]")
-					list_Errors.append('offerings/'+filen3+'.html')
+					list_Errors.append(filename)
 					list_Errors.append(file4)
 				if file1[1]!=']':
 					var+=1
@@ -120,39 +96,39 @@ def intake(year):
 					list3.append(file4)
 					if file3[1]!=']':
 						list4.append(file1)
-			var5 = -1
+			counter1 = -1
 			for x in var3:
-				var5+=1
-				if list5[var5]!='':
-					patch=str(list5[var5]).split()
-					person((patch[2]+' '+patch[3]),(patch[2]+' '+patch[3])+'@mun.ca',starttear,startsem)
+				counter1+=1
+				if list5[counter1]!='':
+					patch=str(list5[counter1]).split()
+					person((patch[2]+' '+patch[3]),(patch[2]+' '+patch[3])+'@mun.ca',startyear,startsem)
 					pid2=Person.select().where(Person.name==(patch[2]+' '+patch[3])).get()
-					offer(starttear, list3[var5], startsem, pid2.id, 80, x)
-					person((patch[0]+' '+patch[1]),(patch[0]+' '+patch[1])+'@mun.ca',starttear,startsem)
+					offer(startyear, list3[counter1], startsem, pid2.id, 80, x)
+					person((patch[0]+' '+patch[1]),(patch[0]+' '+patch[1])+'@mun.ca',startyear,startsem)
 					pid1=Person.select().where(Person.name==(patch[0]+' '+patch[1])).get()
-					var12=offer(starttear, list3[var5], startsem, pid1.id, 80, x)
-					list6.append(var12)
+					off=offer(startyear, list3[counter1], startsem, pid1.id, 80, x)
+					list6.append(off)
 				else:
-					person(list4[var5],list4[var5]+'@mun.ca',starttear,startsem)
-					pid1=Person.select().where(Person.name==list4[var5]).get()
-					offer(starttear,list3[var5],startsem,pid1.id,80,x)
+					person(list4[counter1],list4[counter1]+'@mun.ca',startyear,startsem)
+					pid1=Person.select().where(Person.name==list4[counter1]).get()
+					offer(startyear,list3[counter1],startsem,pid1.id,80,x)
 		print
 		print 'completed files in parameters'
 		print
-		list8.append(list6)
-		list8.append(list7)
-		return list8,list_Errors,list_of_error_types
+		print list6
+		list_of_passin_ordered_courses.append(list6)
+		list_of_passin_ordered_courses.append(list7)
+		return list_of_passin_ordered_courses,list_Errors,list_of_error_types
 	except:
 		print
 		print 'The file '+last_selester+".html does not exist."
-		return 'error'
 
 
 def splitting(pid1):
-	var22=pid1[0]
-	for var1 in var22:
-		if var1 is not None:
-			update1=Mastermany.update(split=float(0.5)).where(Mastermany.oid==var1)
+	id_storage=pid1[0]
+	for id_num in id_storage:
+		if id_num is not None:
+			update1=Mastermany.update(split=float(0.5)).where(Mastermany.oid==id_num)
 			update1.execute()
 
 
@@ -205,26 +181,6 @@ def informationXchange(generation,list1):
 				list1.append(i + ':' + 'previous id')
 				ah = h
 	return list1
-
-
-def semester_quick_gen(fromD):
-	now = str(datetime.datetime.now())
-	year= now.split()
-	p=re.compile(r"\d+")
-	year=p.findall(year[0])
-	start=fromD
-	while int(start)<=int(year[0]):
-		session=0
-		while session!=5:
-			session+=1
-			try:
-				Term.get_or_create(year=start,session=session)
-			except:
-				pass
-		else:
-			start+=1
-		if start == 2030:
-			break
 
 
 def offer(year,code,session,profid,numberofstudents,sectionnumbers):
@@ -308,11 +264,11 @@ def Psupera(TermS,profid,team_id,supervisoncalss,session):
 
 def person(name,email,staryear,startsem):
 	# can't hear
+	try:Term.get_or_create(year= staryear, session = startsem)
+	except:pass
 	ses=Term.select().where(Term.year==staryear,Term.session==startsem).get()
-	try:
-		Person.get_or_create(name=name,email=email,start=ses.id)
-	except:
-		pass
+	try:Person.get_or_create(name=name,email=email,start=ses.id)
+	except:pass
 
 
 def student(name,email):
@@ -478,8 +434,6 @@ def error(var1,var2,list_of_error_types):
 
 
 def offergen(files):
-	# ######################semester_quick_gen(fromD)
-	semester_quick_gen(2000)
 	# #####################person(name,email)
 	person('Mr. Anderson','jonathan.anderson@mun.ca',2012,3)
 	person('Mr. Anders54on','jon56athan.anderson@mun.ca',2008,3)
@@ -494,42 +448,8 @@ def offergen(files):
 	if var1=='error':
 		#this breaks the function saving you 2 min
 		var2=var1[9999]
-	# ################student(name, email)
-	student('Juteau','2011205085')
-	student('Derakhshan Nik','201509962')
-	student('Nguyen','201051471')
-	team('Juteau','test')
-	team('Derakhshan Nik','test2')
-	team('Nguyen','test3')
-	# ##################superC(BOOLDoyouwanttocreateanewone,Description,Weight)
-	superC(True,'example of custom descriptions',.3232323)
-	Psuper(True,'example of custom descriptions',.23232232323232)
-	# #############supera(TermS,profid,Studentid,supervisoncalss,session)
-	supera(2016,1,1,1,1)
-	supera(2016,1,2,2,1)
-	supera(2016,1,2,2,2)
-	supera(2016,1,1,1,3)
-	supera(2014,1,1,1,3)
-	supera(2015,1,1,1,3)
-	supera(2016,1,3,3,3)
-	supera(2016,1,3,4,3)
-	supera(2016,1,3,3,3)
-	Psupera(2016,1,1,1,1)
-	Psupera(2016,1,2,2,1)
-	Psupera(2016,1,2,2,2)
-	Psupera(2016,1,1,1,3)
-	Psupera(2016,1,3,3,3)
-	Psupera(2016,1,3,4,3)
-	Psupera(2016,1,3,3,3)
-	# ###########offer(year,code,session,profid,numberofstudents,sectionnumbers):
-	offer(2016,1020,2,1,80,3)
-	offer(2016,1020,2,3,80,3)
-	offer(2016,3891,1,1,80,1)
-	offer(2016,8894,2,1,70,1)
-	offer(2016,8894,2,3,70,1)
-	offer(2016,3891,1,2,80,1)
-	offer(2016,8894,2,2,70,1)
 	return var1,var2,list_of_error_types
+
 
 def split(files):
 	# var1,var2=intake(files)
@@ -684,6 +604,7 @@ def anyplot(semester,name,weights):
 
 
 def offerplot(dict_temp2,name):
+	print dict_temp2
 	p1=re.compile(r"\w+")
 	p2=p1.findall(name)
 	list1=list()
@@ -701,32 +622,25 @@ def offerplot(dict_temp2,name):
 				list2[var]+=j
 			else:
 				list2.append(j)
-	list3=list()
-	list4=list()
+	total_weight=list()
+	year_term=list()
 	for (y, x) in sorted(zip(list1, list2)):
-		list3.append(x)
-		list4.append(y)
+		total_weight.append(x)
+		year_term.append(y)
 	width = 1
-	N=len(list4)
+	N=len(year_term)
 	ind=np.arange(N)
-	plt.bar(left=ind,height=list3,width=width,color='#d62728')
+	plt.bar(left=ind,height=total_weight,width=width,color='#d62728')
 	plt.ylabel('Credit Value')
 	plt.xlabel('Semester id this is temp till i figure out a yearly system')
 	plt.title(p2[0])
 	plt.yticks(np.arange(0,6,0.25))
-	plt.xticks(ind,(list4),rotation='vertical')
+	plt.xticks(ind,(year_term),rotation='vertical')
 	plt.savefig(str(name)+'.pdf',bbox_inches='tight')
 	plt.close()
 
 
-def test3():
-	start_time=time.time()
-	a=0
-	while a<10000000:
-		a+=1
-	print "My program took", time.time() - start_time, "to run"
-
 def populate(files):
-		var1,var2,list_of_error_types=offergen(files)
-		split(var1)
-		error(var1,var2,list_of_error_types)
+		coursecodes,htmldates,list_of_error_types=offergen(files)
+		# split(coursecodes)
+		# error(coursecodes,htmldates,list_of_error_types)
