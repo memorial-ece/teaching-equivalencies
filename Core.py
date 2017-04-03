@@ -18,16 +18,14 @@ import csv
 import os
 import datetime
 import numpy as np
-from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
-from matplotlib.figure import Figure
 import matplotlib
-matplotlib.rcParams['backend'] = "Qt4Agg"
 import matplotlib.pyplot as plt, mpld3
 import sys
 from playhouse.csv_loader import *
 from itertools import *
 import random
 stripprimary = re.compile(r"[a-zA-Z0-9._-]{2,}")
+matplotlib.rcParams['backend'] = "Qt4Agg"
 crsnumber= re.compile(r"(?<=ENGI )(\d+)")
 DATABASE = 'database.db'
 db = SqliteDatabase(DATABASE)
