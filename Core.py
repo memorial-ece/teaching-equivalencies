@@ -23,7 +23,6 @@ import matplotlib.pyplot as plt, mpld3
 import sys
 from playhouse.csv_loader import *
 from itertools import *
-import random
 stripprimary = re.compile(r"[a-zA-Z0-9._-]{2,}")
 matplotlib.rcParams['backend'] = "Qt4Agg"
 crsnumber= re.compile(r"(?<=ENGI )(\d+)")
@@ -39,17 +38,17 @@ def intake(year):
 	varlen_for_progress = len(year)
 	counter=0
 	last_selester=0
-	list6 = list()
-	list7 = list()
+	offering_id = list()
+	code = list()
 	try:
 		for filename in year:
 			counter+=1
-			list_of_passin_ordered_courses = list()
-			list1 = list()
-			list2 = list()
-			list3 = list()
-			list4 = list()
-			list5 = list()
+			coursecodes = list()
+			list_names = list()
+			primary_prof_list_and_instances = list()
+			courses_offered = list()
+			primary_prof_list = list()
+			secondary_prof_list = list()
 			var = -1
 			progress(counter,varlen_for_progress)
 			crsnumber = re.compile(r"(?<=ENGI )(\d+)")
@@ -65,61 +64,60 @@ def intake(year):
 			startsem = (semstrip.findall(filen3))
 			startyear = str(startyear).strip("[]'")
 			startsem = str(startsem).strip("[]'")
-			last_selester=startyear+startsem
+			last_selester=filename
 			x_file = open(filename).readlines()
 			for w in (x_file):
 				w = str(w.splitlines())
-				file1 = str((namestrip.findall(w)))
+				P_name = str((namestrip.findall(w)))
 				crosscheck = str((crosslist.findall(w)))
-				file3 = str(crsnumber.findall(w))
-				list7.append(file3)
+				crse = str(crsnumber.findall(w))
+				code.append(crse)
 				file2 = str((namestrip2.findall(w)))
-				if file3[1]!=']' and file1=='[]':
+				if crse[1]!=']' and P_name=='[]':
 					if crosscheck[1] == "'":
 						list_of_error_types.append('cross listed:')
 					else:
 						list_of_error_types.append('no prof')
-					file4 = str(file3).strip("'[]")
+					file4 = str(crse).strip("'[]")
 					list_Errors.append(filename)
 					list_Errors.append(file4)
-				if file1[1]!=']':
+				if P_name[1]!=']':
 					var+=1
-					list1.append(file1)
-					file1 = str(file1).strip("[]'")
+					list_names.append(P_name)
+					P_name = str(P_name).strip("[]'")
 					file2 = str(file2).strip("[]'")
-					file4 = str(file3).strip("'[]")
-					list5.append(file2)
-					var3=[len(list(group)) for key, group in groupby(list1)]
-					list2.append(file1)
-					list3.append(file4)
-					if file3[1]!=']':
-						list4.append(file1)
+					file4 = str(crse).strip("'[]")
+					secondary_prof_list.append(file2)
+					var3=[len(list(group)) for key, group in groupby(list_names)]
+					primary_prof_list_and_instances.append(P_name)
+					courses_offered.append(file4)
+					if crse[1]!=']':
+						primary_prof_list.append(P_name)
 			counter1 = -1
 			for x in var3:
 				counter1+=1
-				if list5[counter1]!='':
-					patch=str(list5[counter1]).split()
+				if secondary_prof_list[counter1]!='':
+					patch=str(secondary_prof_list[counter1]).split()
 					person((patch[2]+' '+patch[3]),(patch[2]+' '+patch[3])+'@mun.ca',startyear,startsem)
 					pid2=Person.select().where(Person.name==(patch[2]+' '+patch[3])).get()
-					offer(startyear, list3[counter1], startsem, pid2.id, 80, x)
+					offer(startyear, courses_offered[counter1], startsem, pid2.id, 80, x)
 					person((patch[0]+' '+patch[1]),(patch[0]+' '+patch[1])+'@mun.ca',startyear,startsem)
 					pid1=Person.select().where(Person.name==(patch[0]+' '+patch[1])).get()
-					off=offer(startyear, list3[counter1], startsem, pid1.id, 80, x)
-					list6.append(off)
+					off=offer(startyear, courses_offered[counter1], startsem, pid1.id, 80, x)
+					offering_id.append(off)
 				else:
-					person(list4[counter1],list4[counter1]+'@mun.ca',startyear,startsem)
-					pid1=Person.select().where(Person.name==list4[counter1]).get()
-					offer(startyear,list3[counter1],startsem,pid1.id,80,x)
+					person(primary_prof_list[counter1],primary_prof_list[counter1]+'@mun.ca',startyear,startsem)
+					pid1=Person.select().where(Person.name==primary_prof_list[counter1]).get()
+					offer(startyear,courses_offered[counter1],startsem,pid1.id,80,x)
 		print
 		print 'completed files in parameters'
 		print
-		print list6
-		list_of_passin_ordered_courses.append(list6)
-		list_of_passin_ordered_courses.append(list7)
-		return list_of_passin_ordered_courses,list_Errors,list_of_error_types
+		coursecodes.append(offering_id)
+		coursecodes.append(code)
+		return coursecodes,list_Errors,list_of_error_types
 	except:
 		print
-		print 'The file '+last_selester+".html does not exist."
+		print 'The file '+last_selester+" is bad and this was the file i was processing when i failed"
 
 
 def splitting(pid1):
@@ -411,11 +409,11 @@ def docustomimport(Table):
 	import_file(Table)
 
 
-def error(var1,var2,list_of_error_types):
+def error(list_of_error,list_of_error_types):
 	print 'please see that these errors are attended to '
 	print 'list of error types found'
 	counter=-1
-	var=len(var2)
+	var=len(list_of_error)
 	var=var/2
 	for x in list_of_error_types:
 		print x
@@ -426,8 +424,8 @@ def error(var1,var2,list_of_error_types):
 			break
 		var3=counter*2
 		var4=var3+1
-		print var2[var3]
-		print var2[var4]
+		print list_of_error[var3]
+		print list_of_error[var4]
 	print 'view the HTML files to correct'
 
 
@@ -437,20 +435,17 @@ def offergen(files):
 	person('Mr. Anders54on','jon56athan.anderson@mun.ca',2008,3)
 	# person('Mr. Anon','jonathan.arson@mun.ca',2013,3)
 	start_time=time.time()
-	var1,var2,list_of_error_types=intake(files)
-	if var2[0]!='':
+	coursecodes,list_of_error,list_of_error_types=intake(files)
+	if list_of_error[0]!='':
 		print
 		print "please check on the errors function, I have some results"
 	print
 	print "My program took", time.time() - start_time, "to run"
-	if var1=='error':
-		#this breaks the function saving you 2 min
-		var2=var1[9999]
-	return var1,var2,list_of_error_types
+	print
+	return coursecodes,list_of_error,list_of_error_types
 
 
 def split(files):
-	# var1,var2=intake(files)
 	start_time = time.time()
 	person1=Person.select()
 	counter=0
@@ -525,35 +520,8 @@ def progress(count, total, status=''):
 	sys.stdout.flush()
 
 
-def remove_duplicate(alist):
-	return list(set(alist))
-
-
-def double_list_split(list2,):
-	list1 = list()
-	list3=list()
-	print list2
-	for x in list2:
-		if x >=1000:
-			print x
-			var1=x
-		else:
-			print x
-			var2=x
-			list1.append(str(var1)+'0'+str(var2))
-	return list1
-
-
-def matching(list1,list2):
-	list3=list()
-	counter=-1
-	for x in list1:
-		counter+=1
-		list3.append(x)
-		list3.append(list2[counter])
-
-
 def anyplot(semester,name,weights):
+	# rename need test data again
 	p1=re.compile(r"\w+")
 	p2=p1.findall(name)
 	listany=list()
@@ -565,25 +533,7 @@ def anyplot(semester,name,weights):
 			counter+=1
 			listany.append(str(var)+'0'+str(y))
 			listany.append(weights[counter])
-	list1=list()
-	list2=list()
-	for i, j in enumerate(listany):
-		if i %2==0:
-			try:
-				var=list1.index(j)
-			except:
-				var=-2
-				list1.append(j)
-		else:
-			if var != -2:
-				list2[var]+=j
-			else:
-				list2.append(j)
-	list3=list()
-	list4=list()
-	for (y, x) in sorted(zip(list1, list2)):
-		list3.append(x)
-		list4.append(y)
+	list3,list4=matchandsort(listany)
 	width = 1
 	if p2[0]=='project':
 		stack=3
@@ -601,31 +551,36 @@ def anyplot(semester,name,weights):
 	plt.close()
 
 
+def matchandsort(diction_of_var):
+	var=-2
+	terms=list()
+	values=list()
+	for i, j in enumerate(diction_of_var):
+		if i %2==0:
+			try:
+				var=terms.index(j)
+			except:
+				var=-2
+				terms.append(j)
+		else:
+			if var != -2:
+				values[var]+=j
+			else:
+				values.append(j)
+	total_weight=list()
+	year_term=list()
+	for (y, x) in sorted(zip(terms, values)):
+		total_weight.append(x)
+		year_term.append(y)
+	return total_weight,year_term
+
+
 def offerplot(dict_temp2,name):
 	print dict_temp2
 	p1=re.compile(r"\w+")
 	p2=p1.findall(name)
-	list1=list()
-	list2=list()
-	var=-2
-	for i, j in enumerate(dict_temp2):
-		if i %2==0:
-			try:
-				var=list1.index(j)
-			except:
-				var=-2
-				list1.append(j)
-		else:
-			if var != -2:
-				list2[var]+=j
-			else:
-				list2.append(j)
-	total_weight=list()
-	year_term=list()
-	for (y, x) in sorted(zip(list1, list2)):
-		total_weight.append(x)
-		year_term.append(y)
 	width = 1
+	total_weight,year_term=matchandsort(dict_temp2)
 	N=len(year_term)
 	ind=np.arange(N)
 	plt.bar(left=ind,height=total_weight,width=width,color='#d62728')
@@ -640,5 +595,5 @@ def offerplot(dict_temp2,name):
 
 def populate(files):
 		coursecodes,htmldates,list_of_error_types=offergen(files)
-		# split(coursecodes)
-		# error(coursecodes,htmldates,list_of_error_types)
+		split(coursecodes)
+		error(htmldates,list_of_error_types)
