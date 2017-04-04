@@ -97,10 +97,10 @@ def Profile(prof_id):
 				.join(Offering)
 				.where(Mastermany.instructor == prof_id)
 				.order_by(Offering.semester.desc()))
-	list1=list()
+	list_offering_id=list()
 	for x in offering:
-		list1.append(x.oid.id)
-		list1.sort()
+		list_offering_id.append(x.oid.id)
+		list_offering_id.sort()
 	adjustment = (Adjustment
 				  .select()
 				  .join(Person)
@@ -114,21 +114,21 @@ def Profile(prof_id):
 				  .select()
 				  .join(Mastermany)
 				  .where(Mastermany.instructor == prof_id))
-	list31=list()
-	list32=list()
+	list_supervision_date=list()
+	list_supervision_value=list()
 	for num in Snum:
 		Ssum=Mastermany.select().where(Mastermany.sid==num.id).get()
 		Stotal+=num.supervision_class_id.weight*Ssum.split
-		list31.append(Ssum.sid.semester.year)
-		list31.append(Ssum.sid.semester.session)
-		list32.append(num.supervision_class_id.weight * Ssum.split)
+		list_supervision_date.append(Ssum.sid.semester.year)
+		list_supervision_date.append(Ssum.sid.semester.session)
+		list_supervision_value.append(num.supervision_class_id.weight * Ssum.split)
 	Onum = (Offering
 				  .select()
 				  .join(Mastermany)
 				  .where(Mastermany.instructor == prof_id))
 	list_forviewer = dict()
 	list_split = dict()
-	dict_temp2=list()
+	offering_value_date=list()
 	counter=-1
 	for num in Onum:
 		counter+=1
@@ -137,10 +137,10 @@ def Profile(prof_id):
 		Ototal+=var1*Osum.split
 		list_forviewer[Osum.oid.id]=var1
 		list_split[Osum.oid.id]=Osum.split
-		dict_temp2.append((str(Osum.oid.semester.year)+'0'+str(Osum.oid.semester.session)))
-		dict_temp2.append(var1*Osum.split)
-	list21=list()
-	list22=list()
+		offering_value_date.append((str(Osum.oid.semester.year)+'0'+str(Osum.oid.semester.session)))
+		offering_value_date.append(var1*Osum.split)
+	list_project_supervision_date=list()
+	list_project_supervision_value=list()
 	Pnum = (ProjectSupervision
 				  .select()
 				  .join(Mastermany)
@@ -148,9 +148,9 @@ def Profile(prof_id):
 	for num in Pnum:
 		Psum=Mastermany.select().where(Mastermany.pid==num.id).get()
 		Ptotal+=num.project_class_id.weight*Psum.split
-		list21.append(Psum.pid.semester.year)
-		list21.append(Psum.pid.semester.session)
-		list22.append(num.project_class_id.weight * Psum.split)
+		list_project_supervision_date.append(Psum.pid.semester.year)
+		list_project_supervision_date.append(Psum.pid.semester.session)
+		list_project_supervision_value.append(num.project_class_id.weight * Psum.split)
 	Atotal = (Person
 			  .select()
 			  .where(Person.id == prof_id)
@@ -169,19 +169,13 @@ def Profile(prof_id):
 	total = (Ptotal) + (Atotal) + (Stotal) + (Ototal) - defi
 	if request.method == 'POST':
 		if request.form['subm1']=="Supervisions CSV":
-			print ' works'
-			print list31
-			print list32
-			anyplot(list31,'super for id '+str(prof_id),list32)
+			anyplot(list_supervision_date,'super for id '+str(prof_id),list_supervision_value)
 			return send_file('super for id '+str(prof_id)+'.pdf')
 		if request.form['subm1']=="Project Supervisions CSV":
-			print list21
-			print list22
-			anyplot(list21,'project for id '+str(prof_id),list22)
+			anyplot(list_project_supervision_date,'project for id '+str(prof_id),list_project_supervision_value)
 			return send_file('project for id '+str(prof_id)+'.pdf')
 		if request.form['subm1']=="Offerings CSV":
-			print ' works'
-			offerplot(dict_temp2,'offer for id '+str(prof_id))
+			offerplot(offering_value_date,'offer for id '+str(prof_id))
 			return send_file('offer for id '+str(prof_id)+'.pdf')
 		if request.form['subm1'] == "submit2":
 			weight = request.form['weight']
@@ -191,103 +185,6 @@ def Profile(prof_id):
 	return render_template("profilehist.html", person=person, supervision=supervision,instructor=prof_id,
 						   projectsupervision=projectsupervision, offering=offering, adjustment=adjustment,total=total,
 						   Stotal=Stotal,Ptotal=Ptotal,Ototal=Ototal,Onum=Onum,deficit=defi,list_forviewer=list_forviewer,list_split=list_split)
-
-
-"""
-To be worked on
-"""
-# @app.route("/profile/<prof_id>", methods=['GET', 'POST'])
-# def Profile(prof_id):
-# 	now = datetime.datetime.now()
-# 	year1 = now.year
-# 	person = Person.get(Person.id == prof_id)
-# 	supervision = (Supervision.select()
-# 				   .join(Person, on=(Supervision.id == Person.id))
-# 				   .join(Term, on=(Supervision.id == Term.id))
-# 				   .where(Person.id == prof_id, Term.year == year1)
-# 				   .order_by(Supervision.id.desc()))
-# 	projectsupervision = (ProjectSupervision
-# 						  .select()
-# 						  .join(Person, on=(ProjectSupervision.id == Person.id))
-# 						  .join(Term, on=(ProjectSupervision.id == Term.id))
-# 						  .where(Person.id == prof_id, Term.year == year1)
-# 						  .order_by(ProjectSupervision.id.desc()))
-# 	offering = (Offering
-# 				.select()
-# 				.join(Mastermany, on=(Offering.id == Mastermany.instructor))
-# 				.join(Term, on=(Offering.id == Term.id))
-# 				.where(Mastermany.id == prof_id, Term.year == year1)
-# 				.order_by(Offering.id.desc()))
-	# list1=list()
-	# for x in offering:
-	# 	list1.append(x.id)
-	# adjustment = (Adjustment
-	# 			  .select()
-	# 			  .join(Person)
-	# 			  .where(Person.id == prof_id)
-	# 			  .order_by(Adjustment.id.desc()))
-	# Stotal = 0
-	# Atotal = 0
-	# Ptotal = 0
-	# Ototal = 0
-	# Snum = (Supervision
-	# 			  .select()
-	# 			  .join(Mastermany)
-	# 			  .where(Mastermany.instructor == prof_id))
-	# for num in Snum:
-	# 	Ssum=Mastermany.select().where(Mastermany.sid==num.id).get()
-	# 	Stotal+=num.supervision_class_id.weight*Ssum.split
-	#
-	# Onum = (Offering
-	# 			  .select()
-	# 			  .join(Mastermany)
-	# 			  .where(Mastermany.instructor == prof_id))
-	# list_forviewer = dict()
-	# list_split = dict()
-	# counter=-1
-	# for num in Onum:
-	# 	counter+=1
-	# 	Osum=Mastermany.select().where(Mastermany.oid==num.id).get()
-	# 	var1=weight_calc(Osum.oid)
-	# 	Ototal+=var1*Osum.split
-	# 	list_forviewer[list1[counter]]=var1
-	# 	list_split[list1[counter]]=Osum.split
-	#
-	#
-	# Pnum = (ProjectSupervision
-	# 			  .select()
-	# 			  .join(Mastermany)
-	# 			  .where(Mastermany.instructor == prof_id))
-	# for num in Pnum:
-	# 	Psum=Mastermany.select().where(Mastermany.pid==num.id).get()
-	# 	Ptotal+=num.project_class_id.weight*Psum.split
-	# Atotal = (Person
-	# 		  .select()
-	# 		  .where(Person.id == prof_id)
-	# 		  .join(Adjustment)
-	# 		  .select(fn.SUM(Adjustment.weight))
-	# 		  .scalar())
-	# defi=deficit(prof_id)
-	# if Ototal is None:
-	# 	Ototal = 0
-	# if Atotal is None:
-	# 	Atotal = 0
-	# if Stotal is None:
-	# 	Stotal = 0
-	# if Ptotal is None:
-	# 	Ptotal = 0
-	# total = (Ptotal) + (Atotal) + (Stotal) + (Ototal) - defi
-	# if request.method == 'POST':
-	# 	if request.form['subm1'] == "submit2":
-	# 		weight = request.form['weight']
-	# 		weight = float(weight)
-	# 		AUDITCOMMENT = request.form['AUDITCOMMENT']
-	# # 		Adjustment.create(instructor=prof_id, weight=weight, comment=AUDITCOMMENT)
-	# return render_template("profilehist.html", person=person, supervision=supervision,instructor=prof_id,
-	# 					   projectsupervision=projectsupervision, offering=offering,
-	# 					   # adjustment=adjustment,total=total,
-	# 					   # Stotal=Stotal,Ptotal=Ptotal,Ototal=Ototal,Onum=Onum,deficit=defi,list_forviewer=list_forviewer,list_split=list_split
-	# 					   )
 
 
 @app.route('/listm', methods=['GET', 'POST'])
