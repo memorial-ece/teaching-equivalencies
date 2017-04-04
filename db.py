@@ -31,7 +31,7 @@ class Person(Model):
 	name = TextField(null=False)
 	email = TextField(unique=True)
 	id = IntegerField(primary_key=True)
-	start = ForeignKeyField(Term, related_name='startdate',null=False)
+	start = ForeignKeyField(Term, related_name='startdate', null=False)
 
 
 class Course(Model):
@@ -160,8 +160,8 @@ class Mastermany(Model):
 	A table that ties together all aspects of a teachers equivalency
 	"""
 	instructor = ForeignKeyField(Person, related_name='person_id')
-	oid = ForeignKeyField(Offering, related_name='offering_id',null=True)
-	sid = ForeignKeyField(Supervision, related_name='supervision_id',null=True)
-	pid = ForeignKeyField(ProjectSupervision, related_name='project_id',null=True)
-	rid = ForeignKeyField(Role, related_name='role_id',null=True)
+	oid = ForeignKeyField(Offering, related_name='offering_id', null=True)
+	sid = ForeignKeyField(Supervision, related_name='supervision_id', null=True)
+	pid = ForeignKeyField(ProjectSupervision, related_name='project_id', null=True)
+	rid = ForeignKeyField(Role, related_name='role_id', null=True)
 	split = FloatField(null=True)

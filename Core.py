@@ -360,7 +360,7 @@ def export_file(selector, name='default'):
 			query = SupervisionClass.select().order_by(SupervisionClass.id)
 			dump_csv(query, fh)
 		if str(selector) == 'Course':
-			query = Course.select().order_by(Course.course_num)
+			query = Course.select().order_by(Course.code)
 			dump_csv(query, fh)
 		if str(selector) == 'CourseGeneration':
 			query = CourseGeneration.select().order_by(CourseGeneration.id)
@@ -430,12 +430,9 @@ def error(list_of_error,list_of_error_types):
 
 
 def offergen(files):
-	# #####################person(name,email)
-	person('Mr. Anderson','jonathan.anderson@mun.ca',2012,3)
-	person('Mr. Anders54on','jon56athan.anderson@mun.ca',2008,3)
-	# person('Mr. Anon','jonathan.arson@mun.ca',2013,3)
 	start_time=time.time()
 	coursecodes,list_of_error,list_of_error_types=intake(files)
+	print
 	if list_of_error[0]!='':
 		print
 		print "please check on the errors function, I have some results"
@@ -526,6 +523,7 @@ def anyplot(semester,name,weights):
 	p2=p1.findall(name)
 	listany=list()
 	counter=-1
+	print semester
 	for x,y in enumerate(semester):
 		if x % 2==0:
 			var=y

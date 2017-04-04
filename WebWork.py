@@ -53,30 +53,30 @@ def favicon():
 
 @app.route("/course/<id>", methods=['GET', 'POST'])
 def Coursehist(id):
-	list2=[]
+	list2 = []
 	course = Course.get(Course.id==id)
 	generation = (CourseGeneration.select().join(Course).where(Course.id == id))
-	list1=informationXchange(generation,list2)
-	return render_template("course.html", course=course,generation=generation,list1=list1)
+	list1 = informationXchange(generation, list2)
+	return render_template("course.html", course=course, generation=generation, list1=list1)
 
 
 @app.route("/c/<id>", methods=['GET', 'POST'])
 def Courseh(id):
-	list2=[]
+	list2 = []
 	course = Course.get(Course.code==id)
 	generation = (CourseGeneration.select().join(Course).where(Course.code == id))
-	list1=informationXchange(generation,list2)
-	return render_template("course.html", course=course,generation=generation,list1=list1)
+	list1 = informationXchange(generation, list2)
+	return render_template("course.html", course=course, generation=generation, list1=list1)
 
 
 @app.route("/gen/<id>", methods=['GET', 'POST'])
 def gen(id):
-	list2=[]
-	gen=CourseGeneration.get(CourseGeneration.id == id)
+	list2 = []
+	gen = CourseGeneration.get(CourseGeneration.id == id)
 	course = Course.get(Course.code == gen.course.code)
 	generation = (CourseGeneration.select().join(Course).where(Course.code == gen.course.code))
-	list1=informationXchange(generation,list2)
-	return render_template("course.html", course=course,generation=generation,list1=list1)
+	list1 = informationXchange(generation, list2)
+	return render_template("course.html", course=course, generation=generation, list1=list1)
 
 
 @app.route("/profile/<prof_id>/", methods=['GET', 'POST'])
@@ -97,7 +97,7 @@ def Profile(prof_id):
 				.join(Offering)
 				.where(Mastermany.instructor == prof_id)
 				.order_by(Offering.semester.desc()))
-	list_offering_id=list()
+	list_offering_id = list()
 	for x in offering:
 		list_offering_id.append(x.oid.id)
 		list_offering_id.sort()
@@ -114,11 +114,11 @@ def Profile(prof_id):
 				  .select()
 				  .join(Mastermany)
 				  .where(Mastermany.instructor == prof_id))
-	list_supervision_date=list()
-	list_supervision_value=list()
+	list_supervision_date = list()
+	list_supervision_value = list()
 	for num in Snum:
-		Ssum=Mastermany.select().where(Mastermany.sid==num.id).get()
-		Stotal+=num.supervision_class_id.weight*Ssum.split
+		Ssum = Mastermany.select().where(Mastermany.sid==num.id).get()
+		Stotal += num.supervision_class_id.weight*Ssum.split
 		list_supervision_date.append(Ssum.sid.semester.year)
 		list_supervision_date.append(Ssum.sid.semester.session)
 		list_supervision_value.append(num.supervision_class_id.weight * Ssum.split)
@@ -129,25 +129,25 @@ def Profile(prof_id):
 	list_forviewer = dict()
 	list_split = dict()
 	offering_value_date=list()
-	counter=-1
+	counter =- 1
 	for num in Onum:
-		counter+=1
-		Osum=Mastermany.select().where(Mastermany.oid==num.id).get()
-		var1=weight_calc(Osum.oid.id)
-		Ototal+=var1*Osum.split
-		list_forviewer[Osum.oid.id]=var1
-		list_split[Osum.oid.id]=Osum.split
+		counter += 1
+		Osum = Mastermany.select().where(Mastermany.oid==num.id).get()
+		var1 = weight_calc(Osum.oid.id)
+		Ototal += var1*Osum.split
+		list_forviewer[Osum.oid.id] = var1
+		list_split[Osum.oid.id] = Osum.split
 		offering_value_date.append((str(Osum.oid.semester.year)+'0'+str(Osum.oid.semester.session)))
 		offering_value_date.append(var1*Osum.split)
-	list_project_supervision_date=list()
-	list_project_supervision_value=list()
+	list_project_supervision_date = list()
+	list_project_supervision_value = list()
 	Pnum = (ProjectSupervision
 				  .select()
 				  .join(Mastermany)
 				  .where(Mastermany.instructor == prof_id))
 	for num in Pnum:
-		Psum=Mastermany.select().where(Mastermany.pid==num.id).get()
-		Ptotal+=num.project_class_id.weight*Psum.split
+		Psum = Mastermany.select().where(Mastermany.pid == num.id).get()
+		Ptotal += num.project_class_id.weight*Psum.split
 		list_project_supervision_date.append(Psum.pid.semester.year)
 		list_project_supervision_date.append(Psum.pid.semester.session)
 		list_project_supervision_value.append(num.project_class_id.weight * Psum.split)
@@ -157,7 +157,7 @@ def Profile(prof_id):
 			  .join(Adjustment)
 			  .select(fn.SUM(Adjustment.weight))
 			  .scalar())
-	defi=deficit(prof_id)
+	defi = deficit(prof_id)
 	if Ototal is None:
 		Ototal = 0
 	if Atotal is None:
@@ -169,13 +169,13 @@ def Profile(prof_id):
 	total = Ptotal + Atotal + Stotal + Ototal - defi
 	if request.method == 'POST':
 		if request.form['subm1']=="Supervisions CSV":
-			anyplot(list_supervision_date,'super for id '+str(prof_id),list_supervision_value)
+			anyplot(list_supervision_date, 'super for id '+str(prof_id), list_supervision_value)
 			return send_file('super for id '+str(prof_id)+'.pdf')
 		if request.form['subm1']=="Project Supervisions CSV":
-			anyplot(list_project_supervision_date,'project for id '+str(prof_id),list_project_supervision_value)
+			anyplot(list_project_supervision_date, 'project for id '+str(prof_id), list_project_supervision_value)
 			return send_file('project for id '+str(prof_id)+'.pdf')
 		if request.form['subm1']=="Offerings CSV":
-			offerplot(offering_value_date,'offer for id '+str(prof_id))
+			offerplot(offering_value_date, 'offer for id '+str(prof_id))
 			return send_file('offer for id '+str(prof_id)+'.pdf')
 		if request.form['subm1'] == "submit2":
 			weight = request.form['weight']
@@ -184,7 +184,7 @@ def Profile(prof_id):
 			Adjustment.create(instructor=prof_id, weight=weight, comment=AUDITCOMMENT)
 	return render_template("profilehist.html", person=person, supervision=supervision,instructor=prof_id,
 						   projectsupervision=projectsupervision, offering=offering, adjustment=adjustment,total=total,
-						   Stotal=Stotal,Ptotal=Ptotal,Ototal=Ototal,Onum=Onum,deficit=defi,list_forviewer=list_forviewer,list_split=list_split)
+						   Stotal=Stotal, Ptotal=Ptotal, Ototal=Ototal, Onum=Onum, deficit=defi, list_forviewer=list_forviewer,list_split=list_split)
 
 
 @app.route('/listm', methods=['GET', 'POST'])

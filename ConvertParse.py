@@ -155,7 +155,7 @@ def sanitize_course(name, course):
 	comments = convert_parse_comments(name, course)
 	other_info = convert_parse_other(name, course)
 	exclusive = convert_parse_exclusive(name, course)
-	subject = convert_parse_name(name,course)
+	subject = convert_parse_name(name, course)
 	dict_course_gen = {'Subject': subject, 'Name': id, 'PreviousCourseCode': exclusive, 'Description': comments, 'Title': title,
 					   'Lecture Hours': lecture_hours, 'Credit Hours': credit_hours, 'Labs': labs,
 					   'Other info': other_info}

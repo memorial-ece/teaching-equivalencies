@@ -19,13 +19,13 @@ import reader as cal
 from db import *
 from ConvertParse import *
 
+
 def import_courses(filename_import):
 	courses = collections.defaultdict(list)
 	for filename in filename_import:
 		parser1 = re.compile(r"\d+\D\w+$")
 		filename_year_subsection = (''.join(parser1.findall(str(filename))))
-		filename_year_subsection=filename_year_subsection.strip("'.html'")
-		html = filename.endswith('.htm') or filename.endswith('.html')
+		filename_year_subsection = filename_year_subsection.strip("'.html'")
 		parse = cal.parseHTML
 		for (name, c) in parse(open(filename)).items():
 			course = sanitize_course(name, c)
@@ -35,11 +35,11 @@ def import_courses(filename_import):
 		for course in cour:
 			code = course['Name']
 			list_course[code][year] = course
-	Progress_counter=0
+	progress_counter = 0
 	for code, details in list_course.items():
-		Progress_counter+=1
+		progress_counter += 1
 		try:
-			progress(Progress_counter, len(list_course))
+			progress(progress_counter, len(list_course))
 		except:
 			pass
 		sorted_det = sorted(details.items(), key=operator.itemgetter(0))
@@ -48,12 +48,12 @@ def import_courses(filename_import):
 		peewee_check = None
 		for keyyear in sorted_det:
 			thisyear, info1 = keyyear[0], keyyear[1]
-			var1=re.compile(r"....")
-			thisyear=str(var1.findall(str(thisyear)))
-			thisyear=thisyear.strip("'[]")
+			var1 = re.compile(r"....")
+			thisyear = str(var1.findall(str(thisyear)))
+			thisyear = thisyear.strip("'[]")
 			try:
 				peewee_check = CourseGeneration.select()\
-					.join(Course).where(Course.code == code,CourseGeneration.start_year == thisyear).get()
+					.join(Course).where(Course.code == code, CourseGeneration.start_year == thisyear).get()
 			except:
 				pass
 			if peewee_check is not None:
@@ -106,12 +106,13 @@ def import_courses(filename_import):
 							late_update = Course.select().where(Course.code == code).get()
 							CourseGeneration.create(labs=info1['Labs'], credit_hours=info1['Credit Hours'],
 													lecture_hours=info1['Lecture Hours'], title=info1['Title'],
-													comments=info1['Description'],course=late_update,
+													comments=info1['Description'], course=late_update,
 													other_info=info1['Other info'],
 													previous_course=info1['PreviousCourseCode'],
-													start_year=thisyear,end_year=thisyear)
+													start_year=thisyear, end_year=thisyear)
 					else:
 						update = CourseGeneration.update(end_year=thisyear).where(
 							CourseGeneration.id == CourseGeneration.select().order_by(
 								CourseGeneration.id.desc()).get())
 						update.execute()
+	print

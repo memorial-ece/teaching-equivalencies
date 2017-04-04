@@ -37,30 +37,29 @@ if __name__ == '__main__':
 		function = (arguments['FUNCTION'])
 		arg = str(arguments['ARGS'])
 		filename = arguments['<FILE>']
-		if function=='pt':
-			if arg=='d':
-				arg='Drop'
-			if arg=='c':
-				arg='Create'
-			if arg=='drc':
-				arg='DropReCreate'
+		if function == 'pt':
+			if arg == 'd':
+				arg = 'Drop'
+			if arg == 'c':
+				arg = 'Create'
+			if arg == 'drc':
+				arg = 'DropReCreate'
 			peeweetable(arg)
 		if function == 'docustomexport':
 			docustomexport(arg)
 		if function == 'docustomimport':
 			docustomimport(arg)
 		if function == 'peeweetable':
-			if arg=='d':
-				arg='Drop'
-			if arg=='c':
-				arg='Create'
-			if arg=='drc':
-				arg='DropReCreate'
+			if arg == 'd':
+				arg = 'Drop'
+			if arg == 'c':
+				arg = 'Create'
+			if arg == 'drc':
+				arg = 'DropReCreate'
 			peeweetable(arg)
 		if arguments['populate']:
 			populate(filename)
 		if arguments['intake']:
 			import_courses(filename)
-
 	except docopt.DocoptExit as e:
 		print e.message
