@@ -2,7 +2,7 @@
 <html>
    <head>
       <title>
-         profile
+         {{deficit}}
       </title>
        <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
           </head>
@@ -10,6 +10,9 @@
 <form action = "{{ url_for('Profile',prof_id=instructor,) }}" method = "POST">
    {% extends "home.html" %}
    {% block content %}
+    {{person.name}}
+       <h3>Total</h3>
+    {{total}}
    <h4>deficit</h4>
    <h2>{{deficit}}</h2>
    <h3>Personal Info</h3>
@@ -21,7 +24,7 @@
        <td>start</td>
        </thead>
        <tr>
-           <td><a href="/profile/{{person.id}}">{{person.id}}</td>
+           <td><a href="/profile/{{person.id}}">{{person.id}}</a></td>
            <td>{{person.name}}</td>
            <td><a href="mailto:{{person.email}}?Subject=Hello%20HALBRED" target="_top">{{person.email}}</a></td>
            <td>{{person.start.year}}</td>
@@ -122,8 +125,6 @@
        </tr>
        {% endfor %}
     </table>
-   <h3>Total</h3>
-   {{total}}
     <!--<h3>Offering</h3>-->
         <!--weight<br>-->
         <!--<input type = "text" name = "weight" /><br>-->

@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 #  Copyright 2017 Keegan Joseph Brophy
 #
 #    Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,6 +17,7 @@
 	Startup.py execute (FUNCTION) [ARGS]
 	Startup.py intake (<FILE>)...
 	Startup.py populate (<FILE>)...
+	Startup.py web
 	Startup.py -h --help
 
 Options:
@@ -27,9 +28,7 @@ Options:
 
 """
 import docopt
-from Core import *
 from import_courses import *
-
 
 if __name__ == '__main__':
 	arguments = docopt.docopt(__doc__)
@@ -61,5 +60,7 @@ if __name__ == '__main__':
 			populate(filename)
 		if arguments['intake']:
 			import_courses(filename)
+		if arguments['web']:
+			pass
 	except docopt.DocoptExit as e:
 		print e.message

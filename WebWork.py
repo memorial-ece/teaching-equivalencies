@@ -12,7 +12,6 @@
 #    See the License for the specific language governing permissions and
 #    limitations under the License.
 from flask import *
-from werkzeug.utils import *
 from Core import *
 app = Flask(__name__)
 DATABASE = 'database.db'
@@ -20,7 +19,6 @@ db = SqliteDatabase(DATABASE)
 UPLOAD_FOLDER = ''
 ALLOWED_EXTENSIONS = {'csv'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
 
 def allowed_file(filename):
 	return '.' in filename and \
@@ -47,6 +45,7 @@ def docustomimport():
 
 @app.route('/favicon.ico')
 def favicon():
+	# noinspection PyUnresolvedReferences
 	return send_from_directory(os.path.join(app.root_path, 'static'),
 							   'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
@@ -107,7 +106,6 @@ def Profile(prof_id):
 				  .where(Person.id == prof_id)
 				  .order_by(Adjustment.id.desc()))
 	Stotal = 0
-	Atotal = 0
 	Ptotal = 0
 	Ototal = 0
 	Snum = (Supervision

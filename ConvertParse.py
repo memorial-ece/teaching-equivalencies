@@ -12,11 +12,10 @@
 #    See the License for the specific language governing permissions and
 #    limitations under the License.
 
-import random
 import re
-import sys
 
 
+# noinspection PyUnboundLocalVariable
 def convert_parse_labs(name, course):
 	labs = course['lab hours'] if 'lab hours' in course else 3
 	if labs == 'at least three 1.5-hour sessions per semester':
@@ -119,7 +118,7 @@ def convert_parse_course_id(name, course):
 		course_id4 = p2.findall(course_id2)
 		return course_id4[0]
 
-def convert_parse_name(name,Course):
+def convert_parse_name(name, course):
 	p2 = re.compile(r"([A-Z]{4})")
 	name1 = str(name)
 	sub = p2.findall(name1)
@@ -132,7 +131,7 @@ def convert_parse_other(name, course):
 
 
 def convert_parse_exclusive(name, course):
-	prefix = convert_parse_name(name,course)
+	prefix = convert_parse_name(name, course)
 	exclusive = course['exclusive with'] if 'exclusive with' in course else None
 	if exclusive is not None:
 		p = re.compile(r"\d+")

@@ -11,18 +11,15 @@
 #    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #    See the License for the specific language governing permissions and
 #    limitations under the License.
-import re
-from db import *
-import time
-import csv
-import os
-import datetime
-import numpy as np
-import matplotlib
-import matplotlib.pyplot as plt, mpld3
 import sys
-from playhouse.csv_loader import *
+import time
 from itertools import *
+import matplotlib
+import matplotlib.pyplot as plt
+import numpy as np
+from playhouse.csv_loader import *
+from db import *
+
 stripprimary = re.compile(r"[a-zA-Z0-9._-]{2,}")
 matplotlib.rcParams['backend'] = "Qt4Agg"
 crsnumber= re.compile(r"(?<=ENGI )(\d+)")
@@ -57,8 +54,10 @@ def intake(year):
 			namestrip2 = re.compile(r"(?<=Primary - )\w+\s+\w+\s+\w+\s+\w+")
 			semstrip = re.compile(r".\d$")
 			yearstrip = re.compile(r"^\d...")
-			p1 = re.compile(r"(\d+\b)(?!.*\1\b)")
-			filen2 = int(''.join(p1.findall(str(filename))))
+			p1 = re.compile(r".....\d.....$")
+			filename4 = p1.findall(filename)
+			p3 = re.compile(r"(\d+\b)(?!.*\1\b)")
+			filen2 = int(''.join(p3.findall(str(filename4))))
 			filen3 = str(filen2)
 			startyear = (yearstrip.findall(filen3))
 			startsem = (semstrip.findall(filen3))
@@ -106,8 +105,8 @@ def intake(year):
 					off=offer(startyear, courses_offered[counter1], startsem, pid1.id, 80, x)
 					offering_id.append(off)
 				else:
-					person(primary_prof_list[counter1],primary_prof_list[counter1]+'@mun.ca',startyear,startsem)
-					pid1=Person.select().where(Person.name==primary_prof_list[counter1]).get()
+					person(primary_prof_list_and_instances[counter1],primary_prof_list_and_instances[counter1]+'@mun.ca',startyear,startsem)
+					pid1=Person.select().where(Person.name==primary_prof_list_and_instances[counter1]).get()
 					offer(startyear,courses_offered[counter1],startsem,pid1.id,80,x)
 		print
 		print 'completed files in parameters'
@@ -120,6 +119,7 @@ def intake(year):
 		print 'The file '+last_selester+" is bad and this was the file i was processing when i failed"
 
 
+
 def splitting(pid1):
 	id_storage=pid1[0]
 	for id_num in id_storage:
@@ -130,6 +130,14 @@ def splitting(pid1):
 
 def informationXchange(generation,list1):
 	first_run_var=1
+	aa = None
+	ab = None
+	ac = None
+	ad = None
+	ae = None
+	af = None
+	ag = None
+	ah = None
 	for x in generation:
 		a = x.labs
 		b = x.credit_hours
@@ -173,7 +181,6 @@ def informationXchange(generation,list1):
 				list1.append(i + ':' + 'other info')
 				ag = g
 			if ah != h:
-				ah = str(ah)
 				list1.append(i + ':' + 'previous id')
 				ah = h
 	return list1
@@ -288,8 +295,6 @@ def deficit(prof_id):
 	timesemester=sem-startsem
 	if timesemester<0:
 		timeyear-=1
-		timesemester=-timesemester
-		timesemester=3-timesemester
 	deduction=0
 	duty_for_first_two_year=3.3333333333
 	duty_for_normal=4.0
@@ -409,33 +414,37 @@ def docustomimport(Table):
 	import_file(Table)
 
 
-def error(list_of_error,list_of_error_types):
+def error(list_of_error, list_of_error_types):
 	print 'please see that these errors are attended to '
 	print 'list of error types found'
+	targ = open('Errors', 'w')
 	counter=-1
-	var=len(list_of_error)
-	var=var/2
+	var = len(list_of_error)
+	var = var/2
 	for x in list_of_error_types:
-		print x
+		targ.write(x)
+		targ.write('\n')
 	print'locations of errors'
-	while counter!=var:
-		counter+=1
-		if  counter==var:
+	while counter != var:
+		counter += 1
+		if  counter == var:
 			break
-		var3=counter*2
-		var4=var3+1
-		print list_of_error[var3]
-		print list_of_error[var4]
+		var3 = counter*2
+		var4 = var3+1
+		targ.write('\n')
+		targ.write(list_of_error[var3])
+		targ.write('\n')
+		targ.write(list_of_error[var4])
 	print 'view the HTML files to correct'
 
 
 def offergen(files):
-	start_time=time.time()
-	coursecodes,list_of_error,list_of_error_types=intake(files)
+	start_time = time.time()
+	coursecodes, list_of_error, list_of_error_types = intake(files)
 	print
-	if list_of_error[0]!='':
+	if list_of_error[0] != '':
 		print
-		print "please check on the errors function, I have some results"
+		print "please check on the errors file, I have some results"
 	print
 	print "My program took", time.time() - start_time, "to run"
 	print
@@ -444,15 +453,15 @@ def offergen(files):
 
 def split(files):
 	start_time = time.time()
-	person1=Person.select()
-	counter=0
+	person1 = Person.select()
+	counter = 0
 	varlen = len(person1)
 	for ixd in person1:
-		counter+=1
+		counter += 1
 		progress(counter,varlen)
-		update=Mastermany.update(split=1).where(Mastermany.instructor == ixd.id)
+		update = Mastermany.update(split=1).where(Mastermany.instructor == ixd.id)
 		update.execute()
-		update1=Mastermany.update(split=.5).where(Mastermany.oid == 904)
+		update1 = Mastermany.update(split=.5).where(Mastermany.oid == 904)
 		update1.execute()
 	print
 	print "My program took", time.time() - start_time, "to run"
@@ -466,20 +475,20 @@ def peeweetable(Droptype):
 			[Person,Mastermany,
 			 Term,
 			 Offering,
-			 Course,
+			 # Course,
 			 Role, ProjectSupervision, ProjectClass,
 			 Supervision,
-			 CourseGeneration,
+			 # CourseGeneration,
 			 SupervisionClass, ProjectType,
 			 Student, Adjustment],safe=True)
 		db.create_tables(
 			[Person,Mastermany,
 			 Term,
 			 Offering,
-			 Course,
+			 # Course,
 			 Role, ProjectSupervision, ProjectClass,
 			 Supervision,
-			 CourseGeneration,
+			 # CourseGeneration,
 				SupervisionClass, ProjectType, Student, Adjustment],safe=True)
 		db.close()
 	elif Droptype == 'Create':
@@ -488,10 +497,10 @@ def peeweetable(Droptype):
 			[Person, Mastermany,
 			 Term,
 			 Offering,
-			 Course,
+			 # Course,
 			 Role, ProjectSupervision, ProjectClass,
 			 Supervision,
-			 CourseGeneration,
+			 # CourseGeneration,
 			 SupervisionClass, ProjectType, Student, Adjustment],safe=True)
 		db.close()
 	elif Droptype == 'Drop':
@@ -500,10 +509,10 @@ def peeweetable(Droptype):
 			[Person, Mastermany,
 			 Term,
 			 Offering,
-			 Course,
+			 # Course,
 			 Role, ProjectSupervision, ProjectClass,
 			 Supervision,
-			 CourseGeneration,
+			 # CourseGeneration,
 			 SupervisionClass, ProjectType, Student, Adjustment],safe=True)
 		db.close()
 
@@ -519,11 +528,11 @@ def progress(count, total, status=''):
 
 def anyplot(semester,name,weights):
 	# rename need test data again
-	p1=re.compile(r"\w+")
-	p2=p1.findall(name)
+	var = None
+	p1 = re.compile(r"\w+")
+	p2 = p1.findall(name)
 	listany=list()
 	counter=-1
-	print semester
 	for x,y in enumerate(semester):
 		if x % 2==0:
 			var=y
@@ -550,9 +559,9 @@ def anyplot(semester,name,weights):
 
 
 def matchandsort(diction_of_var):
-	var=-2
-	terms=list()
-	values=list()
+	var =- 2
+	terms = list()
+	values = list()
 	for i, j in enumerate(diction_of_var):
 		if i %2==0:
 			try:
@@ -565,8 +574,8 @@ def matchandsort(diction_of_var):
 				values[var]+=j
 			else:
 				values.append(j)
-	total_weight=list()
-	year_term=list()
+	total_weight = list()
+	year_term = list()
 	for (y, x) in sorted(zip(terms, values)):
 		total_weight.append(x)
 		year_term.append(y)
@@ -575,12 +584,12 @@ def matchandsort(diction_of_var):
 
 def offerplot(dict_temp2,name):
 	print dict_temp2
-	p1=re.compile(r"\w+")
-	p2=p1.findall(name)
+	p1 = re.compile(r"\w+")
+	p2 = p1.findall(name)
 	width = 1
 	total_weight,year_term=matchandsort(dict_temp2)
-	N=len(year_term)
-	ind=np.arange(N)
+	N = len(year_term)
+	ind = np.arange(N)
 	plt.bar(left=ind,height=total_weight,width=width,color='#d62728')
 	plt.ylabel('Credit Value')
 	plt.xlabel('Semester id this is temp till i figure out a yearly system')
@@ -592,6 +601,6 @@ def offerplot(dict_temp2,name):
 
 
 def populate(files):
-		coursecodes,htmldates,list_of_error_types=offergen(files)
+		coursecodes, htmldates, list_of_error_types = offergen(files)
 		split(coursecodes)
-		error(htmldates,list_of_error_types)
+		error(htmldates, list_of_error_types)
