@@ -128,7 +128,7 @@ def Profile(prof_id):
 				  .where(Mastermany.instructor == prof_id))
 	list_forviewer = dict()
 	list_split = dict()
-	offering_value_date=list()
+	offering_value_date = list()
 	counter =- 1
 	for num in Onum:
 		counter += 1
