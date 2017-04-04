@@ -57,9 +57,9 @@ if __name__ == '__main__':
 			if arg=='drc':
 				arg='DropReCreate'
 			peeweetable(arg)
-		if arguments['populate']==True:
+		if arguments['populate']:
 			populate(filename)
-		if arguments['intake']==True:
+		if arguments['intake']:
 			import_courses(filename)
 
 	except docopt.DocoptExit as e:

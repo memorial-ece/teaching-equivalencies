@@ -66,7 +66,7 @@ def intake(year):
 			startsem = str(startsem).strip("[]'")
 			last_selester=filename
 			x_file = open(filename).readlines()
-			for w in (x_file):
+			for w in x_file:
 				w = str(w.splitlines())
 				P_name = str((namestrip.findall(w)))
 				crosscheck = str((crosslist.findall(w)))
@@ -217,11 +217,11 @@ def fix(numberofstudents,sectionnumbers,b1,c1,wd1,):
 	wa1=float(float(b1)/float(3))
 	numberofstudents=float(numberofstudents)
 	if numberofstudents > 75:
-		we = float((((float(b1) + ((numberofstudents) - float(75))) / float(75 ))* .5))
+		we = float((((float(b1) + (numberofstudents - float(75))) / float(75)) * .5))
 	else:
 		we = 0
-	wb1 = ((((float(b1) + float(c1)) / float(36))* .27))*float(sectionnumbers)
-	wc1 = ((((float(b1) + float(wd1)) / float(12) )* .14))
+	wb1 = (((float(b1) + float(c1)) / float(36)) * .27) * float(sectionnumbers)
+	wc1 = (((float(b1) + float(wd1)) / float(12)) * .14)
 	weight1 = wb1 + wc1 + we+wa1
 	if numberofstudents < 5:
 		weight1 = 0
@@ -232,7 +232,7 @@ def Psuper(BOOLDoyouwanttocreateanewone,Description,Weight):
 	ProjectClass.get_or_create(description='Undergraduate project course', weight=0.5)
 	ProjectClass.get_or_create(description='senior project supervision of a group of 4 students', weight=(float(0.125)/3))
 	ProjectClass.get_or_create(description='Case by Case', weight=2)
-	if BOOLDoyouwanttocreateanewone==True:
+	if BOOLDoyouwanttocreateanewone:
 		ProjectClass.get_or_create(description=Description, weight=Weight)
 
 
@@ -240,7 +240,7 @@ def superC(BOOLDoyouwanttocreateanewone,Description,Weight):
 	SupervisionClass.get_or_create(description='Gradstudent 1 term', weight=0.047)
 	SupervisionClass.get_or_create(description='Masters 1 term', weight=0.07)
 	SupervisionClass.get_or_create(description='Doctoral 1 term', weight=(float(.32)/3))
-	if BOOLDoyouwanttocreateanewone==True:
+	if BOOLDoyouwanttocreateanewone:
 		SupervisionClass.get_or_create(description=Description, weight=Weight)
 
 
@@ -546,7 +546,7 @@ def anyplot(semester,name,weights):
 	plt.xlabel('Semester in format (year)(semester id)')
 	plt.title(p2[0])
 	plt.yticks(np.arange(0, stack, 0.125))
-	plt.xticks(ind, (list4), rotation='vertical')
+	plt.xticks(ind, list4, rotation='vertical')
 	plt.savefig(str(name) + '.pdf', bbox_inches='tight')
 	plt.close()
 
@@ -588,7 +588,7 @@ def offerplot(dict_temp2,name):
 	plt.xlabel('Semester id this is temp till i figure out a yearly system')
 	plt.title(p2[0])
 	plt.yticks(np.arange(0,6,0.25))
-	plt.xticks(ind,(year_term),rotation='vertical')
+	plt.xticks(ind, year_term, rotation='vertical')
 	plt.savefig(str(name)+'.pdf',bbox_inches='tight')
 	plt.close()
 

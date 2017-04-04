@@ -166,7 +166,7 @@ def Profile(prof_id):
 		Stotal = 0
 	if Ptotal is None:
 		Ptotal = 0
-	total = (Ptotal) + (Atotal) + (Stotal) + (Ototal) - defi
+	total = Ptotal + Atotal + Stotal + Ototal - defi
 	if request.method == 'POST':
 		if request.form['subm1']=="Supervisions CSV":
 			anyplot(list_supervision_date,'super for id '+str(prof_id),list_supervision_value)

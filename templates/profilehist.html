@@ -6,6 +6,7 @@
       </title>
        <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
           </head>
+   <body>
 <form action = "{{ url_for('Profile',prof_id=instructor,) }}" method = "POST">
    {% extends "home.html" %}
    {% block content %}
@@ -133,3 +134,5 @@
         <!--<input type = "submit" name="subm1" value = "submit2" /><br>-->
 </form>
        {% endblock %}
+   </body>
+</html>
