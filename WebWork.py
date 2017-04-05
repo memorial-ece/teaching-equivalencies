@@ -52,30 +52,134 @@ def favicon():
 
 @app.route("/course/<id>", methods=['GET', 'POST'])
 def Coursehist(id):
+	if request.method == 'POST':
+		if request.form['subm1'] == "submit1":
+			labs = request.form['labs']
+			credit_hours = request.form['credit_hours']
+			lecture_hours = request.form['lecture_hours']
+			title = request.form['title']
+			comments = request.form['comments']
+			course = int(request.form['course'])
+			A=Course.get_or_create(code=course,subject='ENGI')
+			other_info = request.form['other_info']
+			previous_course = request.form['previous_course']
+			start_year = request.form['start_year']
+			end_year = request.form['end_year']
+			if end_year!='' and start_year!='' and labs!='' and credit_hours!='' and lecture_hours!='' and title!='' and course!='':
+				CourseGeneration.create(labs=labs,
+										credit_hours=credit_hours,
+										lecture_hours=lecture_hours,
+										title=title,
+										comments=comments,
+										other_info=other_info,
+										previous_course=previous_course,
+										start_year=start_year,
+										end_year=end_year,
+										course=A[0].id)
+				B=CourseGeneration.select().where(CourseGeneration.labs==labs,
+												  CourseGeneration.credit_hours==credit_hours,
+												  CourseGeneration.lecture_hours==lecture_hours,
+												  CourseGeneration.title==title,
+												  CourseGeneration.comments==comments,
+												  CourseGeneration.other_info==other_info,
+												  CourseGeneration.previous_course==previous_course,
+												  CourseGeneration.start_year==start_year,
+												  CourseGeneration.end_year==end_year,
+												  CourseGeneration.course==A[0].id).get()
+				print B.id
+				Adjustment.create(comment='Created a course generation'+str(B.id),overide_address='CourseGeneration'+str(B.id))
 	list2 = []
 	course = Course.get(Course.id==id)
 	generation = (CourseGeneration.select().join(Course).where(Course.id == id))
 	list1 = informationXchange(generation, list2)
-	return render_template("course.html", course=course, generation=generation, list1=list1)
+	return render_template("course.html", course=course, generation=generation, list1=list1, course_id=id)
 
 
 @app.route("/c/<id>", methods=['GET', 'POST'])
 def Courseh(id):
+	if request.method == 'POST':
+		if request.form['subm1'] == "submit1":
+			labs = request.form['labs']
+			credit_hours = request.form['credit_hours']
+			lecture_hours = request.form['lecture_hours']
+			title = request.form['title']
+			comments = request.form['comments']
+			course = int(request.form['course'])
+			A=Course.get_or_create(code=course,subject='ENGI')
+			other_info = request.form['other_info']
+			previous_course = request.form['previous_course']
+			start_year = request.form['start_year']
+			end_year = request.form['end_year']
+			print A[0].id
+			print labs
+			print credit_hours
+			print lecture_hours
+			print title
+			print course
+			print comments
+			print previous_course
+			print start_year
+			print end_year
+			print other_info
+			CourseGeneration.create(labs=labs,
+									credit_hours=credit_hours,
+									lecture_hours=lecture_hours,
+									title=title,
+									comments=comments,
+									other_info=other_info,
+									previous_course=previous_course,
+									start_year=start_year,
+									end_year=end_year,
+									course=A[0].id)
 	list2 = []
 	course = Course.get(Course.code==id)
 	generation = (CourseGeneration.select().join(Course).where(Course.code == id))
 	list1 = informationXchange(generation, list2)
-	return render_template("course.html", course=course, generation=generation, list1=list1)
+	return render_template("course.html", course=course, generation=generation, list1=list1, course_id=id)
 
 
 @app.route("/gen/<id>", methods=['GET', 'POST'])
 def gen(id):
+	if request.method == 'POST':
+		if request.form['subm1'] == "submit1":
+			labs = request.form['labs']
+			credit_hours = request.form['credit_hours']
+			lecture_hours = request.form['lecture_hours']
+			title = request.form['title']
+			comments = request.form['comments']
+			course = int(request.form['course'])
+			A=Course.get_or_create(code=course,subject='ENGI')
+			other_info = request.form['other_info']
+			previous_course = request.form['previous_course']
+			start_year = request.form['start_year']
+			end_year = request.form['end_year']
+			print A[0].id
+			print labs
+			print credit_hours
+			print lecture_hours
+			print title
+			print course
+			print comments
+			print previous_course
+			print start_year
+			print end_year
+			print other_info
+			CourseGeneration.create(labs=labs,
+									credit_hours=credit_hours,
+									lecture_hours=lecture_hours,
+									title=title,
+									comments=comments,
+									other_info=other_info,
+									previous_course=previous_course,
+									start_year=start_year,
+									end_year=end_year,
+									course=A[0].id)
 	list2 = []
 	gen = CourseGeneration.get(CourseGeneration.id == id)
 	course = Course.get(Course.code == gen.course.code)
 	generation = (CourseGeneration.select().join(Course).where(Course.code == gen.course.code))
 	list1 = informationXchange(generation, list2)
-	return render_template("course.html", course=course, generation=generation, list1=list1)
+	return render_template("course.html", course=course, generation=generation, list1=list1, course_id=id)
 
 
 @app.route("/profile/<prof_id>/", methods=['GET', 'POST'])
@@ -189,30 +293,86 @@ def Profile(prof_id):
 def listm():
 	if request.method == 'POST':
 		if request.form['subm1'] == "submit1":
-			labs = request.form['Labs']
-			credit = request.form['Credit']
-			title = request.form['Title']
-			cRN = request.form['CRN']
-			CourseGeneration.create(labs=labs, credit_hours=credit, title=title, course=cRN)
-		elif request.form['subm1'] == "submit2":
-			semesterID1 = request.form['SemesterID1']
-			student = request.form['stu']
-			iD1 = request.form['ID1']
-			courseGenID = request.form['CourseGenID']
-			Offering.create(enrolment=student, instructor=iD1, semester=semesterID1, generation=courseGenID)
+			labs = request.form['labs']
+			credit_hours = request.form['credit_hours']
+			lecture_hours = request.form['lecture_hours']
+			title = request.form['title']
+			comments = request.form['comments']
+			course = int(request.form['course'])
+			A=Course.get_or_create(code=course,subject='ENGI')
+			other_info = request.form['other_info']
+			previous_course = request.form['previous_course']
+			start_year = request.form['start_year']
+			end_year = request.form['end_year']
+			A=CourseGeneration.create(labs=labs,
+									credit_hours=credit_hours,
+									lecture_hours=lecture_hours,
+									title=title,
+									comments=comments,
+									other_info=other_info,
+									previous_course=previous_course,
+									start_year=start_year,
+									end_year=end_year,
+									course=A[0].id)
+			B = CourseGeneration.select().where(CourseGeneration.labs == labs,
+												CourseGeneration.credit_hours == credit_hours,
+												CourseGeneration.lecture_hours == lecture_hours,
+												CourseGeneration.title == title,
+												CourseGeneration.comments == comments,
+												CourseGeneration.other_info == other_info,
+												CourseGeneration.previous_course == previous_course,
+												CourseGeneration.start_year == start_year,
+												CourseGeneration.end_year == end_year,
+												CourseGeneration.course == A[0].id).get()
+			Adjustment.create(comment='Created a course generation ' + str(B.id),
+							  overide_address='CourseGeneration.' + str(B.id))
+
 		elif request.form['subm1'] == "submit3":
-			sID = request.form['StudentID']
-			superclass = request.form['SupervisionClassID']
-			semesterID2 = request.form['SemesterID2']
-			iD2 = request.form['ID2']
-			Supervision.create(instructor=iD2, student_id=sID, supervision_class_id=superclass, semester=semesterID2)
-		elif request.form['subm1'] == "submit4":
-			iD3 = request.form['ID3']
-			semesterID3 = request.form['SemesterID3']
-			pseudoID = request.form['PseudoID']
-			projectClassID = request.form['ProjectClassID']
-			ProjectSupervision.create(instructor=iD3, Team=pseudoID, project_class_id=projectClassID,
-									  semester=semesterID3)
+			instructor = request.form['instructor']
+			oid = request.form['oid']
+			sid = request.form['sid']
+			pid = request.form['pid']
+			rid = request.form['rid']
+			split = request.form['split']
+			if instructor=='':
+				error='instructor is none'
+			if sid=='':
+				sid=None
+			if oid=='':
+				oid=None
+			if pid=='':
+				pid=None
+			if rid=='':
+				rid=None
+			if split=='':
+				split = 1
+			print instructor
+			print oid
+			print sid
+			print pid
+			print rid
+			print split
+			Mastermany.create(instructor=instructor, oid=oid, sid=sid,pid=pid, rid=rid, split=split)
+			B=Mastermany.select().where(Mastermany.instructor==instructor, Mastermany.oid==oid, Mastermany.sid==sid,Mastermany.pid==pid, Mastermany.rid==rid, Mastermany.split==split).get()
+			Adjustment.create(comment='Created Teaching paring ' + str(B.id),
+							  overide_address='Mastermany.' + str(B.id))
+
+		elif request.form['subm1'] == "submit2":
+			enrolment = request.form['enrolment']
+			semester = request.form['semester']
+			generation = request.form['generation']
+			sections = request.form['sections']
+			Offering.create(enrolment=enrolment, semester=semester, generation=generation,sections=sections)
+			B=Offering.select().where(Offering.enrolment==enrolment, Offering.semester==semester, Offering.generation==generation,Offering.sections==sections).get()
+			Adjustment.create(comment='Created Offering ' + str(B.id),
+						  overide_address='Offering.' + str(B.id))
+		# elif request.form['subm1'] == "submit4":
+		# 	iD3 = request.form['ID3']
+		# 	semesterID3 = request.form['SemesterID3']
+		# 	pseudoID = request.form['PseudoID']
+		# 	projectClassID = request.form['ProjectClassID']
+		# 	ProjectSupervision.create(instructor=iD3, Team=pseudoID, project_class_id=projectClassID,
+		# 							  semester=semesterID3)
 		elif request.form['subm1'] == "submit5":
 			iD4 = request.form['ID4']
 			ADJWeight = request.form['ADJWeight']

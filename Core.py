@@ -46,6 +46,7 @@ def intake(year):
 			courses_offered = list()
 			primary_prof_list = list()
 			secondary_prof_list = list()
+			list_sections = list()
 			var = -1
 			progress(counter,varlen_for_progress)
 			crsnumber = re.compile(r"(?<=ENGI )(\d+)")
@@ -67,47 +68,56 @@ def intake(year):
 			x_file = open(filename).readlines()
 			for w in x_file:
 				w = str(w.splitlines())
-				P_name = str((namestrip.findall(w)))
-				crosscheck = str((crosslist.findall(w)))
-				crse = str(crsnumber.findall(w))
+				P_name = str((namestrip.findall(w))).strip("[]'")
+				crosscheck = str((crosslist.findall(w))).strip("[]'")
+				crse = str(crsnumber.findall(w)).strip("[]'")
 				code.append(crse)
 				file2 = str((namestrip2.findall(w)))
-				if crse[1]!=']' and P_name=='[]':
-					if crosscheck[1] == "'":
+				if crse!='' and P_name=='':
+					if crosscheck == "":
 						list_of_error_types.append('cross listed:')
 					else:
 						list_of_error_types.append('no prof')
 					file4 = str(crse).strip("'[]")
 					list_Errors.append(filename)
 					list_Errors.append(file4)
-				if P_name[1]!=']':
+				if P_name!='' and P_name!='m munprod':
 					var+=1
 					list_names.append(P_name)
 					P_name = str(P_name).strip("[]'")
 					file2 = str(file2).strip("[]'")
 					file4 = str(crse).strip("'[]")
 					secondary_prof_list.append(file2)
-					var3=[len(list(group)) for key, group in groupby(list_names)]
 					primary_prof_list_and_instances.append(P_name)
 					courses_offered.append(file4)
-					if crse[1]!=']':
+					if crse!=''and list_names[var]!='m munprod':
+						list_sections.append(1)
 						primary_prof_list.append(P_name)
+					elif list_names[var]!='m munprod':
+						list_sections[-1]=list_sections[-1]+1
 			counter1 = -1
-			for x in var3:
-				counter1+=1
-				if secondary_prof_list[counter1]!='':
-					patch=str(secondary_prof_list[counter1]).split()
-					person((patch[2]+' '+patch[3]),(patch[2]+' '+patch[3])+'@mun.ca',startyear,startsem)
-					pid2=Person.select().where(Person.name==(patch[2]+' '+patch[3])).get()
-					offer(startyear, courses_offered[counter1], startsem, pid2.id, 80, x)
-					person((patch[0]+' '+patch[1]),(patch[0]+' '+patch[1])+'@mun.ca',startyear,startsem)
-					pid1=Person.select().where(Person.name==(patch[0]+' '+patch[1])).get()
-					off=offer(startyear, courses_offered[counter1], startsem, pid1.id, 80, x)
-					offering_id.append(off)
-				else:
-					person(primary_prof_list_and_instances[counter1],primary_prof_list_and_instances[counter1]+'@mun.ca',startyear,startsem)
-					pid1=Person.select().where(Person.name==primary_prof_list_and_instances[counter1]).get()
-					offer(startyear,courses_offered[counter1],startsem,pid1.id,80,x)
+			y=None
+			fixer_counter = -1
+			for prof in primary_prof_list_and_instances:
+				if prof != 'm munprod':
+					x=prof
+					counter1+=1
+					if x!=y:
+						fixer_counter+=1
+						y=x
+					if secondary_prof_list[counter1]!='':
+						patch=str(secondary_prof_list[counter1]).split()
+						person((patch[2]+' '+patch[3]),(patch[2]+' '+patch[3])+'@mun.ca',startyear,startsem)
+						pid2=Person.select().where(Person.name==(patch[2]+' '+patch[3])).get()
+						offer(startyear, courses_offered[counter1], startsem, pid2.id, 80, list_sections[fixer_counter])
+						person((patch[0]+' '+patch[1]),(patch[0]+' '+patch[1])+'@mun.ca',startyear,startsem)
+						pid1=Person.select().where(Person.name==(patch[0]+' '+patch[1])).get()
+						off=offer(startyear, courses_offered[counter1], startsem, pid1.id, 80, list_sections[fixer_counter])
+						offering_id.append(off)
+					else:
+						person(primary_prof_list_and_instances[counter1],primary_prof_list_and_instances[counter1]+'@mun.ca',startyear,startsem)
+						pid1=Person.select().where(Person.name==primary_prof_list_and_instances[counter1]).get()
+						offer(startyear,courses_offered[counter1],startsem,pid1.id,80,list_sections[fixer_counter])
 		print
 		print 'completed files in parameters'
 		print
@@ -442,7 +452,7 @@ def offergen(files):
 	start_time = time.time()
 	coursecodes, list_of_error, list_of_error_types = intake(files)
 	print
-	if list_of_error[0] != '':
+	if list_of_error != '':
 		print
 		print "please check on the errors file, I have some results"
 	print
@@ -497,10 +507,10 @@ def peeweetable(Droptype):
 			[Person, Mastermany,
 			 Term,
 			 Offering,
-			 # Course,
+			 Course,
 			 Role, ProjectSupervision, ProjectClass,
 			 Supervision,
-			 # CourseGeneration,
+			 CourseGeneration,
 			 SupervisionClass, ProjectType, Student, Adjustment],safe=True)
 		db.close()
 	elif Droptype == 'Drop':
@@ -509,10 +519,10 @@ def peeweetable(Droptype):
 			[Person, Mastermany,
 			 Term,
 			 Offering,
-			 # Course,
+			 Course,
 			 Role, ProjectSupervision, ProjectClass,
 			 Supervision,
-			 # CourseGeneration,
+			 CourseGeneration,
 			 SupervisionClass, ProjectType, Student, Adjustment],safe=True)
 		db.close()
 
@@ -604,3 +614,6 @@ def populate(files):
 		coursecodes, htmldates, list_of_error_types = offergen(files)
 		split(coursecodes)
 		error(htmldates, list_of_error_types)
+
+def test():
+	print str(1)+str(1)

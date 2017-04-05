@@ -56,6 +56,8 @@ if __name__ == '__main__':
 			if arg == 'drc':
 				arg = 'DropReCreate'
 			peeweetable(arg)
+		if function == 'test':
+			test()
 		if arguments['populate']:
 			populate(filename)
 		if arguments['intake']:

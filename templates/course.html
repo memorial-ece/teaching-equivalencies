@@ -57,6 +57,30 @@
     </tr>
     {% endfor %}
 </table>
+<form action = "{{ url_for('Coursehist',id=course_id) }}" method = "POST">
+    <h3>CourseGen</h3>
+    labs<br>
+    <input type = "text" name = "labs" /><br>
+    credit_hours<br>
+    <input type = "text" name = "credit_hours" /><br>
+    lecture_hours<br>
+    <input type = "text" name = "lecture_hours" /><br>
+    title<br>
+    <input type = "text" name = "title" /><br>
+    comments<br>
+    <input type = "text" name = "comments" /><br>
+    course code example engi 1020++NEW COURSE CODES MUST INCLUDE THE FAC FEILD++<br>
+    <input type = "text" name = "course" /><br>
+    other_info<br>
+    <input type = "text" name = "other_info" /><br>
+    previous_course<br>
+    <input type = "text" name = "previous_course" /><br>
+    start_year<br>
+    <input type = "text" name = "start_year" /><br>
+    end_year<br>
+    <input type = "text" name = "end_year" /><br>
+    <input type = "submit" name="subm1" value = "submit1" /><br>
+</form>
 {%endblock%}
    </body>
 </html>
