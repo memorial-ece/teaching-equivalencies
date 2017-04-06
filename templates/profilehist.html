@@ -7,7 +7,7 @@
        <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
           </head>
    <body>
-<form action = "{{ url_for('Profile',prof_id=instructor,) }}" method = "POST">
+<form action = "{{ url_for('Profile',prof_id=instructor,year=2008,reports=Fasle) }}" method = "POST">
    {% extends "home.html" %}
    {% block content %}
     {{person.name}}
@@ -125,14 +125,12 @@
        </tr>
        {% endfor %}
     </table>
-    <!--<h3>Offering</h3>-->
-        <!--weight<br>-->
-        <!--<input type = "text" name = "weight" /><br>-->
-        <!--oid<br>-->
-        <!--<input type = "text" name = "myid" /><br>-->
-        <!--comment<br>-->
-        <!--<input type = "text" name = "AUDITCOMMENT" /><br>-->
-        <!--<input type = "submit" name="subm1" value = "submit2" /><br>-->
+    <h3>Offering</h3>
+        instructor<br>
+        <input type = "text" name = "instructor" /><br>
+        comment<br>
+        <input type = "text" name = "comment" /><br>
+        <input type = "submit" name="subm1" value = "submit2" /><br>
 </form>
        {% endblock %}
    </body>

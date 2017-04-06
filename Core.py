@@ -129,7 +129,6 @@ def intake(year):
 		print 'The file '+last_selester+" is bad and this was the file i was processing when i failed"
 
 
-
 def splitting(pid1):
 	id_storage=pid1[0]
 	for id_num in id_storage:
@@ -617,3 +616,10 @@ def populate(files):
 
 def test():
 	print str(1)+str(1)
+
+def termselect(year):
+	if year == 'true':
+		term=Term.select()
+	else:
+		term=Term.select().where(Term.year<=year)
+	return term

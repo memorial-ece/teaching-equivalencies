@@ -303,27 +303,27 @@
     <input type = "submit" name="subm1" value = "submit3" /><br>
 </form>
 <form action = "{{ url_for('listm') }}" method = "POST">
-    <h3>ProjectSupervision</h3>
-    ID<br>
-    <input type = "text" name = "ID3" /><br>
-    teamID<br>
-    <input type = "text" name = "teamID" /><br>
-    ProjectClassID<br>
-    <input type = "text" name = "ProjectClassID" /><br>
-    SemesterID<br>
+    <h3>Term</h3>
+    id<br>
+    <input type = "text" name = "id" /><br>
+    year<br>
+    <input type = "text" name = "year" /><br>
+    session<br>
+    <input type = "text" name = "session" /><br>
+    <br>
     <input type = "submit" name="subm1" value = "submit4" /><br>
 </form>
-<form action = "{{ url_for('listm') }}" method = "POST">
-    <h3>Adjustment</h3>
-    ID<br>
-    <input type = "text" name = "ID4" /><br>
-    ADJWeight<br>
-    <input type = "text" name = "ADJWeight" /><br>
-    NOT WORKING  COMMENTED OUT IN PeeweeClass AUDITDATE<br>
-    AUDITCOMMENT<br>
-    <input type = "text" name = "AUDITCOMMENT" /><br>
-    <input type = "submit" name="subm1" value = "submit5" /><br>
-   </form>
+<!--<form action = "{{ url_for('listm') }}" method = "POST">-->
+    <!--<h3>Adjustment</h3>-->
+    <!--ID<br>-->
+    <!--<input type = "text" name = "ID4" /><br>-->
+    <!--ADJWeight<br>-->
+    <!--<input type = "text" name = "ADJWeight" /><br>-->
+    <!--NOT WORKING  COMMENTED OUT IN PeeweeClass AUDITDATE<br>-->
+    <!--AUDITCOMMENT<br>-->
+    <!--<input type = "text" name = "AUDITCOMMENT" /><br>-->
+    <!--<input type = "submit" name="subm1" value = "submit5" /><br>-->
+   <!--</form>-->
 {% endblock %}
 </body>
 </html>

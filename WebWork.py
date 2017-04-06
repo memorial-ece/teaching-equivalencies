@@ -182,26 +182,32 @@ def gen(id):
 	return render_template("course.html", course=course, generation=generation, list1=list1, course_id=id)
 
 
-@app.route("/profile/<prof_id>/", methods=['GET', 'POST'])
-def Profile(prof_id):
-	person = Person.get(Person.id == prof_id)
-	supervision = (Supervision
-				   .select()
-				   .join(Mastermany)
-				   .where(Mastermany.instructor == prof_id)
-				   .order_by(Supervision.semester.desc()))
-	projectsupervision = (ProjectSupervision
-						  .select()
-						  .join(Mastermany)
-						  .where(Mastermany.instructor == prof_id)
-						  .order_by(ProjectSupervision.semester.desc()))
-	offering = (Mastermany
-				.select()
-				.join(Offering)
-				.where(Mastermany.instructor == prof_id)
-				.order_by(Offering.semester.desc()))
+@app.route("/profile/<prof_id>/<year>/<reports>", methods=['GET', 'POST'])
+def Profile(prof_id,year,reports):
+	term=termselect(year)
+	list_of_offerings = list()
+	for x in term:
+		person = Person.get(Person.id == prof_id)
+		supervision = (Supervision
+					   .select()
+					   .join(Mastermany)
+					   .where(Mastermany.instructor == prof_id)
+					   .order_by(Supervision.semester.desc()))
+		projectsupervision = (ProjectSupervision
+							  .select()
+							  .join(Mastermany)
+							  .where(Mastermany.instructor == prof_id)
+							  .order_by(ProjectSupervision.semester.desc()))
+		offering = (Mastermany
+					.select()
+					.join(Offering)
+					.where(Mastermany.instructor == prof_id,Offering.semester==x.id)
+					.order_by(Offering.semester.desc()))
+
+		for y in offering:
+			list_of_offerings.append(y)
 	list_offering_id = list()
-	for x in offering:
+	for x in list_of_offerings:
 		list_offering_id.append(x.oid.id)
 		list_offering_id.sort()
 	adjustment = (Adjustment
@@ -224,17 +230,13 @@ def Profile(prof_id):
 		list_supervision_date.append(Ssum.sid.semester.year)
 		list_supervision_date.append(Ssum.sid.semester.session)
 		list_supervision_value.append(num.supervision_class_id.weight * Ssum.split)
-	Onum = (Offering
-				  .select()
-				  .join(Mastermany)
-				  .where(Mastermany.instructor == prof_id))
 	list_forviewer = dict()
 	list_split = dict()
 	offering_value_date = list()
 	counter =- 1
-	for num in Onum:
+	for num in list_of_offerings:
 		counter += 1
-		Osum = Mastermany.select().where(Mastermany.oid==num.id).get()
+		Osum = Mastermany.select().where(Mastermany.oid==num.oid.id).get()
 		var1 = weight_calc(Osum.oid.id)
 		Ototal += var1*Osum.split
 		list_forviewer[Osum.oid.id] = var1
@@ -279,15 +281,18 @@ def Profile(prof_id):
 		if request.form['subm1']=="Offerings CSV":
 			offerplot(offering_value_date, 'offer for id '+str(prof_id))
 			return send_file('offer for id '+str(prof_id)+'.pdf')
-		if request.form['subm1'] == "submit2":
-			weight = request.form['weight']
-			weight = float(weight)
-			AUDITCOMMENT = request.form['AUDITCOMMENT']
-			Adjustment.create(instructor=prof_id, weight=weight, comment=AUDITCOMMENT)
+		# if request.form['subm1'] == "submit2":
+		# 	weight = request.form['weight']
+		# 	weight = float(weight)
+		# 	AUDITCOMMENT = request.form['AUDITCOMMENT']
+		# 	Adjustment.create(instructor=prof_id, weight=weight, comment=AUDITCOMMENT)
+	if reports==True:
+		# print defi
+		# print offering_value_date
+		return total, defi, offering_value_date, list_project_supervision_date, list_project_supervision_value, list_supervision_value, list_supervision_date
 	return render_template("profilehist.html", person=person, supervision=supervision,instructor=prof_id,
-						   projectsupervision=projectsupervision, offering=offering, adjustment=adjustment,total=total,
-						   Stotal=Stotal, Ptotal=Ptotal, Ototal=Ototal, Onum=Onum, deficit=defi, list_forviewer=list_forviewer,list_split=list_split)
-
+					   projectsupervision=projectsupervision, offering=list_of_offerings, adjustment=adjustment,total=total,
+					   Stotal=Stotal, Ptotal=Ptotal, Ototal=Ototal, deficit=defi, list_forviewer=list_forviewer,list_split=list_split)
 
 @app.route('/listm', methods=['GET', 'POST'])
 def listm():
@@ -326,7 +331,6 @@ def listm():
 												CourseGeneration.course == A[0].id).get()
 			Adjustment.create(comment='Created a course generation ' + str(B.id),
 							  overide_address='CourseGeneration.' + str(B.id))
-
 		elif request.form['subm1'] == "submit3":
 			instructor = request.form['instructor']
 			oid = request.form['oid']
@@ -346,17 +350,10 @@ def listm():
 				rid=None
 			if split=='':
 				split = 1
-			print instructor
-			print oid
-			print sid
-			print pid
-			print rid
-			print split
 			Mastermany.create(instructor=instructor, oid=oid, sid=sid,pid=pid, rid=rid, split=split)
 			B=Mastermany.select().where(Mastermany.instructor==instructor, Mastermany.oid==oid, Mastermany.sid==sid,Mastermany.pid==pid, Mastermany.rid==rid, Mastermany.split==split).get()
 			Adjustment.create(comment='Created Teaching paring ' + str(B.id),
 							  overide_address='Mastermany.' + str(B.id))
-
 		elif request.form['subm1'] == "submit2":
 			enrolment = request.form['enrolment']
 			semester = request.form['semester']
@@ -366,24 +363,51 @@ def listm():
 			B=Offering.select().where(Offering.enrolment==enrolment, Offering.semester==semester, Offering.generation==generation,Offering.sections==sections).get()
 			Adjustment.create(comment='Created Offering ' + str(B.id),
 						  overide_address='Offering.' + str(B.id))
-		# elif request.form['subm1'] == "submit4":
-		# 	iD3 = request.form['ID3']
-		# 	semesterID3 = request.form['SemesterID3']
-		# 	pseudoID = request.form['PseudoID']
-		# 	projectClassID = request.form['ProjectClassID']
-		# 	ProjectSupervision.create(instructor=iD3, Team=pseudoID, project_class_id=projectClassID,
-		# 							  semester=semesterID3)
-		elif request.form['subm1'] == "submit5":
-			iD4 = request.form['ID4']
-			ADJWeight = request.form['ADJWeight']
-			AUDITCOMMENT = request.form['AUDITCOMMENT']
-			Adjustment.create(instructor=iD4, weight=ADJWeight, audit_comment=AUDITCOMMENT)
+		elif request.form['subm1'] == "submit4":
+			year = request.form['year']
+			session = request.form['session']
+			Term.create(year=year,session=session)
+			B=Term.select().where(Term.year==year,Term.session==session)
+			Adjustment.create(comment='Created Term ' + str(B.id),
+							  overide_address='Term.' + str(B.id))
 	mastermany = Mastermany.select().order_by(Mastermany.oid.asc())
 	return render_template("masterlist.html", Person=Person, ProjectType=ProjectType, Course=Course,
 						   SupervisionClass=SupervisionClass, ProjectClass=ProjectClass,
 						   ProjectSupervision=ProjectSupervision, Supervision=Supervision, Adjustment=Adjustment,
 						   Role=Role, Term=Term, Offering=Offering,
 						   CourseGeneration=CourseGeneration, Student=Student,Mastermany=mastermany)
+
+
+@app.route('/yearly/<year>/', methods=['GET', 'POST'])
+def reports(year):
+	reports=True
+	term=termselect(year)
+	targ = open('asd', 'w')
+	if term!=True:
+		for x in term:
+			var1=str(x.year)
+			list_of_teachers1 = list()
+			master=Mastermany.select().join(Offering).where(Mastermany.oid==Offering.id,Offering.semester==x.id)
+			for y in master:
+				list_of_teachers1.append(y.instructor)
+			list_of_teachers2=set(list_of_teachers1)
+			for z in list_of_teachers2:
+				total, defi, offering_value_date, list_project_supervision_date, list_project_supervision_value, list_supervision_value, list_supervision_date = Profile(z.id, var1, reports)
+				targ.write('made to date '+str(defi+total))
+				targ.write('\n')
+				targ.write('total deficit '+str(total))
+				targ.write('\n')
+				targ.write(str(z.id)+' '+str(z.name))
+				targ.write('\n')
+				targ.write(str(x.year)+str(x.session))
+				targ.write('\n')
+				targ.write('\n')
+				targ.write('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
+				targ.write('\n')
+
+
+
+	return redirect('/')
 
 
 @app.route('/Dashboard')
