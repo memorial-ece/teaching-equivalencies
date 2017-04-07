@@ -72,7 +72,7 @@ def import_courses(filename_import):
 												title=info1['Title'], comments=info1['Description'],
 												course=late_update, other_info=info1['Other info'],
 												previous_course=info1['PreviousCourseCode'], start_year=thisyear,
-												end_year=thisyear) \
+												end_year=thisyear,reviewed=False) \
 							.where(CourseGeneration.id == pc.id)
 				elif info1 != info2 and thisyear > pc.end_year:
 					info2 = info1
@@ -83,7 +83,7 @@ def import_courses(filename_import):
 											title=info1['Title'], comments=info1['Description'],
 											course=late_update, other_info=info1['Other info'],
 											previous_course=info1['PreviousCourseCode'], start_year=thisyear,
-											end_year=thisyear)
+											end_year=thisyear,reviewed=False)
 				elif info1 == info2 and thisyear > pc.end_year:
 					update = CourseGeneration.update(end_year=thisyear).where(
 						CourseGeneration.id == pc.id)
@@ -94,14 +94,14 @@ def import_courses(filename_import):
 						info2 = info1
 						lastyear = thisyear
 						try:
-							Course.get_or_create(subject=info1['Subject'], code=code)
+							Course.get_or_create(subject=info1['Subject'], code=code,reviewed=False)
 							late_update = Course.select().where(Course.code == code).get()
 							CourseGeneration.create(labs=info1['Labs'], credit_hours=info1['Credit Hours'],
 													lecture_hours=info1['Lecture Hours'],
 													title=info1['Title'], comments=info1['Description'],
 													course=late_update, other_info=info1['Other info'],
 													previous_course=info1['PreviousCourseCode'], start_year=thisyear,
-													end_year=thisyear)
+													end_year=thisyear,reviewed=False)
 						except:
 							late_update = Course.select().where(Course.code == code).get()
 							CourseGeneration.create(labs=info1['Labs'], credit_hours=info1['Credit Hours'],
@@ -109,7 +109,7 @@ def import_courses(filename_import):
 													comments=info1['Description'], course=late_update,
 													other_info=info1['Other info'],
 													previous_course=info1['PreviousCourseCode'],
-													start_year=thisyear, end_year=thisyear)
+													start_year=thisyear, end_year=thisyear,reviewed=False)
 					else:
 						update = CourseGeneration.update(end_year=thisyear).where(
 							CourseGeneration.id == CourseGeneration.select().order_by(

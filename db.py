@@ -32,6 +32,7 @@ class Person(Model):
 	email = TextField(unique=True)
 	id = IntegerField(primary_key=True)
 	start = ForeignKeyField(Term, related_name='startdate', null=False)
+	reviewed = BooleanField(null=False)
 
 
 class Course(Model):
@@ -42,12 +43,13 @@ class Course(Model):
 	subject = TextField()
 	# Because of courses like 200W we cannot store info as int
 	code = CharField(4)
+	reviewed = BooleanField(null=False)
 
 
 class CourseGeneration(Model):
 	"""
- 	As a course changes over time it becomes necessary to update it to moder information
- 	"""
+	As a course changes over time it becomes necessary to update it to moder information
+	"""
 	id = IntegerField(primary_key=True)
 	# due to situations like 4.5 these numbers are stored as doubles
 	labs = DoubleField(null=True)
@@ -60,7 +62,7 @@ class CourseGeneration(Model):
 	previous_course = TextField(null=True)
 	start_year = TextField(null=False)
 	end_year = TextField(null=False)
-	# other_info, and previous_course_id maybe inconsistent but that is because of the ripping process turned up the reported results.
+	reviewed = BooleanField(null=False)
 
 
 class Student(Model):
@@ -82,11 +84,12 @@ class Offering(Model):
 	semester = ForeignKeyField(Term, related_name='semester')
 	generation = ForeignKeyField(CourseGeneration, related_name='generation')
 	sections = IntegerField(null=True)
+	reviewed = BooleanField(null=False)
 
 
 class Role(Model):
 	"""
-	These fields are meant to represent the class of the user and information they have access too, dept is short for department.
+	These fields represent the class of the user and information they have access too, dept is short for department.
 	"""
 	id = IntegerField(primary_key=True)
 	role_name = TextField(null=False)
@@ -113,10 +116,11 @@ class ProjectClass(Model):
 	description = TextField(null=False)
 	weight = FloatField(null=False)
 
+
 class ProjectType(Model):
 	"""
- 	A pseudo stand in for teams as students
- 	"""
+	A pseudo stand in for teams as students
+	"""
 	id = IntegerField(primary_key=True)
 	name = TextField()
 	description = TextField()
@@ -152,7 +156,7 @@ class Adjustment(Model):
 	comment = TextField(null=True)
 	overide_value = FloatField(null=True)
 	overide_address = TextField(null=True)
-	instructor = ForeignKeyField(Person, related_name='made_change',null=True)
+	instructor = ForeignKeyField(Person, related_name='made_change', null=True)
 
 
 class Mastermany(Model):

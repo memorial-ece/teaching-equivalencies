@@ -9,20 +9,22 @@
 {% extends "home.html" %}
 {% block content %}
 <body>
-<!--<table border = 1>-->
-    <!--<h3>Person</h3>-->
-    <!--<thead>-->
-    <!--<td>ID</td>-->
-    <!--<td>Name</td>-->
-    <!--<td>Email</td>-->
-    <!--</thead>-->
-    <!--{% for row in Person %}-->
-    <!--<tr>-->
-        <!--<td><a href="/profile/{{row.id}}">{{row.id}}</a></td>-->
-        <!--<td>{{row.name}}</td>-->
-        <!--<td><a href="mailto:{{row.email}}?Subject=Hello%20HALBRED" target="_top">{{row.email}}</a></td>-->
-    <!--</tr>-->
-    <!--{% endfor %}</table>-->
+<table border = 1>
+    <h3>Person</h3>
+    <thead>
+    <td>ID</td>
+    <td>Name</td>
+    <td>Email</td>
+    </thead>
+    {% for row in Person %}
+    <tr>
+        <td><a href="/profile/{{row.id}}">{{row.id}}</a></td>
+        <td>{{row.name}}</td>
+        <td><a href="mailto:{{row.email}}?Subject=Hello%20HALBRED" target="_top">{{row.email}}</a></td>
+        <td>{{row.reviewed}}</td>
+        <td><input type="checkbox" name="cbox1" value="{{row.id}}"></td>
+    </tr>
+    {% endfor %}</table>
 <!--<table border = 5>-->
     <!--<h3>Team</h3>-->
     <!--<thead>-->
@@ -49,6 +51,8 @@
         <td><a href="/course/{{row.id}}">{{row.id}}</a></td>
         <td>{{row.subject}}</td>
         <td><a href="/c/{{row.code}}">{{row.code}}</a></td>
+        <td>{{row.reviewed}}</td>
+        <td><input type="checkbox" name="cbox2" value="{{row.id}}"></td>
     </tr>
     {% endfor %}</table>
 <!--<table border = 3>-->
@@ -182,9 +186,9 @@
         <td>{{row.semester.id}}</td>
         <td><a href="/gen/{{row.generation.id}}">{{row.generation.id}}</a></td>
         <td>{{row.sections}}</td>
-
+        <td>{{row.reviewed}}</td>
+        <td><input type="checkbox" name="cbox3" value="{{row.id}}"></td>
     </tr>
-
     {% endfor %}</table>
 <table border = 1>
     <h3>teaching</h3>
@@ -202,7 +206,7 @@
         <td>{{row.oid.id}}</td>
         <td>{{row.sid.id}}</td>
         <td>{{row.pid.id}}</td>
-        <td>{{row.rid.id}}
+        <td>{{row.rid.id}}</td>
         <td>{{row.split}}</td>
 
     {% endfor %}</table>
@@ -220,36 +224,38 @@
         <td>{{row.session}}</td>
     </tr>
     {% endfor %}</table>
-<!--<table border = 1>-->
-    <!--<h3>CourseGeneration</h3>-->
-    <!--<thead>-->
-    <!--<td>CourseGenID</td>-->
-    <!--<td>CRN</td>-->
-    <!--<td>CreditHours</td>-->
-    <!--<td>lecture hours</td>-->
-    <!--<td>comments</td>-->
-    <!--<td>Labs</td>-->
-    <!--<td>Year generation</td>-->
-    <!--<td>Year valid</td>-->
-    <!--<td>Title</td>-->
-    <!--<td>Old course id</td>-->
-    <!--<td>Other info</td>-->
-    <!--</thead>-->
-    <!--{% for row in CourseGeneration %}-->
-    <!--<tr>-->
-        <!--<td><a href="/gen/{{row.id}}">{{row.id}}</a></td>-->
-        <!--<td>{{row.course.id}}</td>-->
-        <!--<td>{{row.credit_hours}}</td>-->
-        <!--<td>{{row.lecture_hours}}</td>-->
-        <!--<td>{{row.comments}}</td>-->
-        <!--<td>{{row.labs}}</td>-->
-        <!--<td>{{row.start_year}}</td>-->
-        <!--<td>{{row.end_year}}</td>-->
-        <!--<td>{{row.title}}</td>-->
-        <!--<td>{{row.previous_course}}</td>-->
-        <!--<td>{{row.other_info}}</td>-->
-    <!--</tr>-->
-    <!--{% endfor %}</table>-->
+<table border = 1>
+    <h3>CourseGeneration</h3>
+    <thead>
+    <td>CourseGenID</td>
+    <td>CRN</td>
+    <td>CreditHours</td>
+    <td>lecture hours</td>
+    <td>comments</td>
+    <td>Labs</td>
+    <td>Year generation</td>
+    <td>Year valid</td>
+    <td>Title</td>
+    <td>Old course id</td>
+    <td>Other info</td>
+    </thead>
+    {% for row in CourseGeneration %}
+    <tr>
+        <td><a href="/gen/{{row.id}}">{{row.id}}</a></td>
+        <td>{{row.course.id}}</td>
+        <td>{{row.credit_hours}}</td>
+        <td>{{row.lecture_hours}}</td>
+        <td>{{row.comments}}</td>
+        <td>{{row.labs}}</td>
+        <td>{{row.start_year}}</td>
+        <td>{{row.end_year}}</td>
+        <td>{{row.title}}</td>
+        <td>{{row.previous_course}}</td>
+        <td>{{row.other_info}}</td>
+        <td>{{row.reviewed}}</td>
+        <td><input type="checkbox" name="cbox4" value="{{row.id}}"></td>
+    </tr>
+    {% endfor %}</table>
 <form action = "{{ url_for('Coursehist',id=course_id) }}" method = "POST">
     <h3>CourseGen</h3>
     labs<br>

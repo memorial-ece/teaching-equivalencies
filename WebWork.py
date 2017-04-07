@@ -60,7 +60,7 @@ def Coursehist(id):
 			title = request.form['title']
 			comments = request.form['comments']
 			course = int(request.form['course'])
-			A=Course.get_or_create(code=course,subject='ENGI')
+			A=Course.get_or_create(code=course,subject='ENGI',reviewed=True)
 			other_info = request.form['other_info']
 			previous_course = request.form['previous_course']
 			start_year = request.form['start_year']
@@ -75,7 +75,8 @@ def Coursehist(id):
 										previous_course=previous_course,
 										start_year=start_year,
 										end_year=end_year,
-										course=A[0].id)
+										course=A[0].id,
+										reviewed=True)
 				B=CourseGeneration.select().where(CourseGeneration.labs==labs,
 												  CourseGeneration.credit_hours==credit_hours,
 												  CourseGeneration.lecture_hours==lecture_hours,
@@ -85,7 +86,8 @@ def Coursehist(id):
 												  CourseGeneration.previous_course==previous_course,
 												  CourseGeneration.start_year==start_year,
 												  CourseGeneration.end_year==end_year,
-												  CourseGeneration.course==A[0].id).get()
+												  CourseGeneration.course==A[0].id,
+												  CourseGeneration.reviewed==True).get()
 				print B.id
 				Adjustment.create(comment='Created a course generation'+str(B.id),overide_address='CourseGeneration'+str(B.id))
 	list2 = []
@@ -105,22 +107,11 @@ def Courseh(id):
 			title = request.form['title']
 			comments = request.form['comments']
 			course = int(request.form['course'])
-			A=Course.get_or_create(code=course,subject='ENGI')
+			A=Course.get_or_create(code=course,subject='ENGI',reviewed=True)
 			other_info = request.form['other_info']
 			previous_course = request.form['previous_course']
 			start_year = request.form['start_year']
 			end_year = request.form['end_year']
-			print A[0].id
-			print labs
-			print credit_hours
-			print lecture_hours
-			print title
-			print course
-			print comments
-			print previous_course
-			print start_year
-			print end_year
-			print other_info
 			CourseGeneration.create(labs=labs,
 									credit_hours=credit_hours,
 									lecture_hours=lecture_hours,
@@ -130,7 +121,8 @@ def Courseh(id):
 									previous_course=previous_course,
 									start_year=start_year,
 									end_year=end_year,
-									course=A[0].id)
+									course=A[0].id,
+									reviewed=True)
 	list2 = []
 	course = Course.get(Course.code==id)
 	generation = (CourseGeneration.select().join(Course).where(Course.code == id))
@@ -148,22 +140,11 @@ def gen(id):
 			title = request.form['title']
 			comments = request.form['comments']
 			course = int(request.form['course'])
-			A=Course.get_or_create(code=course,subject='ENGI')
+			A=Course.get_or_create(code=course,subject='ENGI',reviewed=True)
 			other_info = request.form['other_info']
 			previous_course = request.form['previous_course']
 			start_year = request.form['start_year']
 			end_year = request.form['end_year']
-			print A[0].id
-			print labs
-			print credit_hours
-			print lecture_hours
-			print title
-			print course
-			print comments
-			print previous_course
-			print start_year
-			print end_year
-			print other_info
 			CourseGeneration.create(labs=labs,
 									credit_hours=credit_hours,
 									lecture_hours=lecture_hours,
@@ -173,7 +154,8 @@ def gen(id):
 									previous_course=previous_course,
 									start_year=start_year,
 									end_year=end_year,
-									course=A[0].id)
+									course=A[0].id,
+									reviewed=True)
 	list2 = []
 	gen = CourseGeneration.get(CourseGeneration.id == id)
 	course = Course.get(Course.code == gen.course.code)
@@ -279,6 +261,7 @@ def Profile(prof_id,year,reports):
 			anyplot(list_project_supervision_date, 'project for id '+str(prof_id), list_project_supervision_value)
 			return send_file('project for id '+str(prof_id)+'.pdf')
 		if request.form['subm1']=="Offerings CSV":
+			print 'asd'
 			offerplot(offering_value_date, 'offer for id '+str(prof_id))
 			return send_file('offer for id '+str(prof_id)+'.pdf')
 		# if request.form['subm1'] == "submit2":
@@ -292,84 +275,99 @@ def Profile(prof_id,year,reports):
 		return total, defi, offering_value_date, list_project_supervision_date, list_project_supervision_value, list_supervision_value, list_supervision_date
 	return render_template("profilehist.html", person=person, supervision=supervision,instructor=prof_id,
 					   projectsupervision=projectsupervision, offering=list_of_offerings, adjustment=adjustment,total=total,
-					   Stotal=Stotal, Ptotal=Ptotal, Ototal=Ototal, deficit=defi, list_forviewer=list_forviewer,list_split=list_split)
+					   Stotal=Stotal, Ptotal=Ptotal, Ototal=Ototal, deficit=defi, list_forviewer=list_forviewer,list_split=list_split
+					   ,year=year, reports=reports)
 
 @app.route('/listm', methods=['GET', 'POST'])
 def listm():
 	if request.method == 'POST':
 		if request.form['subm1'] == "submit1":
-			labs = request.form['labs']
-			credit_hours = request.form['credit_hours']
-			lecture_hours = request.form['lecture_hours']
-			title = request.form['title']
-			comments = request.form['comments']
-			course = int(request.form['course'])
-			A=Course.get_or_create(code=course,subject='ENGI')
-			other_info = request.form['other_info']
-			previous_course = request.form['previous_course']
-			start_year = request.form['start_year']
-			end_year = request.form['end_year']
-			A=CourseGeneration.create(labs=labs,
-									credit_hours=credit_hours,
-									lecture_hours=lecture_hours,
-									title=title,
-									comments=comments,
-									other_info=other_info,
-									previous_course=previous_course,
-									start_year=start_year,
-									end_year=end_year,
-									course=A[0].id)
-			B = CourseGeneration.select().where(CourseGeneration.labs == labs,
-												CourseGeneration.credit_hours == credit_hours,
-												CourseGeneration.lecture_hours == lecture_hours,
-												CourseGeneration.title == title,
-												CourseGeneration.comments == comments,
-												CourseGeneration.other_info == other_info,
-												CourseGeneration.previous_course == previous_course,
-												CourseGeneration.start_year == start_year,
-												CourseGeneration.end_year == end_year,
-												CourseGeneration.course == A[0].id).get()
-			Adjustment.create(comment='Created a course generation ' + str(B.id),
-							  overide_address='CourseGeneration.' + str(B.id))
-		elif request.form['subm1'] == "submit3":
-			instructor = request.form['instructor']
-			oid = request.form['oid']
-			sid = request.form['sid']
-			pid = request.form['pid']
-			rid = request.form['rid']
-			split = request.form['split']
-			if instructor=='':
-				error='instructor is none'
-			if sid=='':
-				sid=None
-			if oid=='':
-				oid=None
-			if pid=='':
-				pid=None
-			if rid=='':
-				rid=None
-			if split=='':
-				split = 1
-			Mastermany.create(instructor=instructor, oid=oid, sid=sid,pid=pid, rid=rid, split=split)
-			B=Mastermany.select().where(Mastermany.instructor==instructor, Mastermany.oid==oid, Mastermany.sid==sid,Mastermany.pid==pid, Mastermany.rid==rid, Mastermany.split==split).get()
-			Adjustment.create(comment='Created Teaching paring ' + str(B.id),
-							  overide_address='Mastermany.' + str(B.id))
-		elif request.form['subm1'] == "submit2":
-			enrolment = request.form['enrolment']
-			semester = request.form['semester']
-			generation = request.form['generation']
-			sections = request.form['sections']
-			Offering.create(enrolment=enrolment, semester=semester, generation=generation,sections=sections)
-			B=Offering.select().where(Offering.enrolment==enrolment, Offering.semester==semester, Offering.generation==generation,Offering.sections==sections).get()
-			Adjustment.create(comment='Created Offering ' + str(B.id),
-						  overide_address='Offering.' + str(B.id))
-		elif request.form['subm1'] == "submit4":
-			year = request.form['year']
-			session = request.form['session']
-			Term.create(year=year,session=session)
-			B=Term.select().where(Term.year==year,Term.session==session)
-			Adjustment.create(comment='Created Term ' + str(B.id),
-							  overide_address='Term.' + str(B.id))
+			try:
+				labs = request.form['labs']
+				credit_hours = request.form['credit_hours']
+				lecture_hours = request.form['lecture_hours']
+				title = request.form['title']
+				comments = request.form['comments']
+				course = int(request.form['course'])
+				A=Course.get_or_create(code=course,subject='ENGI')
+				other_info = request.form['other_info']
+				previous_course = request.form['previous_course']
+				start_year = request.form['start_year']
+				end_year = request.form['end_year']
+				A=CourseGeneration.create(labs=labs,
+										credit_hours=credit_hours,
+										lecture_hours=lecture_hours,
+										title=title,
+										comments=comments,
+										other_info=other_info,
+										previous_course=previous_course,
+										start_year=start_year,
+										end_year=end_year,
+										course=A[0].id,
+										reviewed=True)
+				B = CourseGeneration.select().where(CourseGeneration.labs == labs,
+													CourseGeneration.credit_hours == credit_hours,
+													CourseGeneration.lecture_hours == lecture_hours,
+													CourseGeneration.title == title,
+													CourseGeneration.comments == comments,
+													CourseGeneration.other_info == other_info,
+													CourseGeneration.previous_course == previous_course,
+													CourseGeneration.start_year == start_year,
+													CourseGeneration.end_year == end_year,
+													CourseGeneration.course == A[0].id,
+													CourseGeneration.reviewed==True).get()
+				Adjustment.create(comment='Created a course generation ' + str(B.id),
+								  overide_address='CourseGeneration.' + str(B.id))
+			except:
+				pass
+		if request.form['subm1'] == "submit3":
+			try:
+				instructor = request.form['instructor']
+				oid = request.form['oid']
+				sid = request.form['sid']
+				pid = request.form['pid']
+				rid = request.form['rid']
+				split = request.form['split']
+				if instructor=='':
+					error='instructor is none'
+				if sid=='':
+					sid=None
+				if oid=='':
+					oid=None
+				if pid=='':
+					pid=None
+				if rid=='':
+					rid=None
+				if split=='':
+					split = 1
+				Mastermany.create(instructor=instructor, oid=oid, sid=sid,pid=pid, rid=rid, split=split)
+				B=Mastermany.select().where(Mastermany.instructor==instructor, Mastermany.oid==oid, Mastermany.sid==sid,Mastermany.pid==pid, Mastermany.rid==rid, Mastermany.split==split).get()
+				Adjustment.create(comment='Created Teaching paring ' + str(B.id),
+								  overide_address='Mastermany.' + str(B.id))
+			except:
+				pass
+		if request.form['subm1'] == "submit2":
+			try:
+				enrolment = request.form['enrolment']
+				semester = request.form['semester']
+				generation = request.form['generation']
+				sections = request.form['sections']
+				Offering.create(enrolment=enrolment, semester=semester, generation=generation,sections=sections,reviewed=True)
+				B=Offering.select().where(Offering.enrolment==enrolment, Offering.semester==semester, Offering.generation==generation,Offering.sections==sections,Offering.reviewed==True).get()
+				Adjustment.create(comment='Created Offering ' + str(B.id),
+							  overide_address='Offering.' + str(B.id))
+			except:
+				pass
+		if request.form['subm1'] == "submit4":
+			try:
+				year = request.form['year']
+				session = request.form['session']
+				Term.create(year=year,session=session)
+				B=Term.select().where(Term.year==year,Term.session==session)
+				Adjustment.create(comment='Created Term ' + str(B.id),
+								  overide_address='Term.' + str(B.id))
+			except:
+				pass
 	mastermany = Mastermany.select().order_by(Mastermany.oid.asc())
 	return render_template("masterlist.html", Person=Person, ProjectType=ProjectType, Course=Course,
 						   SupervisionClass=SupervisionClass, ProjectClass=ProjectClass,
@@ -380,6 +378,7 @@ def listm():
 
 @app.route('/yearly/<year>/', methods=['GET', 'POST'])
 def reports(year):
+	list_total = list()
 	reports=True
 	term=termselect(year)
 	targ = open('asd', 'w')
@@ -393,20 +392,21 @@ def reports(year):
 			list_of_teachers2=set(list_of_teachers1)
 			for z in list_of_teachers2:
 				total, defi, offering_value_date, list_project_supervision_date, list_project_supervision_value, list_supervision_value, list_supervision_date = Profile(z.id, var1, reports)
-				targ.write('made to date '+str(defi+total))
-				targ.write('\n')
-				targ.write('total deficit '+str(total))
-				targ.write('\n')
-				targ.write(str(z.id)+' '+str(z.name))
-				targ.write('\n')
-				targ.write(str(x.year)+str(x.session))
-				targ.write('\n')
-				targ.write('\n')
-				targ.write('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
-				targ.write('\n')
-
-
-
+				if x.session==1:
+					targ.write('made to date ' + str(defi + total))
+					targ.write('\n')
+					targ.write('total deficit ' + str(total))
+					targ.write('\n')
+					targ.write(str(z.id) + ' ' + str(z.name))
+					targ.write('\n')
+					targ.write(str(x.year) + str(x.session))
+					targ.write('\n')
+					targ.write('\n')
+					targ.write('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
+					targ.write('\n')
+					list_total.append(str(x.year)+'0'+str(x.session))
+					list_total.append(total)
+	offerplot(list_total,'Deficit')
 	return redirect('/')
 
 

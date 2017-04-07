@@ -200,7 +200,7 @@ def offer(year,code,session,profid,numberofstudents,sectionnumbers):
 		if int(x.end_year)>=int(year):
 			ses=Term.select().where(Term.year==year,Term.session==session).get()
 			try:
-				Offering.get_or_create(enrolment=numberofstudents,semester=ses,generation=x.id,sections=sectionnumbers)
+				Offering.get_or_create(enrolment=numberofstudents,semester=ses,generation=x.id,sections=sectionnumbers,reviewed=False)
 				A=Offering.select().where(Offering.enrolment==numberofstudents,Offering.semester==ses,Offering.generation==x.id,Offering.sections==sectionnumbers).get()
 			except:
 				A=Offering.select().where(Offering.enrolment==numberofstudents,Offering.semester==ses,Offering.generation==x.id,Offering.sections==sectionnumbers).get()
@@ -279,7 +279,7 @@ def person(name,email,staryear,startsem):
 	try:Term.get_or_create(year= staryear, session = startsem)
 	except:pass
 	ses=Term.select().where(Term.year==staryear,Term.session==startsem).get()
-	try:Person.get_or_create(name=name,email=email,start=ses.id)
+	try:Person.get_or_create(name=name,email=email,start=ses.id,reviewed=False)
 	except:pass
 
 
@@ -601,7 +601,7 @@ def offerplot(dict_temp2,name):
 	ind = np.arange(N)
 	plt.bar(left=ind,height=total_weight,width=width,color='#d62728')
 	plt.ylabel('Credit Value')
-	plt.xlabel('Semester id this is temp till i figure out a yearly system')
+	plt.xlabel('Semester Term')
 	plt.title(p2[0])
 	plt.yticks(np.arange(0,6,0.25))
 	plt.xticks(ind, year_term, rotation='vertical')
@@ -614,8 +614,29 @@ def populate(files):
 		split(coursecodes)
 		error(htmldates, list_of_error_types)
 
+
 def test():
 	print str(1)+str(1)
+	quick_verify()
+
+
+def quick_verify():
+	person=Person.select()
+	for x in person:
+		a=Person.update(reviewed=True).where(Person.id==x.id)
+		a.execute()
+	course=Course.select()
+	for x in course:
+		a=Course.update(reviewd=True).where(Course.id==x.id)
+		a.execute()
+	coursegen=CourseGeneration.select()
+	for x in coursegen:
+		a=CourseGeneration.update(reviewed=True).where(CourseGeneration.id==x.id)
+		a.execute()
+	offering=Offering.select()
+	for x in offering:
+		a=Offering.update(reviewed=True).where(Offering.id==x.id)
+		a.execute()
 
 def termselect(year):
 	if year == 'true':
