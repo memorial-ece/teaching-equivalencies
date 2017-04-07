@@ -14,6 +14,7 @@
 import sys
 import time
 from itertools import *
+from colorama import *
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
@@ -229,7 +230,7 @@ def weight_calc(OID):
 	return weight1
 
 
-def fix(numberofstudents,sectionnumbers,b1,c1,wd1,):
+def fix(numberofstudents, sectionnumbers, b1, c1, wd1):
 	wa1=float(float(b1)/float(3))
 	numberofstudents=float(numberofstudents)
 	if numberofstudents > 75:
@@ -244,7 +245,7 @@ def fix(numberofstudents,sectionnumbers,b1,c1,wd1,):
 	return weight1
 
 
-def Psuper(BOOLDoyouwanttocreateanewone,Description,Weight):
+def Psuper(BOOLDoyouwanttocreateanewone, Description ,Weight):
 	ProjectClass.get_or_create(description='Undergraduate project course', weight=0.5)
 	ProjectClass.get_or_create(description='senior project supervision of a group of 4 students', weight=(float(0.125)/3))
 	ProjectClass.get_or_create(description='Case by Case', weight=2)
@@ -252,7 +253,7 @@ def Psuper(BOOLDoyouwanttocreateanewone,Description,Weight):
 		ProjectClass.get_or_create(description=Description, weight=Weight)
 
 
-def superC(BOOLDoyouwanttocreateanewone,Description,Weight):
+def superC(BOOLDoyouwanttocreateanewone, Description, Weight):
 	SupervisionClass.get_or_create(description='Gradstudent 1 term', weight=0.047)
 	SupervisionClass.get_or_create(description='Masters 1 term', weight=0.07)
 	SupervisionClass.get_or_create(description='Doctoral 1 term', weight=(float(.32)/3))
@@ -260,21 +261,21 @@ def superC(BOOLDoyouwanttocreateanewone,Description,Weight):
 		SupervisionClass.get_or_create(description=Description, weight=Weight)
 
 
-def supera(TermS,profid,Studentid,supervisoncalss,session):
+def supera(TermS, profid, Studentid, supervisoncalss, session):
 	ses=Term.select().where(Term.year==TermS,Term.session==session).get()
 	Supervision.get_or_create(student_id=Studentid,supervision_class_id=supervisoncalss,semester=ses)
 	A=Supervision.select().where(Supervision.student_id==Studentid,Supervision.supervision_class_id==supervisoncalss,Supervision.semester==ses).get()
 	Mastermany.get_or_create(instructor=profid,sid=A, split=1)
 
 
-def Psupera(TermS,profid,team_id,supervisoncalss,session):
+def Psupera(TermS, profid, team_id, supervisoncalss, session):
 	ses=Term.select().where(Term.year==TermS,Term.session==session).get()
 	ProjectSupervision.get_or_create(team_id=team_id,project_class_id=supervisoncalss,semester=ses)
 	A=ProjectSupervision.select().where(ProjectSupervision.team_id==team_id,ProjectSupervision.project_class_id==supervisoncalss,ProjectSupervision.semester==ses).get()
 	Mastermany.get_or_create(instructor=profid,pid=A, split=1)
 
 
-def person(name,email,staryear,startsem):
+def person(name, email, staryear, startsem):
 	# can't hear
 	try:Term.get_or_create(year= staryear, session = startsem)
 	except:pass
@@ -283,12 +284,12 @@ def person(name,email,staryear,startsem):
 	except:pass
 
 
-def student(name,email):
+def student(name, email):
 	# use sign language
 	Student.get_or_create(name=name,email=email)
 
 
-def team(name,email):
+def team(name, email):
 	# use sign language
 	ProjectType.get_or_create(name=name,description=email)
 
@@ -424,8 +425,7 @@ def docustomimport(Table):
 
 
 def error(list_of_error, list_of_error_types):
-	print 'please see that these errors are attended to '
-	print 'list of error types found'
+	print( 'please see that the errors int the '+Back.BLUE+''+Fore.RED+'error.txt'+Style.RESET_ALL+' file are attended to ')
 	targ = open('Errors', 'w')
 	counter=-1
 	var = len(list_of_error)
@@ -433,7 +433,6 @@ def error(list_of_error, list_of_error_types):
 	for x in list_of_error_types:
 		targ.write(x)
 		targ.write('\n')
-	print'locations of errors'
 	while counter != var:
 		counter += 1
 		if  counter == var:
@@ -453,9 +452,9 @@ def offergen(files):
 	print
 	if list_of_error != '':
 		print
-		print "please check on the errors file, I have some results"
+		print(Fore.RED+"please check on the errors file, I have some results")
 	print
-	print "My program took", time.time() - start_time, "to run"
+	print(Fore.GREEN+"My program took", time.time() - start_time, "to run")
 	print
 	return coursecodes,list_of_error,list_of_error_types
 
@@ -616,7 +615,6 @@ def populate(files):
 
 
 def test():
-	print str(1)+str(1)
 	quick_verify()
 
 
@@ -627,7 +625,7 @@ def quick_verify():
 		a.execute()
 	course=Course.select()
 	for x in course:
-		a=Course.update(reviewd=True).where(Course.id==x.id)
+		a=Course.update(reviewed=True).where(Course.id==x.id)
 		a.execute()
 	coursegen=CourseGeneration.select()
 	for x in coursegen:
