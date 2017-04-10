@@ -19,6 +19,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 from playhouse.csv_loader import *
+from bs4 import *
 from db import *
 
 stripprimary = re.compile(r"[a-zA-Z0-9._-]{2,}")
@@ -29,6 +30,12 @@ db = SqliteDatabase(DATABASE)
 UPLOAD_FOLDER = ''
 ALLOWED_EXTENSIONS = {'csv'}
 
+
+def stafflist(stafffile):
+	staff = open(str(stafffile).strip("''[]"),'r').read()
+	soup = BeautifulSoup(staff, 'html.parser')
+	for table in soup.find_all('tr'):
+		print table
 
 def intake(year):
 	list_of_error_types=list()
@@ -621,20 +628,24 @@ def test():
 def quick_verify():
 	person=Person.select()
 	for x in person:
-		a=Person.update(reviewed=True).where(Person.id==x.id)
-		a.execute()
+		if x.reviewed == True:
+			a=Person.update(reviewed=False).where(Person.id==x.id)
+			a.execute()
 	course=Course.select()
 	for x in course:
-		a=Course.update(reviewed=True).where(Course.id==x.id)
-		a.execute()
+		if x.reviewed == True:
+			a=Course.update(reviewed=False).where(Course.id==x.id)
+			a.execute()
 	coursegen=CourseGeneration.select()
 	for x in coursegen:
-		a=CourseGeneration.update(reviewed=True).where(CourseGeneration.id==x.id)
-		a.execute()
+		if x.reviewed == True:
+			a=CourseGeneration.update(reviewed=False).where(CourseGeneration.id==x.id)
+			a.execute()
 	offering=Offering.select()
 	for x in offering:
-		a=Offering.update(reviewed=True).where(Offering.id==x.id)
-		a.execute()
+		if x.reviewed == True:
+			a=Offering.update(reviewed=False).where(Offering.id==x.id)
+			a.execute()
 
 def termselect(year):
 	if year == 'true':

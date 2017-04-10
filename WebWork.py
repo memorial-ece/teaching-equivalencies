@@ -368,6 +368,56 @@ def listm():
 								  overide_address='Term.' + str(B.id))
 			except:
 				pass
+		if request.form['subm1'] == "subm2":
+			person=Person.select()
+			for id in person:
+				try:
+					update=request.form['cbox1'+str(id.id)]
+					a = Person.update(reviewed=True).where(Person.id == id.id)
+					a.execute()
+				except:
+					pass
+			course = Course.select()
+			for x in course:
+				try:
+					update=request.form['cbox2'+str(x.id)]
+					a = Course.update(reviewed=True).where(Course.id == x.id)
+					a.execute()
+				except:
+					pass
+			coursegen = CourseGeneration.select()
+			for x in coursegen:
+				try:
+					update=request.form['cbox3'+str(x.id)]
+					a = CourseGeneration.update(reviewed=True).where(CourseGeneration.id == x.id)
+					a.execute()
+				except:
+					pass
+			offering = Offering.select()
+			for x in offering:
+				try:
+					update=request.form['cbox4'+str(x.id)]
+					a = Offering.update(reviewed=True).where(Offering.id == x.id)
+					a.execute()
+				except:
+					pass
+		# if request.form['subm1'] == "PURGE1":
+		# 	purge=request.form['purgeid1']
+		# 	print purge
+		# 	a=Person.delete().where(Person.id==purge)
+		# 	a.execute()
+		# if request.form['subm1'] == "PURGE2":
+		# 	purge=request.form['purgeid2']
+		# 	a=Course.delete().where(Course.id==purge)
+		# 	a.execute()
+		# if request.form['subm1'] == "PURGE3":
+		# 	purge=request.form['purgeid3']
+		# 	a=Offering.delete().where(Offering.id==purge)
+		# 	a.execute()
+		# if request.form['subm1'] == "PURGE4":
+		# 	purge=request.form['purgeid4']
+		# 	a=CourseGeneration.delete().where(CourseGeneration.id==purge)
+		# 	a.execute()
 	mastermany = Mastermany.select().order_by(Mastermany.oid.asc())
 	return render_template("masterlist.html", Person=Person, ProjectType=ProjectType, Course=Course,
 						   SupervisionClass=SupervisionClass, ProjectClass=ProjectClass,

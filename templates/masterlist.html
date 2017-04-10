@@ -9,6 +9,7 @@
 {% extends "home.html" %}
 {% block content %}
 <body>
+<form action = "{{ url_for('listm') }}" method = "POST">
 <table border = 1>
     <h3>Person</h3>
     <thead>
@@ -18,11 +19,12 @@
     </thead>
     {% for row in Person %}
     <tr>
-        <td><a href="/profile/{{row.id}}">{{row.id}}</a></td>
+        <td><a href="/profile/{{row.id}}/true/any">{{row.id}}</a></td>
         <td>{{row.name}}</td>
         <td><a href="mailto:{{row.email}}?Subject=Hello%20HALBRED" target="_top">{{row.email}}</a></td>
         <td>{{row.reviewed}}</td>
-        <td><input type="checkbox" name="cbox1" value="{{row.id}}"></td>
+        <td><input type="checkbox" name="cbox1{{row.id}}" value="flip"></td>
+        <td><input type = "submit" name="subm1" value = "subm2" /><br></td>
     </tr>
     {% endfor %}</table>
 <!--<table border = 5>-->
@@ -52,7 +54,8 @@
         <td>{{row.subject}}</td>
         <td><a href="/c/{{row.code}}">{{row.code}}</a></td>
         <td>{{row.reviewed}}</td>
-        <td><input type="checkbox" name="cbox2" value="{{row.id}}"></td>
+        <td><input type="checkbox" name="cbox2{{row.id}}" value="{{row.id}}"></td>
+        <td><input type = "submit" name="subm1" value = "subm2" /><br></td>
     </tr>
     {% endfor %}</table>
 <!--<table border = 3>-->
@@ -187,7 +190,9 @@
         <td><a href="/gen/{{row.generation.id}}">{{row.generation.id}}</a></td>
         <td>{{row.sections}}</td>
         <td>{{row.reviewed}}</td>
-        <td><input type="checkbox" name="cbox3" value="{{row.id}}"></td>
+        <td><input type="checkbox" name="cbox3{{row.id}}" value="{{row.id}}"></td>
+        <td><input type = "submit" name="subm1" value = "subm2" /><br></td>
+
     </tr>
     {% endfor %}</table>
 <table border = 1>
@@ -253,10 +258,11 @@
         <td>{{row.previous_course}}</td>
         <td>{{row.other_info}}</td>
         <td>{{row.reviewed}}</td>
-        <td><input type="checkbox" name="cbox4" value="{{row.id}}"></td>
+        <td><input type="checkbox" name="cbox4{{row.id}}" value="{{row.id}}"></td>
+        <td><input type = "submit" name="subm1" value = "subm2" /><br></td>
+
     </tr>
     {% endfor %}</table>
-<form action = "{{ url_for('Coursehist',id=course_id) }}" method = "POST">
     <h3>CourseGen</h3>
     labs<br>
     <input type = "text" name = "labs" /><br>
@@ -279,8 +285,6 @@
     end_year<br>
     <input type = "text" name = "end_year" /><br>
     <input type = "submit" name="subm1" value = "submit1" /><br>
-</form>
-<form action = "{{ url_for('listm') }}" method = "POST">
     <h3>Offering</h3>
     enrolment#<br>
     <input type = "text" name = "enrolment" /><br>
@@ -291,8 +295,6 @@
     sections<br>
     <input type = "text" name = "sections" /><br>
     <input type = "submit" name="subm1" value = "submit2" /><br>
-</form>
-<form action = "{{ url_for('listm') }}" method = "POST">
     <h3>Teaching</h3>
     instructor<br>
     <input type = "text" name = "instructor" /><br>
@@ -307,8 +309,6 @@
     split<br>
     <input type = "text" name = "split" /><br>
     <input type = "submit" name="subm1" value = "submit3" /><br>
-</form>
-<form action = "{{ url_for('listm') }}" method = "POST">
     <h3>Term</h3>
     id<br>
     <input type = "text" name = "id" /><br>
@@ -318,7 +318,6 @@
     <input type = "text" name = "session" /><br>
     <br>
     <input type = "submit" name="subm1" value = "submit4" /><br>
-</form>
 <!--<form action = "{{ url_for('listm') }}" method = "POST">-->
     <!--<h3>Adjustment</h3>-->
     <!--ID<br>-->
@@ -329,7 +328,24 @@
     <!--AUDITCOMMENT<br>-->
     <!--<input type = "text" name = "AUDITCOMMENT" /><br>-->
     <!--<input type = "submit" name="subm1" value = "submit5" /><br>-->
+    purge person id
+    <input type = "text" name = "purgeid1" /><br>
+    <br>
+    <input type = "submit" name="subm1" value = "PURGE1" /><br>
+    purge course id
+    <input type = "text" name = "purgeid2" /><br>
+    <br>
+    <input type = "submit" name="subm1" value = "PURGE2" /><br>
+    purge offering id
+    <input type = "text" name = "purgeid3" /><br>
+    <br>
+    <input type = "submit" name="subm1" value = "PURGE3" /><br>
+    purge generation id
+    <input type = "text" name = "purgeid4" /><br>
+    <br>
+    <input type = "submit" name="subm1" value = "PURGE4" /><br>
    <!--</form>-->
 {% endblock %}
+</form>
 </body>
 </html>
