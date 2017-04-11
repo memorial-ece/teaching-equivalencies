@@ -464,7 +464,7 @@ def offergen(files):
 		print
 		print cr+"please check on the "+cy+"errors"+cr+" file, I have some results"
 	print
-	print cb+"My program took", time.time() - start_time, "to run"
+	print cb+"My program took", time.time() - start_time, cb+"to run"
 	print
 	return coursecodes,list_of_error,list_of_error_types
 
@@ -601,8 +601,20 @@ def matchandsort(diction_of_var):
 	return total_weight,year_term
 
 
-def offerplot(dict_temp2,name):
-	print dict_temp2
+def offerplot(dict_temp2,name,scale='default'):
+	if scale=='default':
+		workaround1 = 0
+		workaround2 = 6
+		workaround3 = 0.25
+	elif scale=='offer':
+		workaround1 = 0
+		workaround2 = 3000
+		workaround3 = 300
+	else:
+		print cr+'scale not reconized'
+		workaround1 = 0
+		workaround2 = 6
+		workaround3 = 0.25
 	p1 = re.compile(r"\w+")
 	p2 = p1.findall(name)
 	width = 1
@@ -613,7 +625,7 @@ def offerplot(dict_temp2,name):
 	plt.ylabel('Credit Value')
 	plt.xlabel('Semester Term')
 	plt.title(p2[0])
-	plt.yticks(np.arange(0,6,0.25))
+	plt.yticks(np.arange(workaround1,workaround2,workaround3))
 	plt.xticks(ind, year_term, rotation='vertical')
 	plt.savefig(str(name)+'.pdf',bbox_inches='tight')
 	plt.close()
@@ -685,6 +697,6 @@ def percent():
 			pep_last=str(pep_last).strip("''[]u ")
 			row4=str(row4).strip("''[]u ")
 			if row3 == pep_first and row4==pep_last:
-				print rs+'I am confident in this '+cg+str(peps.name)+rs+' is '+cg+str(guess[0])
+				print rs+'I am confident that '+cg+str(peps.name)+rs+' is '+cg+str(guess[0])
 				a = Person.update(reviewed=True, email=emaildict.get(guess[0])).where(Person.name == peps.name)
 				a.execute()
