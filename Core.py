@@ -15,6 +15,8 @@ import sys
 import time
 from itertools import *
 from colorama import *
+from fuzzywuzzy import fuzz
+from fuzzywuzzy import process
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
@@ -622,10 +624,9 @@ def populate(files):
 
 
 def test():
-	quick_verify()
+	set_false()
 
-
-def quick_verify():
+def set_false():
 	person=Person.select()
 	for x in person:
 		if x.reviewed == True:
@@ -653,3 +654,31 @@ def termselect(year):
 	else:
 		term=Term.select().where(Term.year<=year)
 	return term
+
+def percent():
+	list_teach = list()
+	file = open('Faculty and Staff List.csv')
+	person = Person.select()
+	p2 = re.compile(r"[A-Z]\s")
+	p3 = re.compile(r".[A-Z]")
+	p4 = re.compile(r"^[A-Z]")
+	for row in file:
+		p1 = re.compile(r"[A-z]+[,][ ][A-z]+")
+		p3 = re.compile(r".[A-Z]")
+		row1 = str(p1.findall(row)).strip("''[],")
+		list_teach.append(row1)
+	for peps in person:
+		pep_first=p2.findall(peps.name)
+		pep_last = p3.findall(peps.name)
+		guess=process.extractOne(peps.name,list_teach)
+		if guess[1]>50:
+			row3 = p3.findall(guess[0])
+			row4= p4.findall(guess[0])
+			pep_first=str(pep_first).strip("''[]u ")
+			row3=str(row3).strip("''[]u ")
+			pep_last=str(pep_last).strip("''[]u ")
+			row4=str(row4).strip("''[]u ")
+			if row3 == pep_first and row4==pep_last:
+				print 'I am confident in this '+str(peps.name)+' is '+str(guess[0])
+				a = Person.update(reviewed=True).where(Person.name == peps.name)
+				a.execute()

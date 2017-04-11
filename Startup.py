@@ -18,6 +18,7 @@
 	Startup.py intake (<FILE>)...
 	Startup.py populate (<FILE>)...
 	Startup.py staff (<FILE>)
+	Startup.py autovet
 	Startup.py web
 	Startup.py -h --help
 
@@ -65,5 +66,7 @@ if __name__ == '__main__':
 			import_courses(filename)
 		if arguments['staff']:
 			stafflist(filename)
+		if arguments['autovet']:
+			percent()
 	except docopt.DocoptExit as e:
 		print e.message
