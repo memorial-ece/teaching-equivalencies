@@ -608,8 +608,8 @@ def offerplot(dict_temp2,name,scale='default'):
 		workaround3 = 0.25
 	elif scale=='offer':
 		workaround1 = 0
-		workaround2 = 3000
-		workaround3 = 300
+		workaround2 = -1000
+		workaround3 = -125
 	else:
 		print cr+'scale not reconized'
 		workaround1 = 0

@@ -32,6 +32,7 @@ class Person(Model):
 	email = TextField(unique=True)
 	id = IntegerField(primary_key=True)
 	start = ForeignKeyField(Term, related_name='startdate', null=False)
+	retired = BooleanField(null=True)
 	reviewed = BooleanField(null=False)
 
 
