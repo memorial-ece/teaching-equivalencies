@@ -20,10 +20,17 @@ from fuzzywuzzy import process
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
+import csv
 from playhouse.csv_loader import *
 from bs4 import *
 from db import *
 
+cg=Fore.GREEN
+cr=Fore.RED
+rs=Style.RESET_ALL
+cy=Fore.YELLOW
+cb=Fore.BLUE
+init(autoreset=True)
 stripprimary = re.compile(r"[a-zA-Z0-9._-]{2,}")
 matplotlib.rcParams['backend'] = "Qt4Agg"
 crsnumber= re.compile(r"(?<=ENGI )(\d+)")
@@ -32,12 +39,6 @@ db = SqliteDatabase(DATABASE)
 UPLOAD_FOLDER = ''
 ALLOWED_EXTENSIONS = {'csv'}
 
-
-def stafflist(stafffile):
-	staff = open(str(stafffile).strip("''[]"),'r').read()
-	soup = BeautifulSoup(staff, 'html.parser')
-	for table in soup.find_all('tr'):
-		print table
 
 def intake(year):
 	list_of_error_types=list()
@@ -136,7 +137,7 @@ def intake(year):
 		return coursecodes,list_Errors,list_of_error_types
 	except:
 		print
-		print 'The file '+last_selester+" is bad and this was the file i was processing when i failed"
+		print 'The file '+cr+last_selester+rs+" is bad and this was the file i was processing when i failed"
 
 
 def splitting(pid1):
@@ -324,7 +325,7 @@ def deficit(prof_id):
 	elif timeyear<3:
 		deduction=duty_for_first_two_year * 2
 	if deduction==0:
-		print 'oups error in deficit'
+		print rs+cy+'error'+rs+' in '+cr+'deficit'+rs
 	return deduction
 
 
@@ -434,7 +435,7 @@ def docustomimport(Table):
 
 
 def error(list_of_error, list_of_error_types):
-	print( 'please see that the errors int the '+Back.BLUE+''+Fore.RED+'error.txt'+Style.RESET_ALL+' file are attended to ')
+	print 'please see that the errors int the '+cy+'error.txt'+rs+' file are attended to '
 	targ = open('Errors', 'w')
 	counter=-1
 	var = len(list_of_error)
@@ -452,7 +453,7 @@ def error(list_of_error, list_of_error_types):
 		targ.write(list_of_error[var3])
 		targ.write('\n')
 		targ.write(list_of_error[var4])
-	print 'view the HTML files to correct'
+	print 'view the '+cy+'input'+rs+' files to correct'
 
 
 def offergen(files):
@@ -461,9 +462,9 @@ def offergen(files):
 	print
 	if list_of_error != '':
 		print
-		print(Fore.RED+"please check on the errors file, I have some results")
+		print cr+"please check on the "+cy+"errors"+cr+" file, I have some results"
 	print
-	print(Fore.GREEN+"My program took", time.time() - start_time, "to run")
+	print cb+"My program took", time.time() - start_time, "to run"
 	print
 	return coursecodes,list_of_error,list_of_error_types
 
@@ -532,6 +533,7 @@ def peeweetable(Droptype):
 			 CourseGeneration,
 			 SupervisionClass, ProjectType, Student, Adjustment],safe=True)
 		db.close()
+
 
 
 def progress(count, total, status=''):
@@ -662,10 +664,14 @@ def percent():
 	p2 = re.compile(r"[A-Z]\s")
 	p3 = re.compile(r".[A-Z]")
 	p4 = re.compile(r"^[A-Z]")
+	p5 = re.compile(r"[,][A-z-0-9].+")
+	emaildict=dict()
 	for row in file:
 		p1 = re.compile(r"[A-z]+[,][ ][A-z]+")
 		p3 = re.compile(r".[A-Z]")
+		rowE = str(p5.findall(row)).strip("''[],")
 		row1 = str(p1.findall(row)).strip("''[],")
+		emaildict[row1]=rowE
 		list_teach.append(row1)
 	for peps in person:
 		pep_first=p2.findall(peps.name)
@@ -679,6 +685,6 @@ def percent():
 			pep_last=str(pep_last).strip("''[]u ")
 			row4=str(row4).strip("''[]u ")
 			if row3 == pep_first and row4==pep_last:
-				print 'I am confident in this '+str(peps.name)+' is '+str(guess[0])
-				a = Person.update(reviewed=True).where(Person.name == peps.name)
+				print rs+'I am confident in this '+cg+str(peps.name)+rs+' is '+cg+str(guess[0])
+				a = Person.update(reviewed=True, email=emaildict.get(guess[0])).where(Person.name == peps.name)
 				a.execute()
