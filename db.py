@@ -36,6 +36,17 @@ class Person(Model):
 	reviewed = BooleanField(null=False)
 
 
+class Deficit(Model):
+	"""
+	To track the irregular deficits accumulated by professors
+	"""
+	id = IntegerField(primary_key=True)
+	deficit = FloatField(null=True)
+	applied = ForeignKeyField(Person, related_name='applicant', null=False)
+	applied_start = IntegerField(null=True)
+	applied_final = IntegerField(null=True)
+
+
 class Course(Model):
 	"""
 	A person in this database is a teaching professional
