@@ -184,7 +184,7 @@ def Profile(prof_id,year,reports):
 			  .join(Adjustment)
 			  .select(fn.SUM(Adjustment.weight))
 			  .scalar())
-	defi = deficit(prof_id,2009,2017)
+	defi = deficit(prof_id,2005,2017)
 	if Ototal is None:
 		Ototal = 0
 	if Atotal is None:

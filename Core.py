@@ -313,12 +313,10 @@ def deficit(prof_id,year_first,year_second):
 	defic = Deficit.select().join(Person).where(Person.id == prof_id,Deficit.applied_final<=year_second)
 	totaldef = 0
 	for x in defic:
-		print x.applied_final
-		print x.applied_start
 		if x.applied_start<=year_first:
 			totaldef+=x.deficit*(x.applied_final-year_first+1)
 		else:
-			totaldef+=x.deficit*(x.applied_final-x.applied_start)
+			totaldef+=x.deficit*(x.applied_final-x.applied_start+1)
 	defic2=Deficit.select().join(Person).where(Person.id == prof_id, Deficit.applied_final==None).get()
 	if year_second >= defic2.applied_start:
 		totaldef+=defic2.deficit*(year_second-defic2.applied_start+1)
@@ -656,7 +654,7 @@ def test():
 	for x in person:
 		print x.start.year
 		Deficit.create(deficit=3.3333333, applied=x.id, applied_start=x.start.year, applied_final=(x.start.year+1))
-		Deficit.create(deficit=4.0, applied=x.id, applied_start=(x.start.year+3))
+		Deficit.create(deficit=4.0, applied=x.id, applied_start=(x.start.year+2))
 	set_false()
 
 
