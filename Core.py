@@ -305,11 +305,7 @@ def team(name, email):
 
 
 def deficit(prof_id,year_first,year_second):
-	personal = Person.get(Person.id == prof_id)
 	now = datetime.datetime.now()
-	year = now.year
-	sem = currentsem()
-	gap = (year_second-year_first)
 	defic = Deficit.select().join(Person).where(Person.id == prof_id,Deficit.applied_final<=year_second)
 	totaldef = 0
 	for x in defic:
