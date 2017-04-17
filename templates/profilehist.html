@@ -30,6 +30,25 @@
            <td>{{person.start.year}}</td>
        </tr>
    </table>
+   <table border = 5>
+       <thead>
+       <td>id</td>
+       <td>deficit</td>
+       <td>applied</td>
+       <td>applied_start</td>
+       <td>applied_final</td>
+       </thead>
+       {{Stotal}}
+       {% for row in Deficit %}
+       <tr>
+           <td>{{row.id}}</td>
+           <td>{{row.deficit}}</td>
+           <td>{{row.applied.id}}</td>
+           <td>{{row.applied_start}}</td>
+           <td>{{row.applied_final}}</td>
+       </tr>
+       {% endfor %}
+   </table>
    <h3>Supervisions</h3>
            <input type = "submit" name="subm1" value = "Supervisions CSV" /><br>
    <table border = 5>
@@ -142,6 +161,13 @@
         <input type = "text" name = "comment" /><br>
         <br>
         <input type = "submit" name="subm1" value = "adjustment" /><br>
+
+        deficit<br>
+        <input type = "text" name = "deficit3" /><br>
+        applied_start<br>
+        <input type = "text" name = "applied_start" /><br>
+        <br>
+        <input type = "submit" name="subm1" value = "deficit5" /><br>
 </form>
        {% endblock %}
    </body>

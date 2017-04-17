@@ -184,7 +184,7 @@ def Profile(prof_id,year,reports):
 			  .join(Adjustment)
 			  .select(fn.SUM(Adjustment.weight))
 			  .scalar())
-	defi = deficit(prof_id,2012,2017)
+	defi = deficit(prof_id,2009,2017)
 	if Ototal is None:
 		Ototal = 0
 	if Atotal is None:
@@ -209,18 +209,25 @@ def Profile(prof_id,year,reports):
 			name = request.form['name']
 			email = request.form['email']
 			start = request.form['start']
-			A=Person.update(name=name,email=email,start=start)
+			A=Person.update(name=name,email=email,start=start).where(Person.id==prof_id)
 			A.execute()
 		if request.form['subm1'] == "adjustment":
 			weight = request.form['weight']
 			comment = request.form['comment']
 			A=Adjustment.create(weight=weight, comment=comment, instructor=prof_id)
+		if request.form['subm1'] == "deficit5":
+			deficit3 = request.form['deficit3']
+			applied_start = request.form['applied_start']
+			A=Deficit.update(applied_final=applied_start).where(Deficit.applied==prof_id,Deficit.applied_final==None)
+			A.execute()
+			Deficit.create(deficit=deficit3,applied=prof_id, applied_start=applied_start)
 	if reports==True:
 		return total, defi, offering_value_date, list_project_supervision_date, list_project_supervision_value, list_supervision_value, list_supervision_date
+	deficit2=Deficit.select().join(Person).where(Person.id==prof_id)
 	return render_template("profilehist.html", person=person, supervision=supervision,instructor=prof_id,
 					   projectsupervision=projectsupervision, offering=list_of_offerings, adjustment=adjustment,total=total,
 					   Stotal=Stotal, Ptotal=Ptotal, Ototal=Ototal, deficit=defi, list_forviewer=list_forviewer,list_split=list_split
-					   ,year=year, reports=reports)
+					   ,year=year, reports=reports, Deficit=deficit2)
 
 @app.route('/listm', methods=['GET', 'POST'])
 def listm():

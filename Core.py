@@ -308,49 +308,20 @@ def deficit(prof_id,year_first,year_second):
 	personal = Person.get(Person.id == prof_id)
 	now = datetime.datetime.now()
 	year = now.year
-	sem=currentsem()
-	gap=(year_second-year_first)
-	defic=Deficit.select().join(Person).where(Person.id==prof_id)
-	logic_hold1=0
-	logic_hold2=0
-	totaldef=0
+	sem = currentsem()
+	gap = (year_second-year_first)
+	defic = Deficit.select().join(Person).where(Person.id == prof_id,Deficit.applied_final<=year_second)
+	totaldef = 0
 	for x in defic:
-		if x.applied_final>=year_first and x.applied_start<year_first:
-			logic_hold1=x.applied_final-year_first
-			logic_hold1+=1
-			totaldef+=x.deficit*logic_hold1
-		elif x.applied_start>=year_first and x.applied_final>=year_second:
-			logic_hold1=year_second-x.applied_start
-			logic_hold1+=1
-			totaldef+=x.deficit*logic_hold1
-		elif x.applied_final>=year_second and x.applied_start<year_second:
-			logic_hold1=x.applied_final-year_second
-			logic_hold1+=1
-			totaldef+=x.deficit*logic_hold1
-		elif x.applied_start>=year_first and x.applied_final<=year_second:
-			logic_hold1=year_second-x.applied_start
-			logic_hold1+=1
-			totaldef+=x.deficit*logic_hold1
-		print 'there should be 2'
-		print x.id
-	# startYear = personal.start.year
-	# startsem = personal.start.session
-	# timeyear=year-startYear
-	# timesemester=sem-startsem
-	# if timesemester<0:
-	# 	timeyear-=1
-	# deduction=0
-	# duty_for_first_two_year=3.3333333333
-	# duty_for_normal=4.0
-	# if timeyear>=3:
-	# 	deduction=duty_for_first_two_year * 2
-	# 	timefix=timeyear-2
-	# 	deduction+=duty_for_normal*timefix
-	# elif timeyear<3:
-	# 	deduction=duty_for_first_two_year * 2
-	# if deduction==0:
-	# 	print rs+cy+'error'+rs+' in '+cr+'deficit'+rs
-
+		print x.applied_final
+		print x.applied_start
+		if x.applied_start<=year_first:
+			totaldef+=x.deficit*(x.applied_final-year_first+1)
+		else:
+			totaldef+=x.deficit*(x.applied_final-x.applied_start)
+	defic2=Deficit.select().join(Person).where(Person.id == prof_id, Deficit.applied_final==None).get()
+	if year_second >= defic2.applied_start:
+		totaldef+=defic2.deficit*(year_second-defic2.applied_start+1)
 	return totaldef
 
 
@@ -684,7 +655,7 @@ def test():
 	person = Person.select()
 	for x in person:
 		print x.start.year
-		Deficit.create(deficit=3.3333333, applied=x.id, applied_start=x.start.year, applied_final=(x.start.year+2))
+		Deficit.create(deficit=3.3333333, applied=x.id, applied_start=x.start.year, applied_final=(x.start.year+1))
 		Deficit.create(deficit=4.0, applied=x.id, applied_start=(x.start.year+3))
 	set_false()
 
