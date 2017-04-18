@@ -100,26 +100,9 @@ def test_csv():
 
 @app.route('/test_csv2')
 def test_csv2():
-	targ = open('CSV test2', 'w')
-	# targ.write('Name,'+datehold+','+Base+', load,'++','++','++','++','++','++','++','++',')
-	prof = Person.select()
-	list_total = list()
-	year1 = 2008
-	year2 = 2010
-	list_terms = list()
-	term = Term.select().where(Term.year>=year1,Term.year<=year2)
-	loopcounter = 0
-	for y in term:
-		loopcounter+=1
-		offer1 = Offering.select().join(Term).where(Offering.semester==y.id)
-		for z in offer1:
-			master = Mastermany.select().join(Offering).where(Mastermany.oid == z.id)
-			for x in master:
-				# a,b,c,d,e,f,g = Profile(x.instructor.id,y.year,True)
-				wei = Deficit.select().where(Deficit.applied == x.instructor.id).get()
-				# print loopcounter
-				targ.write(str(x.instructor.name)+','+str()+','+str(wei.deficit)+','+'probaby want to tie weight intosomthing'+', \n')
-
+	"""
+	planed test for new csv styles
+	"""
 	return redirect('/')
 
 
