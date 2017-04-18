@@ -234,6 +234,10 @@ def weight_calc(OID):
 		wd1 = float(.14)
 	if d1 == 'one tutorial hour per week':
 		wd1 = float(.14)
+	if d1 == 'one tutorial hour per week':
+		wd1 = float(.14)
+	if d1 == 'one tutorial hour per week':
+		wd1 = float(.14)
 	if d1 == '1 client meeting per week, 1 tutorial per week':
 		wd1 = float(.14)
 	weight1=fix(off.enrolment,off.sections,b1,c1,wd1)

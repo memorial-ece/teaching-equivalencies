@@ -98,7 +98,6 @@ class Offering(Model):
 	sections = IntegerField(null=True)
 	reviewed = BooleanField(null=False)
 
-
 class Role(Model):
 	"""
 	These fields represent the class of the user and information they have access too, dept is short for department.

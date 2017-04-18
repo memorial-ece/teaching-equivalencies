@@ -25,6 +25,104 @@ def allowed_file(filename):
 		   filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
+@app.route('/test_csv')
+def test_csv():
+	prof = Person.select()
+	targ = open('CSV test', 'w')
+	targ.write('Course#, Title, EE, CoE, # Stud., Instructor, Load, Cnt., Location, Cnt., Sctn., Length, Location, Cnt., Location')
+	for i in prof:
+		prof_id=i.id
+		term = Term.select().where(Term.year == 2008,Term.session==01)
+		list_of_offerings = list()
+		person = Person.get(Person.id == prof_id)
+		for x in term:
+			offering = (Mastermany
+						.select()
+						.join(Offering)
+						.where(Mastermany.instructor == prof_id,Offering.semester==x.id)
+						.order_by(Offering.semester.desc()))
+
+			for y in offering:
+				list_of_offerings.append(y)
+		list_offering_id = list()
+		for x in list_of_offerings:
+			list_offering_id.append(x.oid.id)
+			list_offering_id.sort()
+		Stotal = 0
+		Ptotal = 0
+		Ototal = 0
+		Snum = (Supervision
+					  .select()
+					  .join(Mastermany)
+					  .where(Mastermany.instructor == prof_id))
+		list_supervision_date = list()
+		list_supervision_value = list()
+		for num in Snum:
+			Ssum = Mastermany.select().where(Mastermany.sid==num.id).get()
+			Stotal += num.supervision_class_id.weight*Ssum.split
+			list_supervision_date.append(Ssum.sid.semester.year)
+			list_supervision_date.append(Ssum.sid.semester.session)
+			list_supervision_value.append(num.supervision_class_id.weight * Ssum.split)
+		list_forviewer = dict()
+		list_split = dict()
+		offering_value_date = list()
+		counter =- 1
+		for num in list_of_offerings:
+			counter += 1
+			Osum = Mastermany.select().where(Mastermany.oid==num.oid.id).get()
+			var1 = weight_calc(Osum.oid.id)
+			Ototal += var1*Osum.split
+			list_forviewer[Osum.oid.id] = var1
+			list_split[Osum.oid.id] = Osum.split
+			offering_value_date.append((str(Osum.oid.semester.year)+'0'+str(Osum.oid.semester.session)))
+			offering_value_date.append(var1*Osum.split)
+		list_project_supervision_date = list()
+		list_project_supervision_value = list()
+		Pnum = (ProjectSupervision
+					  .select()
+					  .join(Mastermany)
+					  .where(Mastermany.instructor == prof_id))
+		for num in Pnum:
+			Psum = Mastermany.select().where(Mastermany.pid == num.id).get()
+			Ptotal += num.project_class_id.weight*Psum.split
+			list_project_supervision_date.append(Psum.pid.semester.year)
+			list_project_supervision_date.append(Psum.pid.semester.session)
+			list_project_supervision_value.append(num.project_class_id.weight * Psum.split)
+		for x in list_of_offerings:
+			if x.oid.generation.other_info=='None' or x.oid.generation.other_info=='36-hour field school conducted during the first two weeks of the semester' or x.oid.generation.other_info=='meetings with project supervisor as required' or x.oid.generation.other_info=='weekly meetings with project supervisor' or x.oid.generation.other_info==None:
+				tut=''
+			else:
+				tut=x.oid.generation.other_info
+			targ.write('\n')
+			targ.write(str(x.oid.generation.course.code)+','+str(x.oid.generation.title)+','+''+','+''+','+str(x.oid.enrolment)+','+str(person.name)+','+str(weight_calc(x.oid.id))+','+str(x.oid.generation.lecture_hours)+','+''+','+str(x.oid.generation.labs)+','+str(x.oid.sections)+','+''+','+''+','+str(tut)+','+'')
+	return redirect('/')
+
+
+@app.route('/test_csv2')
+def test_csv2():
+	targ = open('CSV test2', 'w')
+	# targ.write('Name,'+datehold+','+Base+', load,'++','++','++','++','++','++','++','++',')
+	prof = Person.select()
+	list_total = list()
+	year1 = 2008
+	year2 = 2010
+	list_terms = list()
+	term = Term.select().where(Term.year>=year1,Term.year<=year2)
+	loopcounter = 0
+	for y in term:
+		loopcounter+=1
+		offer1 = Offering.select().join(Term).where(Offering.semester==y.id)
+		for z in offer1:
+			master = Mastermany.select().join(Offering).where(Mastermany.oid == z.id)
+			for x in master:
+				# a,b,c,d,e,f,g = Profile(x.instructor.id,y.year,True)
+				wei = Deficit.select().where(Deficit.applied == x.instructor.id).get()
+				# print loopcounter
+				targ.write(str(x.instructor.name)+','+str()+','+str(wei.deficit)+','+'probaby want to tie weight intosomthing'+', \n')
+
+	return redirect('/')
+
+
 @app.route('/export', methods=['GET','POST'])
 def docustomexport():
 	if request.method == 'POST':
@@ -106,7 +204,7 @@ def Coursehist(search,id):
 
 
 @app.route("/profile/<prof_id>/<year>/<reports>", methods=['GET', 'POST'])
-def Profile(prof_id,year,reports):
+def Profile(prof_id,year,reports,):
 	term=termselect(year)
 	list_of_offerings = list()
 	for x in term:
