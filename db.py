@@ -13,6 +13,7 @@
 #    limitations under the License.
 
 from peewee import *
+# class BaseModel(Model):
 
 
 class Term(Model):
@@ -34,6 +35,7 @@ class Person(Model):
 	start = ForeignKeyField(Term, related_name='startdate', null=False)
 	retired = BooleanField(null=True)
 	reviewed = BooleanField(null=False)
+	# def load(self):
 
 
 class Deficit(Model):
@@ -97,6 +99,7 @@ class Offering(Model):
 	generation = ForeignKeyField(CourseGeneration, related_name='generation')
 	sections = IntegerField(null=True)
 	reviewed = BooleanField(null=False)
+
 
 class Role(Model):
 	"""

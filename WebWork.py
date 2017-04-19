@@ -15,7 +15,6 @@ from flask import *
 from Core import *
 app = Flask(__name__)
 DATABASE = 'database.db'
-db = SqliteDatabase(DATABASE)
 UPLOAD_FOLDER = ''
 ALLOWED_EXTENSIONS = {'csv'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -103,6 +102,17 @@ def test_csv2():
 	"""
 	planed test for new csv styles
 	"""
+	first_year=2009
+	seconf_year=2011
+	targ = open('CSV test2', 'w')
+	targ.write('Name,'+str(first_year)+', Base, Load, F'+str(first_year)+', W'+str(first_year+1)+', S'+str(first_year+1)+', Other')
+	master= Mastermany.select().join(Person, on=Mastermany.instructor)
+	print master
+	for m in master:
+		print m
+		if m.oid.semester.year==first_year:
+			print m.oid.semester.year
+			print m.instructor.deficit
 	return redirect('/')
 
 
