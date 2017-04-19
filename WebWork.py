@@ -102,29 +102,32 @@ def test_csv2():
 	"""
 	planed test for new csv styles
 	"""
-	first_year=2009
+	first_year=2011
 	seconf_year=2011
 	targ = open('CSV test2', 'w')
 	targ.write('Name,'+str(first_year)+', Base, Load, F'+str(first_year)+', W'+str(first_year+1)+', S'+str(first_year+1)+', Other \n')
 	master= Mastermany.select().join(Person, on=Mastermany.instructor)
 	for m in master:
-		deficit2 = Deficit.select().where(Deficit.applied==m.instructor.id)
 		if m.oid.semester.year==first_year:
+			try:
+				deficit2=Deficit.select().where(Deficit.applied==m.instructor.id,Deficit.applied_final>=first_year).order_by(Deficit.applied_final.asc()).get()
+			except:
+				deficit2=Deficit.select().where(Deficit.applied==m.instructor.id,).order_by(Deficit.applied_final.asc()).get()
+				print deficit2.deficit
 			Ototal=0
 			list_of_offerings=list()
 			offering = (Mastermany
 						.select()
 						.join(Offering)
-						.where(Mastermany.instructor == m.instructor, Offering.semester == first_year)
+						.where(Mastermany.instructor == m.instructor, Offering.semester <= first_year)
 						.order_by(Offering.semester.desc()))
 			for y in offering:
 				list_of_offerings.append(y)
 			for num in list_of_offerings:
 				var1 = weight_calc(num.oid.id)
 				Ototal += var1 * m.split
-			defi=deficit(m.instructor.id, 2008, first_year)
-			targ.write(str(m.instructor.name)+','+str(defi)+','+str(deficit2.deficit)+','+str(Ototal)+',')
-			print m.oid.semester.year
+			defi=deficit_func(m.instructor.id, 2008, first_year)
+			targ.write(str(m.instructor.name)+','+str(defi)+','+str(deficit2.deficit)+','+str(Ototal)+','+'\n')
 	return redirect('/')
 
 

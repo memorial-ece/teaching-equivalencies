@@ -320,7 +320,6 @@ def deficit_func(prof_id,year_first,year_second):
 	defic2=Deficit.select().join(Person).where(Person.id == prof_id, Deficit.applied_final==None).get()
 	if year_second >= defic2.applied_start:
 		totaldef+=defic2.deficit*(year_second-defic2.applied_start+1)
-	print totaldef
 	return totaldef
 
 
