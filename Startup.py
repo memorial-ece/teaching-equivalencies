@@ -17,9 +17,7 @@
 	Startup.py execute (FUNCTION) [ARGS]
 	Startup.py intake (<FILE>)...
 	Startup.py populate (<FILE>)...
-	Startup.py staff (<FILE>)
 	Startup.py autovet
-	Startup.py web
 	Startup.py -h --help
 
 Options:
@@ -58,14 +56,12 @@ if __name__ == '__main__':
 			if arg == 'drc':
 				arg = 'DropReCreate'
 			peeweetable(arg)
-		if function == 'test':
+		if function == 'deficits':
 			test()
 		if arguments['populate']:
 			populate(filename)
 		if arguments['intake']:
 			import_courses(filename)
-		if arguments['staff']:
-			stafflist(filename)
 		if arguments['autovet']:
 			percent()
 	except docopt.DocoptExit as e:

@@ -105,14 +105,26 @@ def test_csv2():
 	first_year=2009
 	seconf_year=2011
 	targ = open('CSV test2', 'w')
-	targ.write('Name,'+str(first_year)+', Base, Load, F'+str(first_year)+', W'+str(first_year+1)+', S'+str(first_year+1)+', Other')
+	targ.write('Name,'+str(first_year)+', Base, Load, F'+str(first_year)+', W'+str(first_year+1)+', S'+str(first_year+1)+', Other \n')
 	master= Mastermany.select().join(Person, on=Mastermany.instructor)
-	print master
 	for m in master:
-		print m
+		deficit2 = Deficit.select().where(Deficit.applied==m.instructor.id)
 		if m.oid.semester.year==first_year:
+			Ototal=0
+			list_of_offerings=list()
+			offering = (Mastermany
+						.select()
+						.join(Offering)
+						.where(Mastermany.instructor == m.instructor, Offering.semester == first_year)
+						.order_by(Offering.semester.desc()))
+			for y in offering:
+				list_of_offerings.append(y)
+			for num in list_of_offerings:
+				var1 = weight_calc(num.oid.id)
+				Ototal += var1 * m.split
+			defi=deficit(m.instructor.id, 2008, first_year)
+			targ.write(str(m.instructor.name)+','+str(defi)+','+str(deficit2.deficit)+','+str(Ototal)+',')
 			print m.oid.semester.year
-			print m.instructor.deficit
 	return redirect('/')
 
 
@@ -275,7 +287,7 @@ def Profile(prof_id,year,reports,):
 			  .join(Adjustment)
 			  .select(fn.SUM(Adjustment.weight))
 			  .scalar())
-	defi = deficit(prof_id,2005,2017)
+	defi = deficit_func(prof_id,2005,2017)
 	if Ototal is None:
 		Ototal = 0
 	if Atotal is None:

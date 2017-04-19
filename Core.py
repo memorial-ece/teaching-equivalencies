@@ -308,7 +308,7 @@ def team(name, email):
 	ProjectType.get_or_create(name=name,description=email)
 
 
-def deficit(prof_id,year_first,year_second):
+def deficit_func(prof_id,year_first,year_second):
 	now = datetime.datetime.now()
 	defic = Deficit.select().join(Person).where(Person.id == prof_id,Deficit.applied_final<=year_second)
 	totaldef = 0
@@ -320,6 +320,7 @@ def deficit(prof_id,year_first,year_second):
 	defic2=Deficit.select().join(Person).where(Person.id == prof_id, Deficit.applied_final==None).get()
 	if year_second >= defic2.applied_start:
 		totaldef+=defic2.deficit*(year_second-defic2.applied_start+1)
+	print totaldef
 	return totaldef
 
 
@@ -651,6 +652,7 @@ def populate(files):
 
 def test():
 	person = Person.select()
+	print 'work'
 	for x in person:
 		print x.start.year
 		Deficit.create(deficit=3.3333333, applied=x.id, applied_start=x.start.year, applied_final=(x.start.year+1))
