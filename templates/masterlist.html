@@ -19,12 +19,14 @@
     </thead>
     {% for row in Person %}
     <tr>
-        <td><a href="/profile/{{row.id}}/true/any">{{row.id}}</a></td>
+        <td><input type="hidden" name="professrid" value="{{row.id}}"><a href="/profile/{{row.id}}/true/any">{{row.id}}</a></td>
         <td>{{row.name}}</td>
-        <td><a href="mailto:{{row.email}}?Subject=Hello%20HALBRED" target="_top">{{row.email}}</a></td>
+        <td>{{row.email}}</td>
+        <!--<td><input size="10" type="text" name="name{{row.id}}" placeholder="{{row.name}}"></td>-->
+        <!--<td><input size="10" type="email" name="email" placeholder="{{row.email}}"></td>-->
         <td>{{row.reviewed}}</td>
         <td><input type="checkbox" name="cbox1{{row.id}}" value="flip"></td>
-        <td><input type = "submit" name="subm1" value = "subm2" /><br></td>
+        <td><input type = "submit" name="subm1" value = "reviewed" /><br></td>
     </tr>
     {% endfor %}</table>
 <!--<table border = 5>-->
@@ -55,7 +57,7 @@
         <td><a href="/c/{{row.code}}">{{row.code}}</a></td>
         <td>{{row.reviewed}}</td>
         <td><input type="checkbox" name="cbox2{{row.id}}" value="{{row.id}}"></td>
-        <td><input type = "submit" name="subm1" value = "subm2" /><br></td>
+        <td><input type = "submit" name="subm1" value = "reviwed" /><br></td>
     </tr>
     {% endfor %}</table>
 <!--<table border = 3>-->
@@ -184,15 +186,15 @@
     </thead>
     {% for row in Offering %}
     <tr>
-        <td>{{row.id}}</td>
-        <td>{{row.enrolment}}</td>
+        <td><input  type="hidden" name="oid" value="{{row.id}}">{{row.id}}</td>
+        <td><input  type="text" size="1" name="enroll" placeholder="{{row.enrolment}}"></td>
         <td>{{row.semester.id}}</td>
-        <td><a href="/gen/{{row.generation.id}}">{{row.generation.id}}</a></td>
-        <td>{{row.sections}}</td>
+        <td><a href="s/gen/{{row.generation.id}}">{{row.generation.id}}</a></td>
+        <td><input  type="text" size="1" name="sections" placeholder="{{row.sections}}"></td>
         <td>{{row.reviewed}}</td>
         <td><input type="checkbox" name="cbox3{{row.id}}" value="{{row.id}}"></td>
-        <td><input type = "submit" name="subm1" value = "subm2" /><br></td>
-
+        <td><input type = "submit" name="subm1" value = "reviwed"></td>
+        <td><input type = "submit" name="subm1" value = "update info"></td>
     </tr>
     {% endfor %}</table>
 <table border = 1>
@@ -207,7 +209,7 @@
     </thead>
     {% for row in Mastermany %}
     <tr>
-        <td><a href="/profile/{{row.instructor.id}}">{{row.instructor.id}}</a></td>
+        <td><a href="/profile/{{row.instructor.id}}/true/any">{{row.instructor.id}}</a></td>
         <td>{{row.oid.id}}</td>
         <td>{{row.sid.id}}</td>
         <td>{{row.pid.id}}</td>
@@ -229,39 +231,39 @@
         <td>{{row.session}}</td>
     </tr>
     {% endfor %}</table>
-<table border = 1>
-    <h3>CourseGeneration</h3>
-    <thead>
-    <td>CourseGenID</td>
-    <td>CRN</td>
-    <td>CreditHours</td>
-    <td>lecture hours</td>
-    <td>comments</td>
-    <td>Labs</td>
-    <td>Year generation</td>
-    <td>Year valid</td>
-    <td>Title</td>
-    <td>Old course id</td>
-    <td>Other info</td>
-    </thead>
-    {% for row in CourseGeneration %}
-    <tr>
-        <td><a href="/gen/{{row.id}}">{{row.id}}</a></td>
-        <td>{{row.course.id}}</td>
-        <td>{{row.credit_hours}}</td>
-        <td>{{row.lecture_hours}}</td>
-        <td>{{row.comments}}</td>
-        <td>{{row.labs}}</td>
-        <td>{{row.start_year}}</td>
-        <td>{{row.end_year}}</td>
-        <td>{{row.title}}</td>
-        <td>{{row.previous_course}}</td>
-        <td>{{row.other_info}}</td>
-        <td>{{row.reviewed}}</td>
-        <td><input type="checkbox" name="cbox4{{row.id}}" value="{{row.id}}"></td>
-        <td><input type = "submit" name="subm1" value = "subm2" /><br></td>
+<!--<table border = 1>-->
+    <!--<h3>CourseGeneration</h3>-->
+    <!--<thead>-->
+    <!--<td>CourseGenID</td>-->
+    <!--<td>CRN</td>-->
+    <!--<td>CreditHours</td>-->
+    <!--<td>lecture hours</td>-->
+    <!--<td>comments</td>-->
+    <!--<td>Labs</td>-->
+    <!--<td>Year generation</td>-->
+    <!--<td>Year valid</td>-->
+    <!--<td>Title</td>-->
+    <!--<td>Old course id</td>-->
+    <!--<td>Other info</td>-->
+    <!--</thead>-->
+    <!--{% for row in CourseGeneration %}-->
+    <!--<tr>-->
+        <!--<td><a href="/gen/{{row.id}}">{{row.id}}</a></td>-->
+        <!--<td>{{row.course.id}}</td>-->
+        <!--<td>{{row.credit_hours}}</td>-->
+        <!--<td>{{row.lecture_hours}}</td>-->
+        <!--<td>{{row.comments}}</td>-->
+        <!--<td>{{row.labs}}</td>-->
+        <!--<td>{{row.start_year}}</td>-->
+        <!--<td>{{row.end_year}}</td>-->
+        <!--<td>{{row.title}}</td>-->
+        <!--<td>{{row.previous_course}}</td>-->
+        <!--<td>{{row.other_info}}</td>-->
+        <!--<td>{{row.reviewed}}</td>-->
+        <!--<td><input type="checkbox" name="cbox4{{row.id}}" value="{{row.id}}"></td>-->
+        <!--<td><input type = "submit" name="subm1" value = "reviwed" /><br></td>-->
 
-    </tr>
+    <!--</tr>-->
     {% endfor %}</table>
     <h3>CourseGen</h3>
     labs<br>
@@ -328,22 +330,22 @@
     <!--AUDITCOMMENT<br>-->
     <!--<input type = "text" name = "AUDITCOMMENT" /><br>-->
     <!--<input type = "submit" name="subm1" value = "submit5" /><br>-->
-    purge person id
-    <input type = "text" name = "purgeid1" /><br>
-    <br>
-    <input type = "submit" name="subm1" value = "PURGE1" /><br>
-    purge course id
-    <input type = "text" name = "purgeid2" /><br>
-    <br>
-    <input type = "submit" name="subm1" value = "PURGE2" /><br>
-    purge offering id
-    <input type = "text" name = "purgeid3" /><br>
-    <br>
-    <input type = "submit" name="subm1" value = "PURGE3" /><br>
-    purge generation id
-    <input type = "text" name = "purgeid4" /><br>
-    <br>
-    <input type = "submit" name="subm1" value = "PURGE4" /><br>
+    <!--purge person id-->
+    <!--<input type = "text" name = "purgeid1" /><br>-->
+    <!--<br>-->
+    <!--<input type = "submit" name="subm1" value = "PURGE1" /><br>-->
+    <!--purge course id-->
+    <!--<input type = "text" name = "purgeid2" /><br>-->
+    <!--<br>-->
+    <!--<input type = "submit" name="subm1" value = "PURGE2" /><br>-->
+    <!--purge offering id-->
+    <!--<input type = "text" name = "purgeid3" /><br>-->
+    <!--<br>-->
+    <!--<input type = "submit" name="subm1" value = "PURGE3" /><br>-->
+    <!--purge generation id-->
+    <!--<input type = "text" name = "purgeid4" /><br>-->
+    <!--<br>-->
+    <!--<input type = "submit" name="subm1" value = "PURGE4" /><br>-->
    <!--</form>-->
 {% endblock %}
 </form>

@@ -291,6 +291,7 @@ def Profile(prof_id,year,reports,):
 			  .select(fn.SUM(Adjustment.weight))
 			  .scalar())
 	defi = deficit_func(prof_id,2005,2017)
+	deficit2=Deficit.select().join(Person).where(Person.id==prof_id)
 	if Ototal is None:
 		Ototal = 0
 	if Atotal is None:
@@ -301,13 +302,13 @@ def Profile(prof_id,year,reports,):
 		Ptotal = 0
 	total = Ptotal + Atotal + Stotal + Ototal - defi
 	if request.method == 'POST':
-		if request.form['subm1']=="Supervisions CSV":
+		if request.form['subm1'] == "Supervisions CSV":
 			anyplot(list_supervision_date, 'super for id '+str(prof_id), list_supervision_value)
 			return send_file('super for id '+str(prof_id)+'.pdf')
-		if request.form['subm1']=="Project Supervisions CSV":
+		if request.form['subm1'] == "Project Supervisions CSV":
 			anyplot(list_project_supervision_date, 'project for id '+str(prof_id), list_project_supervision_value)
 			return send_file('project for id '+str(prof_id)+'.pdf')
-		if request.form['subm1']=="Offerings CSV":
+		if request.form['subm1'] == "Offerings CSV":
 			print 'asd'
 			offerplot(offering_value_date, 'offer for id '+str(prof_id))
 			return send_file('offer for id '+str(prof_id)+'.pdf')
@@ -317,19 +318,36 @@ def Profile(prof_id,year,reports,):
 			start = request.form['start']
 			A=Person.update(name=name,email=email,start=start).where(Person.id==prof_id)
 			A.execute()
+			Adjustment.create(comment=("Person table update, name + "+str(name)+" + email + "+str(email)+" + start + "+str(start)+" +"), instructor=prof_id)
 		if request.form['subm1'] == "adjustment":
 			weight = request.form['weight']
 			comment = request.form['comment']
-			A=Adjustment.create(weight=weight, comment=comment, instructor=prof_id)
-		if request.form['subm1'] == "deficit5":
+			Adjustment.create(weight=weight, comment=comment, instructor=prof_id)
+		if request.form['subm1'] == "deficit":
 			deficit3 = request.form['deficit3']
 			applied_start = request.form['applied_start']
+			var = Deficit.select().where(Deficit.applied==prof_id).order_by(Deficit.applied_start.desc()).get()
+			if deficit3=="":
+				deficit3=4.0
+			applied_start=int(applied_start)
+			var2 = int(var.applied_start)
+			if var2>=applied_start:
+				return 'error'
 			A=Deficit.update(applied_final=applied_start).where(Deficit.applied==prof_id,Deficit.applied_final==None)
 			A.execute()
 			Deficit.create(deficit=deficit3,applied=prof_id, applied_start=applied_start)
+			Adjustment.create(comment=("Deficit table update, applied_start"+str(applied_start)+" deficit"+str(deficit3)), applied=prof_id)
+		if request.form['subm1'] == "offering":
+			enrol = request.form['enroll']
+			ooid = request.form['oid']
+			enrol = int(enrol)
+			ooid = int(ooid)
+			A=Offering.update(enrolment=enrol).where(Offering.id==ooid)
+			A.execute()
+			print 'i updated?'
+			Adjustment.create(comment=('enrolment in + '+str(ooid)+' + oid to become + '+str(enrol)+' +'))
 	if reports==True:
 		return total, defi, offering_value_date, list_project_supervision_date, list_project_supervision_value, list_supervision_value, list_supervision_date
-	deficit2=Deficit.select().join(Person).where(Person.id==prof_id)
 	return render_template("profilehist.html", person=person, supervision=supervision,instructor=prof_id,
 					   projectsupervision=projectsupervision, offering=list_of_offerings, adjustment=adjustment,total=total,
 					   Stotal=Stotal, Ptotal=Ptotal, Ototal=Ototal, deficit=defi, list_forviewer=list_forviewer,list_split=list_split
@@ -426,38 +444,58 @@ def listm():
 								  overide_address='Term.' + str(B.id))
 			except:
 				pass
-		if request.form['subm1'] == "subm2":
+		if request.form['subm1'] == "update info":
+			enrol = request.form['enroll']
+			ooid = request.form['oid']
+			sections = request.form['sections']
+			sections = int(sections)
+			enrol = int(enrol)
+			ooid = int(ooid)
+			A=Offering.update(enrolment=enrol, sections=sections).where(Offering.id==ooid)
+			A.execute()
+			print 'i updated?'
+			Adjustment.create(comment=('enrolment in + '+str(ooid)+' + oid to become + '+str(enrol)+' +'))
+		if request.form['subm1'] == "reviewed":
 			person=Person.select()
 			for id in person:
-				try:
-					update=request.form['cbox1'+str(id.id)]
+				# print request.form['name'+str(id.id)] != ""
+				# if request.form['name'+str(id.id)] != "":
+				# 	name = request.form['name']
+				# 	email = request.form['email']
+				# 	id = request.form['professrid']
+				# 	print id
+				# 	print email
+				# 	print name
+				# 	A = Person.update(name=name, email=email).where(Person.id == id.id)
+				# 	A.execute()
+				# 	Adjustment.create(comment=(
+				# 		"Person table update, name + " + str(name) + " + email + " + str(email) + " + start + "),
+				# 		instructor=id, reviewed=True)
+				if 'cbox1'+str(id.id) in request.form:
 					a = Person.update(reviewed=True).where(Person.id == id.id)
 					a.execute()
-				except:
+				else:
 					pass
 			course = Course.select()
 			for x in course:
-				try:
-					update=request.form['cbox2'+str(x.id)]
+				if 'cbox2' + str(id.id) in request.form:
 					a = Course.update(reviewed=True).where(Course.id == x.id)
 					a.execute()
-				except:
+				else:
 					pass
 			coursegen = CourseGeneration.select()
 			for x in coursegen:
-				try:
-					update=request.form['cbox3'+str(x.id)]
+				if 'cbox3' + str(id.id) in request.form:
 					a = CourseGeneration.update(reviewed=True).where(CourseGeneration.id == x.id)
 					a.execute()
-				except:
+				else:
 					pass
 			offering = Offering.select()
 			for x in offering:
-				try:
-					update=request.form['cbox4'+str(x.id)]
+				if 'cbox4' + str(id.id) in request.form:
 					a = Offering.update(reviewed=True).where(Offering.id == x.id)
 					a.execute()
-				except:
+				else:
 					pass
 		# if request.form['subm1'] == "PURGE1":
 		# 	purge=request.form['purgeid1']

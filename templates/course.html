@@ -57,19 +57,25 @@
         <td>{{row.reviewed}}</td>
         <td><input type="checkbox" name="cbox4{{row.id}}" value="{{row.id}}"></td>
         <td><input type = "submit" name="subm1" value = "subm2" /><br></td>
-    </tr>
+
     {% endfor %}
+    </tr>
+    <tr><td></td>
+        <td><input type = "text" size="1" name = "labs" ></td>
+        <td><input type = "text" size="1" name = "credit_hours" ></td>
+        <td><input type = "text" size="1" name = "lecture_hours" ></td>
+        <td><input type = "text" name = "title" ></td>
+        <td><input type = "text" name = "comments"></td>
+        <td><input type = "text" size="1" name = "course" ></td>
+        <td><input type = "text" size="1" name = "other_info" ></td>
+        <td><input type = "text" size="1" name = "previous_course" ></td>
+        <td><input type = "text" size="1" name = "start_year"></td>
+        <td><input type = "text" size="1" name = "end_year" ></td>
+    </tr>
 </table>
 <form action = "{{ url_for('Coursehist',id=course_id,search=search) }}" method = "POST">
-    <h3>CourseGen</h3>
-    labs<br>
-    <input type = "text" name = "labs" /><br>
-    credit_hours<br>
-    <input type = "text" name = "credit_hours" /><br>
-    lecture_hours<br>
-    <input type = "text" name = "lecture_hours" /><br>
     title<br>
-    <input type = "text" name = "title" /><br>
+     /><br>
     comments<br>
     <input type = "text" name = "comments" /><br>
     course code example engi 1020++NEW COURSE CODES MUST INCLUDE THE FAC FEILD++<br>

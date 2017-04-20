@@ -485,7 +485,7 @@ def peeweetable(Droptype):
 		db.connect()
 		db.drop_tables(
 			[
-			 # Person,
+			 Person,
 			 # Mastermany,
 			 Deficit,
 			 # Term,
@@ -503,7 +503,7 @@ def peeweetable(Droptype):
 			 ],safe=True)
 		db.create_tables(
 			[
-			 # Person,
+			 Person,
 			 # Mastermany,
 			 Deficit,
 			 # Term,

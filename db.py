@@ -21,7 +21,7 @@ class Term(Model):
 	Term is the numerical representation of year and semester by Memorial University
 	"""
 	id = IntegerField(primary_key=True)
-	year = DateField()
+	year = IntegerField()
 	session = IntegerField()
 
 

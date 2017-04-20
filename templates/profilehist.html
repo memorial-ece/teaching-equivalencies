@@ -24,10 +24,11 @@
        <td>start</td>
        </thead>
        <tr>
-           <td><a href="/profile/{{person.id}}">{{person.id}}</a></td>
-           <td>{{person.name}}</td>
-           <td><a href="mailto:{{person.email}}?Subject=Hello%20HALBRED" target="_top">{{person.email}}</a></td>
-           <td>{{person.start.year}}</td>
+           <td><a href="/profile/{{person.id}}/true/any">{{person.id}}</a></td>
+           <td><input  type="text" name="name" placeholder="{{person.name}}"></td>
+           <td><input  type="email" name="email" placeholder="{{person.email}}"></td>
+           <td><input  type="text" name="start" >{{person.start.year}}</td>
+           <td><input type = "submit" name="subm1" value = "update" placeholder="Submit" /><br></td>
        </tr>
    </table>
    <table border = 5>
@@ -43,14 +44,22 @@
        <tr>
            <td>{{row.id}}</td>
            <td>{{row.deficit}}</td>
-           <td>{{row.applied.id}}</td>
+           <td><a href="/profile/{{person.id}}/true/any"> {{row.applied.id}}</a></td>
            <td>{{row.applied_start}}</td>
            <td>{{row.applied_final}}</td>
        </tr>
        {% endfor %}
+       <tr>
+           <td></td>
+           <td><input  type = "text" name = "deficit3" ></td>
+           <td></td>
+           <td><input  type = "text" name = "applied_start" ></td>
+           <td></td>
+           <td><input type = "submit" name="subm1" value = "deficit" /><br></td>
+       </tr>
    </table>
    <h3>Supervisions</h3>
-           <input type = "submit" name="subm1" value = "Supervisions CSV" /><br>
+           <input type = "submit" name="subm1" value = "Supervisions Graph" /><br>
    <table border = 5>
        <thead>
        <td>SupervisionID</td>
@@ -73,7 +82,7 @@
        {% endfor %}
    </table>
    <h3>Project Suppervisions</h3>
-              <input type = "submit" name="subm1" value = "Project Supervisions CSV" /><br>
+              <input type = "submit" name="subm1" value = "Project Supervisions Graph" /><br>
    <table border = 1>
        <thead>
        <td>ProjectSupervisionID</td>
@@ -96,7 +105,7 @@
        {% endfor %}
    </table>
    <h3>Offerings</h3>
-                 <input type = "submit" name="subm1" value = "Offerings CSV" /><br>
+                 <input type = "submit" name="subm1" value = "Offerings Graph" /><br>
    <table border = 1>
        <thead>
        <td>OID</td>
@@ -112,17 +121,20 @@
        </thead>
        {{Ototal}}
        {% for row in offering %}
+
        <tr>
-           <td>{{row.oid.id}}</td>
-           <td>{{row.oid.enrolment}}</td>
-           <td><a href="/c/{{row.oid.generation.course.code}}">{{row.oid.generation.course.code}}</a></td>
+           <td><input type="hidden" name="oid" value="{{row.oid.id}}">{{row.oid.id}}</td>
+           <td><input type="text" size="1" name="enroll" placeholder="{{row.oid.enrolment}}"></td>
+           <td><a href="/s/c/{{row.oid.generation.course.code}}">{{row.oid.generation.course.code}}</a></td>
            <td>{{row.oid.generation.course.subject}}</td>
            <td>{{row.oid.generation.labs}}</td>
            <td>{{row.oid.semester.year}}</td>
            <td>{{row.oid.semester.session}}</td>
            <td>{{row.oid.generation.credit_hours}}</td>
-           <td><a href="/course/{{row.oid.generation.course.id}}">{{row.oid.generation.course.id}}</a></td>
+           <td><a href="/s/course/{{row.oid.generation.course.id}}">{{row.oid.generation.course.id}}</a></td>
            <td>{{list_forviewer[row.oid.id]*list_split[row.oid.id]}}</td>
+           <td><input type = "submit" name="subm1" value = "offering"></td>
+
        </tr>
        {% endfor %}</table>
    <table border = 5>
@@ -144,15 +156,6 @@
        </tr>
        {% endfor %}
    </table>
-        <h3>Term</h3>
-        name<br>
-        <input type = "text" name = "name" /><br>
-        email<br>
-        <input type = "text" name = "email" /><br>
-        start<br>
-        <input type = "text" name = "start" /><br>
-        <br>
-        <input type = "submit" name="subm1" value = "update" /><br>
 
         <h3>Adjustement</h3>
         weight<br>
@@ -162,12 +165,6 @@
         <br>
         <input type = "submit" name="subm1" value = "adjustment" /><br>
 
-        deficit<br>
-        <input type = "text" name = "deficit3" /><br>
-        applied_start<br>
-        <input type = "text" name = "applied_start" /><br>
-        <br>
-        <input type = "submit" name="subm1" value = "deficit5" /><br>
 </form>
        {% endblock %}
    </body>
