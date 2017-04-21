@@ -313,13 +313,15 @@ def deficit_func(prof_id,year_first,year_second):
 	defic = Deficit.select().join(Person).where(Person.id == prof_id,Deficit.applied_final<=year_second)
 	totaldef = 0
 	for x in defic:
-		if x.applied_start<=year_first:
+		if x.applied_final<year_first:
+			pass
+		elif x.applied_start<=year_first:
 			totaldef+=x.deficit*(x.applied_final-year_first+1)
 		else:
 			totaldef+=x.deficit*(x.applied_final-x.applied_start+1)
 	defic2=Deficit.select().join(Person).where(Person.id == prof_id, Deficit.applied_final==None).get()
 	if year_second >= defic2.applied_start:
-		totaldef+=defic2.deficit*(year_second-defic2.applied_start+1)
+		totaldef+=defic2.deficit*(year_second-defic2.applied_start)
 	return totaldef
 
 

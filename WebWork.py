@@ -290,7 +290,8 @@ def Profile(prof_id,year,reports,):
 			  .join(Adjustment)
 			  .select(fn.SUM(Adjustment.weight))
 			  .scalar())
-	defi = deficit_func(prof_id,2005,2017)
+	term2=Term.select().order_by(Term.year.asc()).get()
+	defi = deficit_func(prof_id,person.start.year,2016)
 	deficit2=Deficit.select().join(Person).where(Person.id==prof_id)
 	if Ototal is None:
 		Ototal = 0
@@ -316,7 +317,8 @@ def Profile(prof_id,year,reports,):
 			name = request.form['name']
 			email = request.form['email']
 			start = request.form['start']
-			A=Person.update(name=name,email=email,start=start).where(Person.id==prof_id)
+			varyear= Term.select().where(Term.year==start,Term.session==01).get()
+			A=Person.update(name=name,email=email,start=varyear.id).where(Person.id==prof_id)
 			A.execute()
 			Adjustment.create(comment=("Person table update, name + "+str(name)+" + email + "+str(email)+" + start + "+str(start)+" +"), instructor=prof_id)
 		if request.form['subm1'] == "adjustment":
@@ -324,8 +326,23 @@ def Profile(prof_id,year,reports,):
 			comment = request.form['comment']
 			Adjustment.create(weight=weight, comment=comment, instructor=prof_id)
 		if request.form['subm1'] == "deficit":
+			defi2=Deficit.select()
+			for x in defi2:
+				if 'applied_start'+str(x.id) in request.form:
+					if request.form['applied_start'+str(x.id)]!='':
+						a = Deficit.update(applied_start=int(request.form['applied_start'+str(x.id)])).where(Deficit.id == x.id)
+						a.execute()
+				if 'applied_final'+str(x.id) in request.form:
+					if request.form['applied_start'+str(x.id)]!='':
+						b = Deficit.update(applied_final=int(request.form['applied_final'+str(x.id)])).where(Deficit.id == x.id)
+						b.execute()
+				if 'deficit'+str(x.id) in request.form:
+					if request.form['applied_start'+str(x.id)]!='':
+						c = Deficit.update(deficit=float(request.form['deficit'+str(x.id)])).where(Deficit.id == x.id)
+						c.execute()
 			deficit3 = request.form['deficit3']
 			applied_start = request.form['applied_start']
+
 			var = Deficit.select().where(Deficit.applied==prof_id).order_by(Deficit.applied_start.desc()).get()
 			if deficit3=="":
 				deficit3=4.0
@@ -338,14 +355,14 @@ def Profile(prof_id,year,reports,):
 			Deficit.create(deficit=deficit3,applied=prof_id, applied_start=applied_start)
 			Adjustment.create(comment=("Deficit table update, applied_start"+str(applied_start)+" deficit"+str(deficit3)), applied=prof_id)
 		if request.form['subm1'] == "offering":
-			enrol = request.form['enroll']
-			ooid = request.form['oid']
-			enrol = int(enrol)
-			ooid = int(ooid)
-			A=Offering.update(enrolment=enrol).where(Offering.id==ooid)
-			A.execute()
-			print 'i updated?'
-			Adjustment.create(comment=('enrolment in + '+str(ooid)+' + oid to become + '+str(enrol)+' +'))
+			off=Offering.select()
+			for id in off:
+				print request.form['applied_start'+str(id.id)]
+				if 'enroll' + str(id.id) in request.form:
+						l = Offering.update(enrolment=(int(request.form['applied_start'+str(id.id)]))).where(Offering.id == id.id)
+						l.execute()
+						Adjustment.create(comment=('enrolment in + '+str(id.id)+' + oid to become + '+str(int(request.form['applied_start'+str(id.id)]))+' +'))
+
 	if reports==True:
 		return total, defi, offering_value_date, list_project_supervision_date, list_project_supervision_value, list_supervision_value, list_supervision_date
 	return render_template("profilehist.html", person=person, supervision=supervision,instructor=prof_id,
