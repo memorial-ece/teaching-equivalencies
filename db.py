@@ -18,198 +18,198 @@ from peewee import *
 
 
 class Term(Model):
-	"""
-	Term is the numerical representation of year and semester by Memorial University
-	"""
-	id = IntegerField(primary_key=True)
-	year = IntegerField()
-	session = IntegerField()
+    """
+    Term is the numerical representation of year and semester by Memorial University
+    """
+    id = IntegerField(primary_key=True)
+    year = IntegerField()
+    session = IntegerField()
 
 
 class Person(Model):
-	"""
-	A person in this database is a teaching professional
-	"""
-	name = TextField(null=False)
-	email = TextField(unique=True)
-	id = IntegerField(primary_key=True)
-	start = ForeignKeyField(Term, related_name='startdate', null=False)
-	retired = BooleanField(null=True)
-	reviewed = BooleanField(null=False)
-	# def load(self):
+    """
+    A person in this database is a teaching professional
+    """
+    name = TextField(null=False)
+    email = TextField(unique=True)
+    id = IntegerField(primary_key=True)
+    start = ForeignKeyField(Term, related_name='startdate', null=False)
+    retired = BooleanField(null=True)
+    reviewed = BooleanField(null=False)
+    # def load(self):
 
 
 class Deficit(Model):
-	"""
-	To track the irregular deficits accumulated by professors
-	"""
-	id = IntegerField(primary_key=True)
-	deficit = FloatField(null=True)
-	applied = ForeignKeyField(Person, related_name='applicant', null=False)
-	applied_start = IntegerField(null=True)
-	applied_final = IntegerField(null=True)
+    """
+    To track the irregular deficits accumulated by professors
+    """
+    id = IntegerField(primary_key=True)
+    deficit = FloatField(null=True)
+    applied = ForeignKeyField(Person, related_name='applicant', null=False)
+    applied_start = IntegerField(null=True)
+    applied_final = IntegerField(null=True)
 
 
 class Course(Model):
-	"""
-	A person in this database is a teaching professional
-	"""
-	id = IntegerField(primary_key=True)
-	subject = TextField()
-	# Because of courses like 200W we cannot store info as int
-	code = CharField(4)
-	reviewed = BooleanField(null=False)
+    """
+    A person in this database is a teaching professional
+    """
+    id = IntegerField(primary_key=True)
+    subject = TextField()
+    # Because of courses like 200W we cannot store info as int
+    code = CharField(4)
+    reviewed = BooleanField(null=False)
 
 
 class CourseGeneration(Model):
-	"""
-	As a course changes over time it becomes necessary to update it to moder information
-	"""
-	id = IntegerField(primary_key=True)
-	# due to situations like 4.5 these numbers are stored as doubles
-	labs = DoubleField(null=True)
-	credit_hours = DoubleField(null=True)
-	lecture_hours = DoubleField(null=True)
-	title = TextField(null=True)
-	comments = TextField(null=True)
-	course = ForeignKeyField(Course, related_name='generation', null=True)
-	other_info = TextField(null=True)
-	previous_course = TextField(null=True)
-	start_year = TextField(null=False)
-	end_year = TextField(null=False)
-	reviewed = BooleanField(null=False)
+    """
+    As a course changes over time it becomes necessary to update it to moder information
+    """
+    id = IntegerField(primary_key=True)
+    # due to situations like 4.5 these numbers are stored as doubles
+    labs = DoubleField(null=True)
+    credit_hours = DoubleField(null=True)
+    lecture_hours = DoubleField(null=True)
+    title = TextField(null=True)
+    comments = TextField(null=True)
+    course = ForeignKeyField(Course, related_name='generation', null=True)
+    other_info = TextField(null=True)
+    previous_course = TextField(null=True)
+    start_year = TextField(null=False)
+    end_year = TextField(null=False)
+    reviewed = BooleanField(null=False)
 
 
 class Student(Model):
-	"""
-	A student is typically a non-undergrad student
-	"""
-	id = IntegerField(primary_key=True)
-	name = TextField()
-	email = TextField()
+    """
+    A student is typically a non-undergrad student
+    """
+    id = IntegerField(primary_key=True)
+    name = TextField()
+    email = TextField()
 
 
 class Offering(Model):
-	"""
-	Display the current courses on offering during the current session
-	"""
-	id = IntegerField(primary_key=True)
-	enrolment = IntegerField()
-	# prof_id = ForeignKeyField(Person, related_name='instructor')
-	semester = ForeignKeyField(Term, related_name='semester')
-	generation = ForeignKeyField(CourseGeneration, related_name='generation')
-	sections = IntegerField(null=True)
-	reviewed = BooleanField(null=False)
+    """
+    Display the current courses on offering during the current session
+    """
+    id = IntegerField(primary_key=True)
+    enrolment = IntegerField()
+    # prof_id = ForeignKeyField(Person, related_name='instructor')
+    semester = ForeignKeyField(Term, related_name='semester')
+    generation = ForeignKeyField(CourseGeneration, related_name='generation')
+    sections = IntegerField(null=True)
+    reviewed = BooleanField(null=False)
 
 
 class Role(Model):
-	"""
-	These fields represent the class of the user and information they have access too, dept is short for department.
-	"""
-	id = IntegerField(primary_key=True)
-	role_name = TextField(null=False)
-	view_you = BooleanField(null=False)
-	view_dept = BooleanField(null=False)
-	view_all = BooleanField(null=False)
-	edit_dept = BooleanField(null=False)
+    """
+    These fields represent the class of the user and information they have access too, dept is short for department.
+    """
+    id = IntegerField(primary_key=True)
+    role_name = TextField(null=False)
+    view_you = BooleanField(null=False)
+    view_dept = BooleanField(null=False)
+    view_all = BooleanField(null=False)
+    edit_dept = BooleanField(null=False)
 
 
 class SupervisionClass(Model):
-	"""
-	Supervising student level, grad, under grad, ect
-	"""
-	id = IntegerField(primary_key=True)
-	description = TextField(null=False)
-	weight = FloatField(null=False)
+    """
+    Supervising student level, grad, under grad, ect
+    """
+    id = IntegerField(primary_key=True)
+    description = TextField(null=False)
+    weight = FloatField(null=False)
 
 
 class ProjectClass(Model):
-	"""
-	Supervising student level, grad, under grad, ect
-	"""
-	id = IntegerField(primary_key=True)
-	description = TextField(null=False)
-	weight = FloatField(null=False)
+    """
+    Supervising student level, grad, under grad, ect
+    """
+    id = IntegerField(primary_key=True)
+    description = TextField(null=False)
+    weight = FloatField(null=False)
 
 
 class ProjectType(Model):
-	"""
-	A pseudo stand in for teams as students
-	"""
-	id = IntegerField(primary_key=True)
-	name = TextField()
-	description = TextField()
+    """
+    A pseudo stand in for teams as students
+    """
+    id = IntegerField(primary_key=True)
+    name = TextField()
+    description = TextField()
 
 
 class ProjectSupervision(Model):
-	"""
-	A table to tie together projects and their class
-	"""
-	id = IntegerField(primary_key=True)
-	# prof_id = ForeignKeyField(Person, related_name='supervisied_projects')
-	team_id = ForeignKeyField(ProjectType, related_name='projects')
-	project_class_id = ForeignKeyField(ProjectClass, related_name='projects')
-	semester = ForeignKeyField(Term, related_name='projects')
+    """
+    A table to tie together projects and their class
+    """
+    id = IntegerField(primary_key=True)
+    # prof_id = ForeignKeyField(Person, related_name='supervisied_projects')
+    team_id = ForeignKeyField(ProjectType, related_name='projects')
+    project_class_id = ForeignKeyField(ProjectClass, related_name='projects')
+    semester = ForeignKeyField(Term, related_name='projects')
 
 
 class Supervision(Model):
-	"""
-	A table to tie together students ans their class
-	"""
-	id = IntegerField(primary_key=True)
-	student_id = ForeignKeyField(Student, related_name='supervisions')
-	supervision_class_id = ForeignKeyField(SupervisionClass, related_name='supervisions')
-	semester = ForeignKeyField(Term, related_name='supervisions')
+    """
+    A table to tie together students ans their class
+    """
+    id = IntegerField(primary_key=True)
+    student_id = ForeignKeyField(Student, related_name='supervisions')
+    supervision_class_id = ForeignKeyField(SupervisionClass, related_name='supervisions')
+    semester = ForeignKeyField(Term, related_name='supervisions')
 
 
 class Adjustment(Model):
-	"""
-	A human entry in that overrides the automatic data
-	"""
-	id = IntegerField(primary_key=True)
-	weight = FloatField(null=True)
-	comment = TextField(null=True)
-	overide_value = FloatField(null=True)
-	overide_address = TextField(null=True)
-	instructor = ForeignKeyField(Person, related_name='made_change', null=True)
+    """
+    A human entry in that overrides the automatic data
+    """
+    id = IntegerField(primary_key=True)
+    weight = FloatField(null=True)
+    comment = TextField(null=True)
+    overide_value = FloatField(null=True)
+    overide_address = TextField(null=True)
+    instructor = ForeignKeyField(Person, related_name='made_change', null=True)
 
 
 class Mastermany(Model):
-	"""
-	A table that ties together all aspects of a teachers equivalency
-	"""
-	instructor = ForeignKeyField(Person, related_name='person_id')
-	oid = ForeignKeyField(Offering, related_name='offering_id', null=True)
-	sid = ForeignKeyField(Supervision, related_name='supervision_id', null=True)
-	pid = ForeignKeyField(ProjectSupervision, related_name='project_id', null=True)
-	rid = ForeignKeyField(Role, related_name='role_id', null=True)
-	split = FloatField(null=True)
+    """
+    A table that ties together all aspects of a teachers equivalency
+    """
+    instructor = ForeignKeyField(Person, related_name='person_id')
+    oid = ForeignKeyField(Offering, related_name='offering_id', null=True)
+    sid = ForeignKeyField(Supervision, related_name='supervision_id', null=True)
+    pid = ForeignKeyField(ProjectSupervision, related_name='project_id', null=True)
+    rid = ForeignKeyField(Role, related_name='role_id', null=True)
+    split = FloatField(null=True)
 
 
 ALL_TABLES = [
-	Adjustment,
-	Course,
-	CourseGeneration,
-	Deficit,
-	Mastermany,
-	Offering,
-	Person,
-	ProjectClass,
-	ProjectSupervision,
-	ProjectType,
-	Role,
-	Student,
-	Supervision,
-	SupervisionClass,
-	Term,
+    Adjustment,
+    Course,
+    CourseGeneration,
+    Deficit,
+    Mastermany,
+    Offering,
+    Person,
+    ProjectClass,
+    ProjectSupervision,
+    ProjectType,
+    Role,
+    Student,
+    Supervision,
+    SupervisionClass,
+    Term,
 ]
 
 def get():
-	DATABASE = 'database.db'  # TODO: use dotenv
-	return SqliteDatabase(DATABASE)
+    DATABASE = 'database.db'  # TODO: use dotenv
+    return SqliteDatabase(DATABASE)
 
 def init(db, drop_first = False):
-	if drop_first:
-		db.drop_tables(ALL_TABLES, safe = True)
+    if drop_first:
+        db.drop_tables(ALL_TABLES, safe = True)
 
-	db.create_tables(ALL_TABLES)
+    db.create_tables(ALL_TABLES)

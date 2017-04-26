@@ -1,4 +1,5 @@
-#!/usr/bin/env python
+#!/usr/bin/env python -tt
+
 #  Copyright 2017 Keegan Joseph Brophy
 #
 #    Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,17 +21,17 @@ This software is used to track teaching loads and course equivalencies for
 instructors at Memorial University.
 
 Usage:
-	teq initdb
-	teq execute (FUNCTION) [ARGS]
-	teq intake (<FILE>)...
-	teq populate (<FILE>)...
-	teq autovet
-	teq -h --help
+    teq initdb
+    teq execute (FUNCTION) [ARGS]
+    teq intake (<FILE>)...
+    teq populate (<FILE>)...
+    teq autovet
+    teq -h --help
 
 Options:
-	execute (docustomexport)[Table] Any table form class.py
-	execute (docustomimport)[Table]	Any table form class.py
-	populate [file location] gen all data from offerings folder program will crash if the year exceeds 2030
+    execute (docustomexport)[Table] Any table form class.py
+    execute (docustomimport)[Table]    Any table form class.py
+    populate [file location] gen all data from offerings folder program will crash if the year exceeds 2030
 
 """
 
@@ -43,29 +44,29 @@ database = db.get()
 database.connect()
 
 if arguments['initdb']:
-	db.init(database)
+    db.init(database)
 
 try:
-	function = (arguments['FUNCTION'])
-	arg = str(arguments['ARGS'])
-	filename = arguments['<FILE>']
+    function = (arguments['FUNCTION'])
+    arg = str(arguments['ARGS'])
+    filename = arguments['<FILE>']
 
-	if arguments['intake']:
-		from import_courses import import_courses
-		import_courses(filename)
-	else:
-		import Core
-		if function == 'docustomexport':
-			Core.docustomexport(arg)
-		if function == 'docustomimport':
-			Core.docustomimport(arg)
-		if function == 'deficits':
-			Core.test()
-		if arguments['populate']:
-			Core.populate(filename)
-		if arguments['autovet']:
-			Core.percent()
+    if arguments['intake']:
+        from import_courses import import_courses
+        import_courses(filename)
+    else:
+        import Core
+        if function == 'docustomexport':
+            Core.docustomexport(arg)
+        if function == 'docustomimport':
+            Core.docustomimport(arg)
+        if function == 'deficits':
+            Core.test()
+        if arguments['populate']:
+            Core.populate(filename)
+        if arguments['autovet']:
+            Core.percent()
 except docopt.DocoptExit as e:
-	print e.message
+    print e.message
 
 database.close()
