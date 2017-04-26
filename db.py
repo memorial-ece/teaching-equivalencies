@@ -13,6 +13,7 @@
 #    limitations under the License.
 
 from peewee import *
+# class BaseModel(Model):
 
 
 class Term(Model):
@@ -20,7 +21,7 @@ class Term(Model):
 	Term is the numerical representation of year and semester by Memorial University
 	"""
 	id = IntegerField(primary_key=True)
-	year = DateField()
+	year = IntegerField()
 	session = IntegerField()
 
 
@@ -31,7 +32,21 @@ class Person(Model):
 	name = TextField(null=False)
 	email = TextField(unique=True)
 	id = IntegerField(primary_key=True)
-	start = ForeignKeyField(Term, related_name='startdate',null=False)
+	start = ForeignKeyField(Term, related_name='startdate', null=False)
+	retired = BooleanField(null=True)
+	reviewed = BooleanField(null=False)
+	# def load(self):
+
+
+class Deficit(Model):
+	"""
+	To track the irregular deficits accumulated by professors
+	"""
+	id = IntegerField(primary_key=True)
+	deficit = FloatField(null=True)
+	applied = ForeignKeyField(Person, related_name='applicant', null=False)
+	applied_start = IntegerField(null=True)
+	applied_final = IntegerField(null=True)
 
 
 class Course(Model):
@@ -42,12 +57,13 @@ class Course(Model):
 	subject = TextField()
 	# Because of courses like 200W we cannot store info as int
 	code = CharField(4)
+	reviewed = BooleanField(null=False)
 
 
 class CourseGeneration(Model):
 	"""
- 	As a course changes over time it becomes necessary to update it to moder information
- 	"""
+	As a course changes over time it becomes necessary to update it to moder information
+	"""
 	id = IntegerField(primary_key=True)
 	# due to situations like 4.5 these numbers are stored as doubles
 	labs = DoubleField(null=True)
@@ -60,7 +76,7 @@ class CourseGeneration(Model):
 	previous_course = TextField(null=True)
 	start_year = TextField(null=False)
 	end_year = TextField(null=False)
-	# other_info, and previous_course_id maybe inconsistent but that is because of the ripping process turned up the reported results.
+	reviewed = BooleanField(null=False)
 
 
 class Student(Model):
@@ -81,12 +97,13 @@ class Offering(Model):
 	# prof_id = ForeignKeyField(Person, related_name='instructor')
 	semester = ForeignKeyField(Term, related_name='semester')
 	generation = ForeignKeyField(CourseGeneration, related_name='generation')
-	weight = FloatField(null=True)
+	sections = IntegerField(null=True)
+	reviewed = BooleanField(null=False)
 
 
 class Role(Model):
 	"""
-	These fields are meant to represent the class of the user and information they have access too, dept is short for department.
+	These fields represent the class of the user and information they have access too, dept is short for department.
 	"""
 	id = IntegerField(primary_key=True)
 	role_name = TextField(null=False)
@@ -113,10 +130,11 @@ class ProjectClass(Model):
 	description = TextField(null=False)
 	weight = FloatField(null=False)
 
+
 class ProjectType(Model):
 	"""
- 	A pseudo stand in for teams as students
- 	"""
+	A pseudo stand in for teams as students
+	"""
 	id = IntegerField(primary_key=True)
 	name = TextField()
 	description = TextField()
@@ -148,9 +166,11 @@ class Adjustment(Model):
 	A human entry in that overrides the automatic data
 	"""
 	id = IntegerField(primary_key=True)
-	weight = FloatField()
-	comment = TextField()
-	instructor = ForeignKeyField(Person, related_name='made_change')
+	weight = FloatField(null=True)
+	comment = TextField(null=True)
+	overide_value = FloatField(null=True)
+	overide_address = TextField(null=True)
+	instructor = ForeignKeyField(Person, related_name='made_change', null=True)
 
 
 class Mastermany(Model):
@@ -158,8 +178,8 @@ class Mastermany(Model):
 	A table that ties together all aspects of a teachers equivalency
 	"""
 	instructor = ForeignKeyField(Person, related_name='person_id')
-	oid = ForeignKeyField(Offering, related_name='offering_id',null=True)
-	sid = ForeignKeyField(Supervision, related_name='supervision_id',null=True)
-	pid = ForeignKeyField(ProjectSupervision, related_name='project_id',null=True)
-	rid = ForeignKeyField(Role, related_name='role_id',null=True)
+	oid = ForeignKeyField(Offering, related_name='offering_id', null=True)
+	sid = ForeignKeyField(Supervision, related_name='supervision_id', null=True)
+	pid = ForeignKeyField(ProjectSupervision, related_name='project_id', null=True)
+	rid = ForeignKeyField(Role, related_name='role_id', null=True)
 	split = FloatField(null=True)

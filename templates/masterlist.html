@@ -1,0 +1,353 @@
+<!doctype html>
+<html>
+<head>
+    <title>
+        listMaster
+    </title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+</head>
+{% extends "home.html" %}
+{% block content %}
+<body>
+<form action = "{{ url_for('listm') }}" method = "POST">
+<table border = 1>
+    <h3>Person</h3>
+    <thead>
+    <td>ID</td>
+    <td>Name</td>
+    <td>Email</td>
+    </thead>
+    {% for row in Person %}
+    <tr>
+        <td><input type="hidden" name="professrid" value="{{row.id}}"><a href="/profile/{{row.id}}/true/any">{{row.id}}</a></td>
+        <td>{{row.name}}</td>
+        <td>{{row.email}}</td>
+        <!--<td><input size="10" type="text" name="name{{row.id}}" placeholder="{{row.name}}"></td>-->
+        <!--<td><input size="10" type="email" name="email" placeholder="{{row.email}}"></td>-->
+        <td>{{row.reviewed}}</td>
+        <td><input type="checkbox" name="cbox1{{row.id}}" value="flip"></td>
+        <td><input type = "submit" name="subm1" value = "reviewed" /><br></td>
+    </tr>
+    {% endfor %}</table>
+<!--<table border = 5>-->
+    <!--<h3>Team</h3>-->
+    <!--<thead>-->
+    <!--<td>teamID</td>-->
+    <!--<td>PName</td>-->
+    <!--<td>Pdescription</td>-->
+    <!--</thead>-->
+    <!--{% for row in ProjectType %}-->
+    <!--<tr>-->
+        <!--<td>{{row.id}}</td>-->
+        <!--<td>{{row.name}}</td>-->
+        <!--<td>{{row.description}}</td>-->
+    <!--</tr>-->
+    <!--{% endfor %}</table>-->
+<table border = 1>
+    <h3>Course</h3>
+    <thead>
+    <td>CRN</td>
+    <td>Subj</td>
+    <td>Crse</td>
+    </thead>
+    {% for row in Course %}
+    <tr>
+        <td><a href="/course/{{row.id}}">{{row.id}}</a></td>
+        <td>{{row.subject}}</td>
+        <td><a href="/c/{{row.code}}">{{row.code}}</a></td>
+        <td>{{row.reviewed}}</td>
+        <td><input type="checkbox" name="cbox2{{row.id}}" value="{{row.id}}"></td>
+        <td><input type = "submit" name="subm1" value = "reviwed" /><br></td>
+    </tr>
+    {% endfor %}</table>
+<!--<table border = 3>-->
+    <!--<h3>Student</h3>-->
+    <!--<thead>-->
+    <!--<td>StudentID</td>-->
+    <!--<td>SName</td>-->
+    <!--<td>SEmail</td>-->
+    <!--</thead>-->
+    <!--{% for row in Student %}-->
+    <!--<tr>-->
+        <!--<td>{{row.id}}</td>-->
+        <!--<td>{{row.name}}</td>-->
+        <!--<td>{{row.email}}</td>-->
+    <!--</tr>-->
+    <!--{% endfor %}</table>-->
+<!--<table border = 5>-->
+    <!--<h3>SupervisionClass</h3>-->
+    <!--<thead>-->
+    <!--<td>SupervisionClassID</td>-->
+    <!--<td>Description</td>-->
+    <!--<td>Weight</td>-->
+    <!--</thead>-->
+    <!--{% for row in SupervisionClass %}-->
+    <!--<tr>-->
+        <!--<td>{{row.id}}</td>-->
+        <!--<td>{{row.description}}</td>-->
+        <!--<td>{{row.weight}}</td>-->
+    <!--</tr>-->
+    <!--{% endfor %}</table>-->
+<!--<table border = 1>-->
+    <!--<h3>ProjectClass</h3>-->
+    <!--<thead>-->
+    <!--<td>ProjectClassID</td>-->
+    <!--<td>Description</td>-->
+    <!--<td>Weight</td>-->
+    <!--</thead>-->
+    <!--{% for row in ProjectClass %}-->
+    <!--<tr>-->
+        <!--<td>{{row.id}}</td>-->
+        <!--<td>{{row.description}}</td>-->
+        <!--<td>{{row.weight}}</td>-->
+    <!--</tr>-->
+    <!--{% endfor %}</table>-->
+<!--<table border = 1>-->
+    <!--<h3>ProjectSupervision</h3>-->
+    <!--<thead>-->
+    <!--<td>ProjectSupervisionID</td>-->
+    <!--<td>ProjectClassID</td>-->
+    <!--<td>teamID</td>-->
+    <!--<td>SemesterID</td>-->
+    <!--</thead>-->
+    <!--{% for row in ProjectSupervision %}-->
+    <!--<tr>-->
+        <!--<td>{{row.id}}</td>-->
+        <!--<td>{{row.project_class_id.id}}</td>-->
+        <!--<td>{{row.team_id.id}}</td>-->
+        <!--<td>{{row.semester.id}}</td>-->
+    <!--</tr>-->
+    <!--{% endfor %}</table>-->
+<!--<table border = 1>-->
+    <!--<h3>Supervision</h3>-->
+    <!--<thead>-->
+    <!--<td>SupervisionID</td>-->
+    <!--<td>SupervisionClassID</td>-->
+    <!--<td>StudentID</td>-->
+    <!--<td>SemesterID</td>-->
+    <!--</thead>-->
+    <!--{% for row in Supervision %}-->
+    <!--<tr>-->
+        <!--<td>{{row.id}}</td>-->
+        <!--<td>{{row.supervision_class_id.id}}</td>-->
+        <!--<td>{{row.student_id.id}}</td>-->
+        <!--<td>{{row.semester.id}}</td>-->
+    <!--</tr>-->
+    <!--{% endfor %}</table>-->
+<table border = 5>
+    <h3>Adjustment</h3>
+    <thead>
+    <td>id</td>
+    <td>weight</td>
+    <td>comment</td>
+    <td>overide_value</td>
+    <td>overide_address</td>
+    <td>instructor</td>
+    </thead>
+    {% for row in Adjustment %}
+    <tr>
+        <td>{{row.id}}</td>
+        <td>{{row.weight}}</td>
+        <td>{{row.comment}}</td>
+        <td>{{row.overide_value}}</td>
+        <td>{{row.overide_address}}</td>
+        <td>{{row.instructor.id}}</td>
+    </tr>
+    {% endfor %}</table>
+<!--<table border = 5>-->
+    <!--<h3>Role</h3>-->
+    <!--<thead>-->
+    <!--<td>RoleID</td>-->
+    <!--<td>Name</td>-->
+    <!--<td>ViewOnlyYou</td>-->
+    <!--<td>ViewOnlyDept</td>-->
+    <!--<td>ViewOnlyAll</td>-->
+    <!--<td>EditDept</td>-->
+    <!--</thead>-->
+    <!--{% for row in Role %}-->
+    <!--<tr>-->
+        <!--<td>{{row.id}}</td>-->
+        <!--<td>{{row.role_name}}</td>-->
+        <!--<td>{{row.view_only_you}}</td>-->
+        <!--<td>{{row.view_only_dept}}</td>-->
+        <!--<td>{{row.view_only_All}}</td>-->
+        <!--<td>{{row.edit_dept}}</td>-->
+    <!--</tr>-->
+    <!--{% endfor %}</table>-->
+<table border = 1>
+    <h3>Offering</h3>
+    <thead>
+    <td>OID</td>
+    <td>StudentsTaking</td>
+    <td>SemesterID</td>
+    <td>CourseGenID</td>
+    <td>sections</td>
+
+    </thead>
+    {% for row in Offering %}
+    <tr>
+        <td><input  type="hidden" name="oid" value="{{row.id}}">{{row.id}}</td>
+        <td><input  type="text" size="1" name="enroll" placeholder="{{row.enrolment}}"></td>
+        <td>{{row.semester.id}}</td>
+        <td><a href="s/gen/{{row.generation.id}}">{{row.generation.id}}</a></td>
+        <td><input  type="text" size="1" name="sections" placeholder="{{row.sections}}"></td>
+        <td>{{row.reviewed}}</td>
+        <td><input type="checkbox" name="cbox3{{row.id}}" value="{{row.id}}"></td>
+        <td><input type = "submit" name="subm1" value = "reviwed"></td>
+        <td><input type = "submit" name="subm1" value = "update info"></td>
+    </tr>
+    {% endfor %}</table>
+<table border = 1>
+    <h3>teaching</h3>
+    <thead>
+    <td>instructor</td>
+    <td>oid</td>
+    <td>sid</td>
+    <td>pid</td>
+    <td>rid</td>
+    <td>split</td>
+    </thead>
+    {% for row in Mastermany %}
+    <tr>
+        <td><a href="/profile/{{row.instructor.id}}/true/any">{{row.instructor.id}}</a></td>
+        <td>{{row.oid.id}}</td>
+        <td>{{row.sid.id}}</td>
+        <td>{{row.pid.id}}</td>
+        <td>{{row.rid.id}}</td>
+        <td>{{row.split}}</td>
+
+    {% endfor %}</table>
+<table border = 5>
+    <h3>Term</h3>
+    <thead>
+    <td>SemesterID</td>
+    <td>Year</td>
+    <td>Session</td>
+    </thead>
+    {% for row in Term %}
+    <tr>
+        <td>{{row.id}}</td>
+        <td>{{row.year}}</td>
+        <td>{{row.session}}</td>
+    </tr>
+    {% endfor %}</table>
+<!--<table border = 1>-->
+    <!--<h3>CourseGeneration</h3>-->
+    <!--<thead>-->
+    <!--<td>CourseGenID</td>-->
+    <!--<td>CRN</td>-->
+    <!--<td>CreditHours</td>-->
+    <!--<td>lecture hours</td>-->
+    <!--<td>comments</td>-->
+    <!--<td>Labs</td>-->
+    <!--<td>Year generation</td>-->
+    <!--<td>Year valid</td>-->
+    <!--<td>Title</td>-->
+    <!--<td>Old course id</td>-->
+    <!--<td>Other info</td>-->
+    <!--</thead>-->
+    <!--{% for row in CourseGeneration %}-->
+    <!--<tr>-->
+        <!--<td><a href="/gen/{{row.id}}">{{row.id}}</a></td>-->
+        <!--<td>{{row.course.id}}</td>-->
+        <!--<td>{{row.credit_hours}}</td>-->
+        <!--<td>{{row.lecture_hours}}</td>-->
+        <!--<td>{{row.comments}}</td>-->
+        <!--<td>{{row.labs}}</td>-->
+        <!--<td>{{row.start_year}}</td>-->
+        <!--<td>{{row.end_year}}</td>-->
+        <!--<td>{{row.title}}</td>-->
+        <!--<td>{{row.previous_course}}</td>-->
+        <!--<td>{{row.other_info}}</td>-->
+        <!--<td>{{row.reviewed}}</td>-->
+        <!--<td><input type="checkbox" name="cbox4{{row.id}}" value="{{row.id}}"></td>-->
+        <!--<td><input type = "submit" name="subm1" value = "reviwed" /><br></td>-->
+
+    <!--</tr>-->
+    {% endfor %}</table>
+    <h3>CourseGen</h3>
+    labs<br>
+    <input type = "text" name = "labs" /><br>
+    credit_hours<br>
+    <input type = "text" name = "credit_hours" /><br>
+    lecture_hours<br>
+    <input type = "text" name = "lecture_hours" /><br>
+    title<br>
+    <input type = "text" name = "title" /><br>
+    comments<br>
+    <input type = "text" name = "comments" /><br>
+    course code example engi 1020++NEW COURSE CODES MUST INCLUDE THE FAC FEILD++<br>
+    <input type = "text" name = "course" /><br>
+    other_info<br>
+    <input type = "text" name = "other_info" /><br>
+    previous_course<br>
+    <input type = "text" name = "previous_course" /><br>
+    start_year<br>
+    <input type = "text" name = "start_year" /><br>
+    end_year<br>
+    <input type = "text" name = "end_year" /><br>
+    <input type = "submit" name="subm1" value = "submit1" /><br>
+    <h3>Offering</h3>
+    enrolment#<br>
+    <input type = "text" name = "enrolment" /><br>
+    semester<br>
+    <input type = "text" name = "semester" /><br>
+    generation<br>
+    <input type = "text" name = "generation" /><br>
+    sections<br>
+    <input type = "text" name = "sections" /><br>
+    <input type = "submit" name="subm1" value = "submit2" /><br>
+    <h3>Teaching</h3>
+    instructor<br>
+    <input type = "text" name = "instructor" /><br>
+    oid<br>
+    <input type = "text" name = "oid" /><br>
+    sid<br>
+    <input type = "text" name = "sid" /><br>
+    pid<br>
+    <input type = "text" name = "pid" /><br>
+    rid<br>
+    <input type = "text" name = "rid" /><br>
+    split<br>
+    <input type = "text" name = "split" /><br>
+    <input type = "submit" name="subm1" value = "submit3" /><br>
+    <h3>Term</h3>
+    id<br>
+    <input type = "text" name = "id" /><br>
+    year<br>
+    <input type = "text" name = "year" /><br>
+    session<br>
+    <input type = "text" name = "session" /><br>
+    <br>
+    <input type = "submit" name="subm1" value = "submit4" /><br>
+<!--<form action = "{{ url_for('listm') }}" method = "POST">-->
+    <!--<h3>Adjustment</h3>-->
+    <!--ID<br>-->
+    <!--<input type = "text" name = "ID4" /><br>-->
+    <!--ADJWeight<br>-->
+    <!--<input type = "text" name = "ADJWeight" /><br>-->
+    <!--NOT WORKING  COMMENTED OUT IN PeeweeClass AUDITDATE<br>-->
+    <!--AUDITCOMMENT<br>-->
+    <!--<input type = "text" name = "AUDITCOMMENT" /><br>-->
+    <!--<input type = "submit" name="subm1" value = "submit5" /><br>-->
+    <!--purge person id-->
+    <!--<input type = "text" name = "purgeid1" /><br>-->
+    <!--<br>-->
+    <!--<input type = "submit" name="subm1" value = "PURGE1" /><br>-->
+    <!--purge course id-->
+    <!--<input type = "text" name = "purgeid2" /><br>-->
+    <!--<br>-->
+    <!--<input type = "submit" name="subm1" value = "PURGE2" /><br>-->
+    <!--purge offering id-->
+    <!--<input type = "text" name = "purgeid3" /><br>-->
+    <!--<br>-->
+    <!--<input type = "submit" name="subm1" value = "PURGE3" /><br>-->
+    <!--purge generation id-->
+    <!--<input type = "text" name = "purgeid4" /><br>-->
+    <!--<br>-->
+    <!--<input type = "submit" name="subm1" value = "PURGE4" /><br>-->
+   <!--</form>-->
+{% endblock %}
+</form>
+</body>
+</html>

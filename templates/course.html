@@ -1,0 +1,95 @@
+<!doctype html>
+<html>
+   <head>
+      <title>
+         course
+      </title>
+       <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+   </head>
+   {% extends "home.html" %}
+   {% block content %}
+   <body>
+<table border = 1>
+    <h3>Course</h3>
+    <thead>
+        <td>CRN</td>
+        <td>Subj</td>
+        <td>Crse</td>
+    </thead>
+    <tr>
+        <td>{{course.id}}</td>
+        <td>{{course.subject}}</td>
+        <td>{{course.code}}</td>
+    </tr>
+</table>
+<table border = 1>
+    <h3>Course</h3>
+    <thead>
+        <td>Gen</td>
+        <td>labs</td>
+        <td>credit_hours</td>
+        <td>lecture_hours</td>
+        <td>title</td>
+        <td>comments</td>
+        <td>course</td>
+        <td>other_info</td>
+        <td>previous_course</td>
+        <td>start_year</td>
+        <td>end_year</td>
+    </thead>
+    <p>Changes Between Generations</p>
+    <p>+++++++++++++++++++++++++++</p>
+    <p>{{list1}}</p>
+    <p>===========================</p>
+    {% for row in generation %}
+    <tr>
+        <td>{{row.id}}</td>
+        <td>{{row.labs}}</td>
+        <td>{{row.credit_hours}}</td>
+        <td>{{row.lecture_hours}}</td>
+        <td>{{row.title}}</td>
+        <td>{{row.comments}}</td>
+        <td>{{row.course.id}}</td>
+        <td>{{row.other_info}}</td>
+        <td>{{row.previous_course}}</td>
+        <td>{{row.start_year}}</td>
+        <td>{{row.end_year}}</td>
+        <td>{{row.reviewed}}</td>
+        <td><input type="checkbox" name="cbox4{{row.id}}" value="{{row.id}}"></td>
+        <td><input type = "submit" name="subm1" value = "subm2" /><br></td>
+
+    {% endfor %}
+    </tr>
+    <tr><td></td>
+        <td><input type = "text" size="1" name = "labs" ></td>
+        <td><input type = "text" size="1" name = "credit_hours" ></td>
+        <td><input type = "text" size="1" name = "lecture_hours" ></td>
+        <td><input type = "text" name = "title" ></td>
+        <td><input type = "text" name = "comments"></td>
+        <td><input type = "text" size="1" name = "course" ></td>
+        <td><input type = "text" size="1" name = "other_info" ></td>
+        <td><input type = "text" size="1" name = "previous_course" ></td>
+        <td><input type = "text" size="1" name = "start_year"></td>
+        <td><input type = "text" size="1" name = "end_year" ></td>
+    </tr>
+</table>
+<form action = "{{ url_for('Coursehist',id=course_id,search=search) }}" method = "POST">
+    title<br>
+     /><br>
+    comments<br>
+    <input type = "text" name = "comments" /><br>
+    course code example engi 1020++NEW COURSE CODES MUST INCLUDE THE FAC FEILD++<br>
+    <input type = "text" name = "course" /><br>
+    other_info<br>
+    <input type = "text" name = "other_info" /><br>
+    previous_course<br>
+    <input type = "text" name = "previous_course" /><br>
+    start_year<br>
+    <input type = "text" name = "start_year" /><br>
+    end_year<br>
+    <input type = "text" name = "end_year" /><br>
+    <input type = "submit" name="subm1" value = "submit1" /><br>
+</form>
+{%endblock%}
+   </body>
+</html>
