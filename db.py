@@ -14,9 +14,15 @@
 #    limitations under the License.
 
 import config
+import peewee
 from peewee import *
 
-db = SqliteDatabase(config.DATABASE_URL)
+(scheme, url) = config.DATABASE_URL.split('://')
+db = {
+    'mysql': peewee.MySQLDatabase,
+    'postgres': peewee.PostgresqlDatabase,
+    'sqlite': peewee.SqliteDatabase,
+}[scheme](url)
 
 class BaseModel(Model):
     class Meta:
