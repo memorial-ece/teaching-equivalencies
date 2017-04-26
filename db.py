@@ -1,4 +1,5 @@
 # Copyright 2017 Keegan Joseph Brophy
+# Copyright 2017 Jonathan Anderson
 #
 #    Licensed under the Apache License, Version 2.0 (the "License");
 #    you may not use this file except in compliance with the License.
@@ -183,3 +184,32 @@ class Mastermany(Model):
 	pid = ForeignKeyField(ProjectSupervision, related_name='project_id', null=True)
 	rid = ForeignKeyField(Role, related_name='role_id', null=True)
 	split = FloatField(null=True)
+
+
+ALL_TABLES = [
+	Adjustment,
+	Course,
+	CourseGeneration,
+	Deficit,
+	Mastermany,
+	Offering,
+	Person,
+	ProjectClass,
+	ProjectSupervision,
+	ProjectType,
+	Role,
+	Student,
+	Supervision,
+	SupervisionClass,
+	Term,
+]
+
+def get():
+	DATABASE = 'database.db'  # TODO: use dotenv
+	return SqliteDatabase(DATABASE)
+
+def init(db, drop_first = False):
+	if drop_first:
+		db.drop_tables(ALL_TABLES, safe = True)
+
+	db.create_tables(ALL_TABLES)

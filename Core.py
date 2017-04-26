@@ -30,12 +30,9 @@ cr=Fore.RED
 rs=Style.RESET_ALL
 cy=Fore.YELLOW
 cb=Fore.BLUE
-init(autoreset=True)
 stripprimary = re.compile(r"[a-zA-Z0-9._-]{2,}")
 matplotlib.rcParams['backend'] = "Qt4Agg"
 crsnumber= re.compile(r"(?<=ENGI )(\d+)")
-DATABASE = 'database.db'
-db = SqliteDatabase(DATABASE)
 UPLOAD_FOLDER = ''
 ALLOWED_EXTENSIONS = {'csv'}
 
@@ -480,74 +477,6 @@ def split(files):
 	print
 	print "My program took", time.time() - start_time, "to run"
 	splitting(files)
-
-
-def peeweetable(Droptype):
-	if Droptype == 'DropReCreate':
-		db.connect()
-		db.drop_tables(
-			[
-			 Person,
-			 # Mastermany,
-			 Deficit,
-			 # Term,
-			 # Offering,
-			 # Course,
-			 # Role,
-			 # ProjectSupervision,
-			 # ProjectClass,
-			 # Supervision,
-			 # CourseGeneration,
-			 # SupervisionClass,
-			 # ProjectType,
-			 # Student,
-			 # Adjustment
-			 ],safe=True)
-		db.create_tables(
-			[
-			 Person,
-			 # Mastermany,
-			 Deficit,
-			 # Term,
-			 # Offering,
-			 # Course,
-			 # Role,
-			 # ProjectSupervision,
-			 # ProjectClass,
-			 # Supervision,
-			 # CourseGeneration,
-			 # SupervisionClass,
-			 # ProjectType,
-			 # Student,
-			 # Adjustment
-			],safe=True)
-		db.close()
-	elif Droptype == 'Create':
-		db.connect()
-		db.create_tables(
-			[Person, Mastermany,
-			 Deficit,
-			 Term,
-			 Offering,
-			 Course,
-			 Role, ProjectSupervision, ProjectClass,
-			 Supervision,
-			 CourseGeneration,
-			 SupervisionClass, ProjectType, Student, Adjustment],safe=True)
-		db.close()
-	elif Droptype == 'Drop':
-		db.connect()
-		db.drop_tables(
-			[Person, Mastermany,
-			 Deficit,
-			 Term,
-			 Offering,
-			 Course,
-			 Role, ProjectSupervision, ProjectClass,
-			 Supervision,
-			 CourseGeneration,
-			 SupervisionClass, ProjectType, Student, Adjustment],safe=True)
-		db.close()
 
 
 def progress(count, total, status=''):
