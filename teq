@@ -13,7 +13,13 @@
 #    See the License for the specific language governing permissions and
 #    limitations under the License.
 
-"""Usage:
+"""
+teq: teaching equivalencies database
+
+This software is used to track teaching loads and course equivalencies for
+instructors at Memorial University.
+
+Usage:
 	teq initdb
 	teq execute (FUNCTION) [ARGS]
 	teq intake (<FILE>)...
