@@ -22,17 +22,21 @@ instructors at Memorial University.
 
 Usage:
     teq initdb
-    teq execute (FUNCTION) [ARGS]
-    teq intake (<FILE>)...
-    teq populate (<FILE>)...
+    teq import courses FILE...
+    teq import offerings FILE...
+    teq import csv FILE
+    teq export TABLE
     teq autovet
-    teq -h --help
+    teq calculate-deficits
 
-Options:
-    execute (docustomexport)[Table] Any table form class.py
-    execute (docustomimport)[Table]    Any table form class.py
-    populate [file location] gen all data from offerings folder program will crash if the year exceeds 2030
-
+Commands:
+    initdb           Create (empty) database, dropping any existing tables first
+    import courses   Import calendar course descriptions (HTML format)
+    import csv       Import an exported-and-edited database table (CSV format)
+    import offerings Import Banner offering data (HTML format)
+    export           Export a database table to CSV
+    autovet          ???
+    calculate-deficits ???
 """
 
 import db
@@ -43,30 +47,31 @@ arguments = docopt.docopt(__doc__)
 database = db.get()
 database.connect()
 
+import Core
+
 if arguments['initdb']:
     db.init(database)
 
-try:
-    function = (arguments['FUNCTION'])
-    arg = str(arguments['ARGS'])
-    filename = arguments['<FILE>']
+elif arguments['import']:
+    assert arguments['courses'] ^ arguments['offerings']
 
-    if arguments['intake']:
+    if arguments['courses']:
         from import_courses import import_courses
-        import_courses(filename)
-    else:
-        import Core
-        if function == 'docustomexport':
-            Core.docustomexport(arg)
-        if function == 'docustomimport':
-            Core.docustomimport(arg)
-        if function == 'deficits':
-            Core.test()
-        if arguments['populate']:
-            Core.populate(filename)
-        if arguments['autovet']:
-            Core.percent()
-except docopt.DocoptExit as e:
-    print e.message
+        import_courses(arguments['FILE'])
+
+    elif arguments['csv']:
+        Core.docustomimport(arguments['FILE'])
+
+    elif argument['offerings']:
+        Core.populate(arguments['FILE'])
+
+elif arguments['export']:
+    Core.docustomexport(arguments['FILE'])
+
+elif arguments['autovet']:
+    Core.percent()
+
+elif arguments['calculate-deficits']:
+    Core.test()
 
 database.close()
