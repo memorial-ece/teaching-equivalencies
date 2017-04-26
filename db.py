@@ -219,7 +219,7 @@ ALL_TABLES = [
 def get():
     return db
 
-def init(drop_first = False):
+def init(drop_first = True):
     if drop_first:
         db.drop_tables(ALL_TABLES, safe = True)
 
