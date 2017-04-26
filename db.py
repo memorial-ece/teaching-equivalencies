@@ -14,10 +14,15 @@
 #    limitations under the License.
 
 from peewee import *
-# class BaseModel(Model):
+
+db = SqliteDatabase('database.db')   # TODO: use dotenv
+
+class BaseModel(Model):
+    class Meta:
+        database = db
 
 
-class Term(Model):
+class Term(BaseModel):
     """
     Term is the numerical representation of year and semester by Memorial University
     """
@@ -26,7 +31,7 @@ class Term(Model):
     session = IntegerField()
 
 
-class Person(Model):
+class Person(BaseModel):
     """
     A person in this database is a teaching professional
     """
@@ -39,7 +44,7 @@ class Person(Model):
     # def load(self):
 
 
-class Deficit(Model):
+class Deficit(BaseModel):
     """
     To track the irregular deficits accumulated by professors
     """
@@ -50,7 +55,7 @@ class Deficit(Model):
     applied_final = IntegerField(null=True)
 
 
-class Course(Model):
+class Course(BaseModel):
     """
     A person in this database is a teaching professional
     """
@@ -61,7 +66,7 @@ class Course(Model):
     reviewed = BooleanField(null=False)
 
 
-class CourseGeneration(Model):
+class CourseGeneration(BaseModel):
     """
     As a course changes over time it becomes necessary to update it to moder information
     """
@@ -80,7 +85,7 @@ class CourseGeneration(Model):
     reviewed = BooleanField(null=False)
 
 
-class Student(Model):
+class Student(BaseModel):
     """
     A student is typically a non-undergrad student
     """
@@ -89,7 +94,7 @@ class Student(Model):
     email = TextField()
 
 
-class Offering(Model):
+class Offering(BaseModel):
     """
     Display the current courses on offering during the current session
     """
@@ -102,7 +107,7 @@ class Offering(Model):
     reviewed = BooleanField(null=False)
 
 
-class Role(Model):
+class Role(BaseModel):
     """
     These fields represent the class of the user and information they have access too, dept is short for department.
     """
@@ -114,7 +119,7 @@ class Role(Model):
     edit_dept = BooleanField(null=False)
 
 
-class SupervisionClass(Model):
+class SupervisionClass(BaseModel):
     """
     Supervising student level, grad, under grad, ect
     """
@@ -123,7 +128,7 @@ class SupervisionClass(Model):
     weight = FloatField(null=False)
 
 
-class ProjectClass(Model):
+class ProjectClass(BaseModel):
     """
     Supervising student level, grad, under grad, ect
     """
@@ -132,7 +137,7 @@ class ProjectClass(Model):
     weight = FloatField(null=False)
 
 
-class ProjectType(Model):
+class ProjectType(BaseModel):
     """
     A pseudo stand in for teams as students
     """
@@ -141,7 +146,7 @@ class ProjectType(Model):
     description = TextField()
 
 
-class ProjectSupervision(Model):
+class ProjectSupervision(BaseModel):
     """
     A table to tie together projects and their class
     """
@@ -152,7 +157,7 @@ class ProjectSupervision(Model):
     semester = ForeignKeyField(Term, related_name='projects')
 
 
-class Supervision(Model):
+class Supervision(BaseModel):
     """
     A table to tie together students ans their class
     """
@@ -162,7 +167,7 @@ class Supervision(Model):
     semester = ForeignKeyField(Term, related_name='supervisions')
 
 
-class Adjustment(Model):
+class Adjustment(BaseModel):
     """
     A human entry in that overrides the automatic data
     """
@@ -174,7 +179,7 @@ class Adjustment(Model):
     instructor = ForeignKeyField(Person, related_name='made_change', null=True)
 
 
-class Mastermany(Model):
+class Mastermany(BaseModel):
     """
     A table that ties together all aspects of a teachers equivalency
     """
@@ -205,10 +210,9 @@ ALL_TABLES = [
 ]
 
 def get():
-    DATABASE = 'database.db'  # TODO: use dotenv
-    return SqliteDatabase(DATABASE)
+    return db
 
-def init(db, drop_first = False):
+def init(drop_first = False):
     if drop_first:
         db.drop_tables(ALL_TABLES, safe = True)
 
