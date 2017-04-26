@@ -12,6 +12,7 @@ The following Python packages are required dependencies:
 * beautifulsoup
 * colorama
 * docopt
+* dotenv
 * flask
 * fuzzywuzzy
 * levenshtein

@@ -13,9 +13,10 @@
 #    See the License for the specific language governing permissions and
 #    limitations under the License.
 
+import config
 from peewee import *
 
-db = SqliteDatabase('database.db')   # TODO: use dotenv
+db = SqliteDatabase(config.DATABASE_URL)
 
 class BaseModel(Model):
     class Meta:
