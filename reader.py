@@ -1,3 +1,4 @@
+# Copyright 2014, 2017 Jonathan Anderson
 import re
 from bs4 import BeautifulSoup
 
