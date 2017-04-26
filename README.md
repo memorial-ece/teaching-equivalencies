@@ -5,6 +5,23 @@ instructors at Memorial University.
 
 ## Getting started
 
+### Dependencies
+
+The following Python packages are required dependencies:
+
+* beautifulsoup
+* colorama
+* docopt
+* flask
+* fuzzywuzzy
+* levenshtein
+* matplotlib
+* peewee
+* sqlite3
+
+
+### Initialization
+
 To initialize the database, run:
 
 ```sh
