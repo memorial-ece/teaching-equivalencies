@@ -27,17 +27,18 @@ Options:
 	populate [file location] gen all data from offerings folder program will crash if the year exceeds 2030
 
 """
+
+import db
 import docopt
 
 if __name__ == '__main__':
 	arguments = docopt.docopt(__doc__)
 
+	database = db.get()
+	database.connect()
+
 	if arguments['initdb']:
-		import db
-		database = db.get()
-		database.connect()
 		db.init(database)
-		database.close()
 
 	try:
 		function = (arguments['FUNCTION'])
@@ -61,3 +62,5 @@ if __name__ == '__main__':
 				Core.percent()
 	except docopt.DocoptExit as e:
 		print e.message
+
+	database.close()
