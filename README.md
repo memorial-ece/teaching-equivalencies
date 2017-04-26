@@ -8,7 +8,7 @@ instructors at Memorial University.
 To initialize the database, run:
 
 ```sh
-./Startup.py execute pt c (create)
+teq execute pt c (create)
 ```
 
 Information about
@@ -16,13 +16,13 @@ Information about
 can then be imported:
 
 ```sh
-./Startup.py intake <calendar_html_files>
-./Startup.py populate <offering_descriptions>
+teq intake <calendar_html_files>
+teq populate <offering_descriptions>
 ```
 
 Other steps that require further documentation include:
 
 ```sh
-./Startup.py autovet (if you want it makes life easier for verification)
-./Startup.py execute deficits
+teq autovet (if you want it makes life easier for verification)
+teq execute deficits
 ```

@@ -14,11 +14,11 @@
 #    limitations under the License.
 
 """Usage:
-	Startup.py execute (FUNCTION) [ARGS]
-	Startup.py intake (<FILE>)...
-	Startup.py populate (<FILE>)...
-	Startup.py autovet
-	Startup.py -h --help
+	teq execute (FUNCTION) [ARGS]
+	teq intake (<FILE>)...
+	teq populate (<FILE>)...
+	teq autovet
+	teq -h --help
 
 Options:
 	execute (docustomexport)[Table] Any table form class.py
