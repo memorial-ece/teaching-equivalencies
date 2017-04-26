@@ -31,36 +31,35 @@ Options:
 import db
 import docopt
 
-if __name__ == '__main__':
-	arguments = docopt.docopt(__doc__)
+arguments = docopt.docopt(__doc__)
 
-	database = db.get()
-	database.connect()
+database = db.get()
+database.connect()
 
-	if arguments['initdb']:
-		db.init(database)
+if arguments['initdb']:
+	db.init(database)
 
-	try:
-		function = (arguments['FUNCTION'])
-		arg = str(arguments['ARGS'])
-		filename = arguments['<FILE>']
+try:
+	function = (arguments['FUNCTION'])
+	arg = str(arguments['ARGS'])
+	filename = arguments['<FILE>']
 
-		if arguments['intake']:
-			from import_courses import import_courses
-			import_courses(filename)
-		else:
-			import Core
-			if function == 'docustomexport':
-				Core.docustomexport(arg)
-			if function == 'docustomimport':
-				Core.docustomimport(arg)
-			if function == 'deficits':
-				Core.test()
-			if arguments['populate']:
-				Core.populate(filename)
-			if arguments['autovet']:
-				Core.percent()
-	except docopt.DocoptExit as e:
-		print e.message
+	if arguments['intake']:
+		from import_courses import import_courses
+		import_courses(filename)
+	else:
+		import Core
+		if function == 'docustomexport':
+			Core.docustomexport(arg)
+		if function == 'docustomimport':
+			Core.docustomimport(arg)
+		if function == 'deficits':
+			Core.test()
+		if arguments['populate']:
+			Core.populate(filename)
+		if arguments['autovet']:
+			Core.percent()
+except docopt.DocoptExit as e:
+	print e.message
 
-	database.close()
+database.close()
