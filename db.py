@@ -85,8 +85,8 @@ class CourseGeneration(BaseModel):
     course = ForeignKeyField(Course, related_name='generation', null=True)
     other_info = TextField(null=True)
     previous_course = TextField(null=True)
-    start_year = TextField(null=False)
-    end_year = TextField(null=False)
+    start_year = IntegerField()
+    end_year = IntegerField()
     reviewed = BooleanField(default=False)
 
     def __str__(self):
