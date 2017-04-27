@@ -68,6 +68,9 @@ class Course(BaseModel):
     code = CharField(4)
     reviewed = BooleanField(default=False)
 
+    def __str__(self):
+        return '%s %s' % (self.subject, self.code)
+
 
 class CourseGeneration(BaseModel):
     """
@@ -86,6 +89,9 @@ class CourseGeneration(BaseModel):
     end_year = TextField(null=False)
     reviewed = BooleanField(default=False)
 
+    def __str__(self):
+        return '%s (%d-%d)' % (self.course, self.start_year, self.end_year)
+
 
 class Student(BaseModel):
     """
@@ -93,6 +99,9 @@ class Student(BaseModel):
     """
     name = TextField()
     email = TextField()
+
+    def __str__(self):
+        return '%s (%s)' % (name, email)
 
 
 class Offering(BaseModel):
