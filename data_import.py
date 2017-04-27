@@ -99,4 +99,3 @@ def import_courses(filenames):
 
     progress(1, 1)
     print('\n')
-

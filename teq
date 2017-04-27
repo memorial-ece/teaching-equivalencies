@@ -49,6 +49,7 @@ database = db.get()
 database.connect()
 
 import Core
+import data_import
 
 if arguments['initdb']:
     db.init(database)
@@ -57,8 +58,7 @@ elif arguments['import']:
     assert arguments['courses'] ^ arguments['offerings']
 
     if arguments['courses']:
-        from import_courses import import_courses
-        import_courses(arguments['FILE'])
+        data_import.import_courses(arguments['FILE'])
 
     elif arguments['csv']:
         Core.import_file(arguments['FILE'])
