@@ -44,7 +44,7 @@ class Person(BaseModel):
     name = TextField(null=False)
     email = TextField(unique=True)
     start = ForeignKeyField(Term, related_name='startdate', null=False)
-    retired = BooleanField(null=True)
+    retired = BooleanField(default=False)
     reviewed = BooleanField(default=False)
     # def load(self):
 
@@ -53,10 +53,10 @@ class Deficit(BaseModel):
     """
     To track the irregular deficits accumulated by professors
     """
-    deficit = FloatField(null=True)
+    deficit = FloatField()
     applied = ForeignKeyField(Person, related_name='applicant', null=False)
-    applied_start = IntegerField(null=True)
-    applied_final = IntegerField(null=True)
+    applied_start = IntegerField()
+    applied_final = IntegerField()
 
 
 class Course(BaseModel):
@@ -77,12 +77,12 @@ class CourseGeneration(BaseModel):
     As a course changes over time it becomes necessary to update it to moder information
     """
     # due to situations like 4.5 these numbers are stored as doubles
-    labs = DoubleField(null=True)
-    credit_hours = DoubleField(null=True)
-    lecture_hours = DoubleField(null=True)
-    title = TextField(null=True)
+    labs = DoubleField(default=0)
+    credit_hours = DoubleField(default=3)
+    lecture_hours = DoubleField(default=3)
+    title = TextField()
     comments = TextField(null=True)
-    course = ForeignKeyField(Course, related_name='generation', null=True)
+    course = ForeignKeyField(Course, related_name='generations')
     other_info = TextField(null=True)
     previous_course = TextField(null=True)
     start_year = IntegerField()
@@ -112,7 +112,7 @@ class Offering(BaseModel):
     # prof_id = ForeignKeyField(Person, related_name='instructor')
     semester = ForeignKeyField(Term, related_name='semester')
     generation = ForeignKeyField(CourseGeneration, related_name='generation')
-    sections = IntegerField(null=True)
+    sections = IntegerField(default=1)
     reviewed = BooleanField(default=False)
 
 
