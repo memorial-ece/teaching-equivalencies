@@ -31,7 +31,6 @@ rs=Style.RESET_ALL
 cy=Fore.YELLOW
 cb=Fore.BLUE
 stripprimary = re.compile(r"[a-zA-Z0-9._-]{2,}")
-matplotlib.rcParams['backend'] = "Qt4Agg"
 crsnumber= re.compile(r"(?<=ENGI )(\d+)")
 UPLOAD_FOLDER = ''
 ALLOWED_EXTENSIONS = {'csv'}
