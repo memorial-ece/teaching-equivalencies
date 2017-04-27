@@ -409,14 +409,6 @@ def export_file(selector, name='default'):
             dump_csv(selector, fh)
 
 
-def docustomexport(Table):
-    export_file(Table)
-
-
-def docustomimport(Table):
-    import_file(Table)
-
-
 def error(list_of_error, list_of_error_types):
     print 'please see that the errors int the '+cy+'error.txt'+rs+' file are attended to '
     targ = open('Errors', 'w')

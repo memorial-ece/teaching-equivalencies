@@ -61,13 +61,13 @@ elif arguments['import']:
         import_courses(arguments['FILE'])
 
     elif arguments['csv']:
-        Core.docustomimport(arguments['FILE'])
+        Core.import_file(arguments['FILE'])
 
     elif argument['offerings']:
         Core.populate(arguments['FILE'])
 
 elif arguments['export']:
-    Core.docustomexport(arguments['FILE'])
+    Core.export_file(arguments['FILE'])
 
 elif arguments['autovet']:
     Core.percent()
