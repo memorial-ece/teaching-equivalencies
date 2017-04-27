@@ -33,7 +33,6 @@ class Term(BaseModel):
     """
     Term is the numerical representation of year and semester by Memorial University
     """
-    id = IntegerField(primary_key=True)
     year = IntegerField()
     session = IntegerField()
 
@@ -44,7 +43,6 @@ class Person(BaseModel):
     """
     name = TextField(null=False)
     email = TextField(unique=True)
-    id = IntegerField(primary_key=True)
     start = ForeignKeyField(Term, related_name='startdate', null=False)
     retired = BooleanField(null=True)
     reviewed = BooleanField(null=False)
@@ -55,7 +53,6 @@ class Deficit(BaseModel):
     """
     To track the irregular deficits accumulated by professors
     """
-    id = IntegerField(primary_key=True)
     deficit = FloatField(null=True)
     applied = ForeignKeyField(Person, related_name='applicant', null=False)
     applied_start = IntegerField(null=True)
@@ -66,7 +63,6 @@ class Course(BaseModel):
     """
     A person in this database is a teaching professional
     """
-    id = IntegerField(primary_key=True)
     subject = TextField()
     # Because of courses like 200W we cannot store info as int
     code = CharField(4)
@@ -77,7 +73,6 @@ class CourseGeneration(BaseModel):
     """
     As a course changes over time it becomes necessary to update it to moder information
     """
-    id = IntegerField(primary_key=True)
     # due to situations like 4.5 these numbers are stored as doubles
     labs = DoubleField(null=True)
     credit_hours = DoubleField(null=True)
@@ -96,7 +91,6 @@ class Student(BaseModel):
     """
     A student is typically a non-undergrad student
     """
-    id = IntegerField(primary_key=True)
     name = TextField()
     email = TextField()
 
@@ -105,7 +99,6 @@ class Offering(BaseModel):
     """
     Display the current courses on offering during the current session
     """
-    id = IntegerField(primary_key=True)
     enrolment = IntegerField()
     # prof_id = ForeignKeyField(Person, related_name='instructor')
     semester = ForeignKeyField(Term, related_name='semester')
@@ -118,7 +111,6 @@ class Role(BaseModel):
     """
     These fields represent the class of the user and information they have access too, dept is short for department.
     """
-    id = IntegerField(primary_key=True)
     role_name = TextField(null=False)
     view_you = BooleanField(null=False)
     view_dept = BooleanField(null=False)
@@ -130,7 +122,6 @@ class SupervisionClass(BaseModel):
     """
     Supervising student level, grad, under grad, ect
     """
-    id = IntegerField(primary_key=True)
     description = TextField(null=False)
     weight = FloatField(null=False)
 
@@ -139,7 +130,6 @@ class ProjectClass(BaseModel):
     """
     Supervising student level, grad, under grad, ect
     """
-    id = IntegerField(primary_key=True)
     description = TextField(null=False)
     weight = FloatField(null=False)
 
@@ -148,7 +138,6 @@ class ProjectType(BaseModel):
     """
     A pseudo stand in for teams as students
     """
-    id = IntegerField(primary_key=True)
     name = TextField()
     description = TextField()
 
@@ -157,7 +146,6 @@ class ProjectSupervision(BaseModel):
     """
     A table to tie together projects and their class
     """
-    id = IntegerField(primary_key=True)
     # prof_id = ForeignKeyField(Person, related_name='supervisied_projects')
     team_id = ForeignKeyField(ProjectType, related_name='projects')
     project_class_id = ForeignKeyField(ProjectClass, related_name='projects')
@@ -168,7 +156,6 @@ class Supervision(BaseModel):
     """
     A table to tie together students ans their class
     """
-    id = IntegerField(primary_key=True)
     student_id = ForeignKeyField(Student, related_name='supervisions')
     supervision_class_id = ForeignKeyField(SupervisionClass, related_name='supervisions')
     semester = ForeignKeyField(Term, related_name='supervisions')
@@ -178,7 +165,6 @@ class Adjustment(BaseModel):
     """
     A human entry in that overrides the automatic data
     """
-    id = IntegerField(primary_key=True)
     weight = FloatField(null=True)
     comment = TextField(null=True)
     overide_value = FloatField(null=True)
