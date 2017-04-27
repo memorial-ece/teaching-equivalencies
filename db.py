@@ -89,6 +89,15 @@ class CourseGeneration(BaseModel):
     end_year = IntegerField()
     reviewed = BooleanField(default=False)
 
+    def differs_from(self, details):
+        return (self.labs != details['Labs'] or
+            self.credit_hours != details['Credit Hours'] or
+            self.lecture_hours != details['Lecture Hours'] or
+            self.title != details['Title'] or
+            self.comments != details['Description'] or
+            self.other_info != details['Other info'] or
+            self.previous_course != details['PreviousCourseCode'])
+
     def __str__(self):
         return '%s (%d-%d)' % (self.course, self.start_year, self.end_year)
 
