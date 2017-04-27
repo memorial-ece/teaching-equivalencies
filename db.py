@@ -45,7 +45,7 @@ class Person(BaseModel):
     email = TextField(unique=True)
     start = ForeignKeyField(Term, related_name='startdate', null=False)
     retired = BooleanField(null=True)
-    reviewed = BooleanField(null=False)
+    reviewed = BooleanField(default=False)
     # def load(self):
 
 
@@ -66,7 +66,7 @@ class Course(BaseModel):
     subject = TextField()
     # Because of courses like 200W we cannot store info as int
     code = CharField(4)
-    reviewed = BooleanField(null=False)
+    reviewed = BooleanField(default=False)
 
 
 class CourseGeneration(BaseModel):
@@ -84,7 +84,7 @@ class CourseGeneration(BaseModel):
     previous_course = TextField(null=True)
     start_year = TextField(null=False)
     end_year = TextField(null=False)
-    reviewed = BooleanField(null=False)
+    reviewed = BooleanField(default=False)
 
 
 class Student(BaseModel):
@@ -104,7 +104,7 @@ class Offering(BaseModel):
     semester = ForeignKeyField(Term, related_name='semester')
     generation = ForeignKeyField(CourseGeneration, related_name='generation')
     sections = IntegerField(null=True)
-    reviewed = BooleanField(null=False)
+    reviewed = BooleanField(default=False)
 
 
 class Role(BaseModel):
