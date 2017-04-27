@@ -13,14 +13,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import calendar
 import collections
-import reader as calendar
+import db
+import re
 
 from ConvertParse import sanitize_course
-
-from Core import *
-import operator
-from db import *
+from Core import progress
 
 
 def import_courses(filenames):
@@ -62,7 +61,7 @@ def import_courses(filenames):
     for (i, ((subject, code), details_by_year)) in enumerate(courses.items()):
         progress(i, course_count)
 
-        course, created = Course.get_or_create(subject = subject, code = code)
+        course, created = db.Course.get_or_create(subject = subject, code = code)
         gen = None
 
         for year in sorted(details_by_year.keys()):
@@ -70,7 +69,7 @@ def import_courses(filenames):
 
             # Is this the first time we've seen this course description?
             if gen is None or gen.differs_from(details):
-                gen = CourseGeneration.create(
+                gen = db.CourseGeneration.create(
                     course = course,
                     labs = details['Labs'],
                     credit_hours = details['Credit Hours'],
