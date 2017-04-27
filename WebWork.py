@@ -14,14 +14,6 @@
 from flask import *
 from Core import *
 app = Flask(__name__)
-DATABASE = 'database.db'
-UPLOAD_FOLDER = ''
-ALLOWED_EXTENSIONS = {'csv'}
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
-def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 @app.route('/test_csv')

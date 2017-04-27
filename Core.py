@@ -30,10 +30,6 @@ cr=Fore.RED
 rs=Style.RESET_ALL
 cy=Fore.YELLOW
 cb=Fore.BLUE
-stripprimary = re.compile(r"[a-zA-Z0-9._-]{2,}")
-crsnumber= re.compile(r"(?<=ENGI )(\d+)")
-UPLOAD_FOLDER = ''
-ALLOWED_EXTENSIONS = {'csv'}
 
 
 def intake(year):
@@ -411,11 +407,6 @@ def export_file(selector, name='default'):
             dump_csv(query, fh)
         else:
             dump_csv(selector, fh)
-
-
-def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 def docustomexport(Table):
