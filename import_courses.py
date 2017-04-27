@@ -23,6 +23,17 @@ from Core import progress
 
 
 def import_courses(filenames):
+    """
+    Import descriptions of courses from the online Calendar.
+
+    The Calendar has a number of "Coruse Descriptions" pages that include
+    course codes, names, descriptions and details like lecture hours,
+    credit-hours, etc. This function uses calendar-parsing code derived from
+    https://github.com/trombonehero/memorial-calendar to import all of the
+    course descriptions in a set of HTML files and organize them into
+    db.Course and db.CourseGeneration objects.
+    """
+
     file_count = len(filenames)
     print('Parsing %d calendar files...' % file_count)
 
