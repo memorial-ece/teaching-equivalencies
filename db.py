@@ -41,11 +41,11 @@ class Person(BaseModel):
     """
     A person in this database is a teaching professional
     """
-    name = TextField(null=False)
-    email = TextField(unique=True)
-    start = ForeignKeyField(Term, related_name='startdate', null=False)
-    retired = BooleanField(default=False)
-    reviewed = BooleanField(default=False)
+    name = TextField(null = False)
+    email = TextField(unique = True)
+    start = ForeignKeyField(Term, related_name = 'startdate', null = False)
+    retired = BooleanField(default = False)
+    reviewed = BooleanField(default = False)
     # def load(self):
 
 
@@ -54,7 +54,7 @@ class Deficit(BaseModel):
     To track the irregular deficits accumulated by professors
     """
     deficit = FloatField()
-    applied = ForeignKeyField(Person, related_name='applicant', null=False)
+    applied = ForeignKeyField(Person, related_name = 'applicant', null = False)
     applied_start = IntegerField()
     applied_final = IntegerField()
 
@@ -66,7 +66,7 @@ class Course(BaseModel):
     subject = TextField()
     # Because of courses like 200W we cannot store info as int
     code = CharField(4)
-    reviewed = BooleanField(default=False)
+    reviewed = BooleanField(default = False)
 
     def __str__(self):
         return '%s %s' % (self.subject, self.code)
@@ -77,17 +77,17 @@ class CourseGeneration(BaseModel):
     As a course changes over time it becomes necessary to update it to moder information
     """
     # due to situations like 4.5 these numbers are stored as doubles
-    labs = DoubleField(default=0)
-    credit_hours = DoubleField(default=3)
-    lecture_hours = DoubleField(default=3)
+    labs = DoubleField(default = 0)
+    credit_hours = DoubleField(default = 3)
+    lecture_hours = DoubleField(default = 3)
     title = TextField()
-    comments = TextField(null=True)
-    course = ForeignKeyField(Course, related_name='generations')
-    other_info = TextField(null=True)
-    previous_course = TextField(null=True)
+    comments = TextField(null = True)
+    course = ForeignKeyField(Course, related_name = 'generations')
+    other_info = TextField(null = True)
+    previous_course = TextField(null = True)
     start_year = IntegerField()
     end_year = IntegerField()
-    reviewed = BooleanField(default=False)
+    reviewed = BooleanField(default = False)
 
     def differs_from(self, details):
         return (self.labs != details['Labs'] or
@@ -119,37 +119,37 @@ class Offering(BaseModel):
     """
     enrolment = IntegerField()
     # prof_id = ForeignKeyField(Person, related_name='instructor')
-    semester = ForeignKeyField(Term, related_name='semester')
-    generation = ForeignKeyField(CourseGeneration, related_name='generation')
-    sections = IntegerField(default=1)
-    reviewed = BooleanField(default=False)
+    semester = ForeignKeyField(Term, related_name = 'semester')
+    generation = ForeignKeyField(CourseGeneration, related_name = 'generation')
+    sections = IntegerField(default = 1)
+    reviewed = BooleanField(default = False)
 
 
 class Role(BaseModel):
     """
     These fields represent the class of the user and information they have access too, dept is short for department.
     """
-    role_name = TextField(null=False)
-    view_you = BooleanField(null=False)
-    view_dept = BooleanField(null=False)
-    view_all = BooleanField(null=False)
-    edit_dept = BooleanField(null=False)
+    role_name = TextField(null = False)
+    view_you = BooleanField(null = False)
+    view_dept = BooleanField(null = False)
+    view_all = BooleanField(null = False)
+    edit_dept = BooleanField(null = False)
 
 
 class SupervisionClass(BaseModel):
     """
     Supervising student level, grad, under grad, ect
     """
-    description = TextField(null=False)
-    weight = FloatField(null=False)
+    description = TextField(null = False)
+    weight = FloatField(null = False)
 
 
 class ProjectClass(BaseModel):
     """
     Supervising student level, grad, under grad, ect
     """
-    description = TextField(null=False)
-    weight = FloatField(null=False)
+    description = TextField(null = False)
+    weight = FloatField(null = False)
 
 
 class ProjectType(BaseModel):
@@ -164,42 +164,42 @@ class ProjectSupervision(BaseModel):
     """
     A table to tie together projects and their class
     """
-    # prof_id = ForeignKeyField(Person, related_name='supervisied_projects')
-    team_id = ForeignKeyField(ProjectType, related_name='projects')
-    project_class_id = ForeignKeyField(ProjectClass, related_name='projects')
-    semester = ForeignKeyField(Term, related_name='projects')
+    # prof_id = ForeignKeyField(Person, related_name = 'supervisied_projects')
+    team_id = ForeignKeyField(ProjectType, related_name = 'projects')
+    project_class_id = ForeignKeyField(ProjectClass, related_name = 'projects')
+    semester = ForeignKeyField(Term, related_name = 'projects')
 
 
 class Supervision(BaseModel):
     """
     A table to tie together students ans their class
     """
-    student_id = ForeignKeyField(Student, related_name='supervisions')
-    supervision_class_id = ForeignKeyField(SupervisionClass, related_name='supervisions')
-    semester = ForeignKeyField(Term, related_name='supervisions')
+    student_id = ForeignKeyField(Student, related_name = 'supervisions')
+    supervision_class_id = ForeignKeyField(SupervisionClass, related_name = 'supervisions')
+    semester = ForeignKeyField(Term, related_name = 'supervisions')
 
 
 class Adjustment(BaseModel):
     """
     A human entry in that overrides the automatic data
     """
-    weight = FloatField(null=True)
-    comment = TextField(null=True)
-    overide_value = FloatField(null=True)
-    overide_address = TextField(null=True)
-    instructor = ForeignKeyField(Person, related_name='made_change', null=True)
+    weight = FloatField(null = True)
+    comment = TextField(null = True)
+    overide_value = FloatField(null = True)
+    overide_address = TextField(null = True)
+    instructor = ForeignKeyField(Person, related_name = 'made_change', null = True)
 
 
 class Mastermany(BaseModel):
     """
     A table that ties together all aspects of a teachers equivalency
     """
-    instructor = ForeignKeyField(Person, related_name='person_id')
-    oid = ForeignKeyField(Offering, related_name='offering_id', null=True)
-    sid = ForeignKeyField(Supervision, related_name='supervision_id', null=True)
-    pid = ForeignKeyField(ProjectSupervision, related_name='project_id', null=True)
-    rid = ForeignKeyField(Role, related_name='role_id', null=True)
-    split = FloatField(null=True)
+    instructor = ForeignKeyField(Person, related_name = 'person_id')
+    oid = ForeignKeyField(Offering, related_name = 'offering_id', null = True)
+    sid = ForeignKeyField(Supervision, related_name = 'supervision_id', null = True)
+    pid = ForeignKeyField(ProjectSupervision, related_name = 'project_id', null = True)
+    rid = ForeignKeyField(Role, related_name = 'role_id', null = True)
+    split = FloatField(null = True)
 
 
 ALL_TABLES = [
