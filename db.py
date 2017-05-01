@@ -210,11 +210,13 @@ class Activity(BaseModel):
     An activity that counts for some level of teaching credit.
     """
 
-    instructor = ForeignKeyField(Person, related_name = 'person_id')
-    oid = ForeignKeyField(Offering, related_name = 'offering_id', null = True)
-    sid = ForeignKeyField(Supervision, related_name = 'supervision_id', null = True)
-    pid = ForeignKeyField(ProjectSupervision, related_name = 'project_id', null = True)
-    rid = ForeignKeyField(Role, related_name = 'role_id', null = True)
+    # Who performed the activity.
+    subject = ForeignKeyField(Person)
+
+    offering = ForeignKeyField(Offering, null = True)
+    supervision = ForeignKeyField(Supervision, null = True)
+    project = ForeignKeyField(ProjectSupervision, null = True)
+    role = ForeignKeyField(Role, null = True)
     split = FloatField(null = True)
 
 

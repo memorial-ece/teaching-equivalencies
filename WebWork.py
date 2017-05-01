@@ -30,14 +30,14 @@ def test_csv():
             offering = (Activity
                         .select()
                         .join(Offering)
-                        .where(Activity.instructor == prof_id,Offering.semester==x.id)
+                        .where(Activity.subject == prof_id,Offering.semester==x.id)
                         .order_by(Offering.semester.desc()))
 
             for y in offering:
                 list_of_offerings.append(y)
         list_offering_id = list()
         for x in list_of_offerings:
-            list_offering_id.append(x.oid.id)
+            list_offering_id.append(x.offering.id)
             list_offering_id.sort()
         Stotal = 0
         Ptotal = 0
@@ -45,14 +45,14 @@ def test_csv():
         Snum = (Supervision
                       .select()
                       .join(Activity)
-                      .where(Activity.instructor == prof_id))
+                      .where(Activity.subject == prof_id))
         list_supervision_date = list()
         list_supervision_value = list()
         for num in Snum:
-            Ssum = Activity.select().where(Activity.sid==num.id).get()
+            Ssum = Activity.select().where(Activity.supervision==num.id).get()
             Stotal += num.supervision_class_id.weight*Ssum.split
-            list_supervision_date.append(Ssum.sid.semester.year)
-            list_supervision_date.append(Ssum.sid.semester.session)
+            list_supervision_date.append(Ssum.supervision.semester.year)
+            list_supervision_date.append(Ssum.supervision.semester.session)
             list_supervision_value.append(num.supervision_class_id.weight * Ssum.split)
         list_forviewer = dict()
         list_split = dict()
@@ -60,32 +60,32 @@ def test_csv():
         counter =- 1
         for num in list_of_offerings:
             counter += 1
-            Osum = Activity.select().where(Activity.oid==num.oid.id).get()
-            var1 = weight_calc(Osum.oid.id)
+            Osum = Activity.select().where(Activity.offering==num.offering.id).get()
+            var1 = weight_calc(Osum.offering.id)
             Ototal += var1*Osum.split
-            list_forviewer[Osum.oid.id] = var1
-            list_split[Osum.oid.id] = Osum.split
-            offering_value_date.append((str(Osum.oid.semester.year)+'0'+str(Osum.oid.semester.session)))
+            list_forviewer[Osum.offering.id] = var1
+            list_split[Osum.offering.id] = Osum.split
+            offering_value_date.append((str(Osum.offering.semester.year)+'0'+str(Osum.offering.semester.session)))
             offering_value_date.append(var1*Osum.split)
         list_project_supervision_date = list()
         list_project_supervision_value = list()
         Pnum = (ProjectSupervision
                       .select()
                       .join(Activity)
-                      .where(Activity.instructor == prof_id))
+                      .where(Activity.subject == prof_id))
         for num in Pnum:
-            Psum = Activity.select().where(Activity.pid == num.id).get()
+            Psum = Activity.select().where(Activity.project == num.id).get()
             Ptotal += num.project_class_id.weight*Psum.split
-            list_project_supervision_date.append(Psum.pid.semester.year)
-            list_project_supervision_date.append(Psum.pid.semester.session)
+            list_project_supervision_date.append(Psum.project.semester.year)
+            list_project_supervision_date.append(Psum.project.semester.session)
             list_project_supervision_value.append(num.project_class_id.weight * Psum.split)
         for x in list_of_offerings:
-            if x.oid.generation.other_info=='None' or x.oid.generation.other_info=='36-hour field school conducted during the first two weeks of the semester' or x.oid.generation.other_info=='meetings with project supervisor as required' or x.oid.generation.other_info=='weekly meetings with project supervisor' or x.oid.generation.other_info==None:
+            if x.offering.generation.other_info=='None' or x.offering.generation.other_info=='36-hour field school conducted during the first two weeks of the semester' or x.offering.generation.other_info=='meetings with project supervisor as required' or x.offering.generation.other_info=='weekly meetings with project supervisor' or x.offering.generation.other_info==None:
                 tut=''
             else:
-                tut=x.oid.generation.other_info
+                tut=x.offering.generation.other_info
             targ.write('\n')
-            targ.write(str(x.oid.generation.course.code)+','+str(x.oid.generation.title)+','+''+','+''+','+str(x.oid.enrolment)+','+str(person.name)+','+str(weight_calc(x.oid.id))+','+str(x.oid.generation.lecture_hours)+','+''+','+str(x.oid.generation.labs)+','+str(x.oid.sections)+','+''+','+''+','+str(tut)+','+'')
+            targ.write(str(x.offering.generation.course.code)+','+str(x.offering.generation.title)+','+''+','+''+','+str(x.offering.enrolment)+','+str(person.name)+','+str(weight_calc(x.offering.id))+','+str(x.offering.generation.lecture_hours)+','+''+','+str(x.offering.generation.labs)+','+str(x.offering.sections)+','+''+','+''+','+str(tut)+','+'')
     return redirect('/')
 
 
@@ -98,28 +98,28 @@ def test_csv2():
     seconf_year=2011
     targ = open('CSV test2', 'w')
     targ.write('Name,'+str(first_year)+', Base, Load, F'+str(first_year)+', W'+str(first_year+1)+', S'+str(first_year+1)+', Other \n')
-    master= Activity.select().join(Person, on=Activity.instructor)
+    master= Activity.select().join(Person, on=Activity.subject)
     for m in master:
-        if m.oid.semester.year==first_year:
+        if m.offering.semester.year==first_year:
             try:
-                deficit2=Deficit.select().where(Deficit.applied==m.instructor.id,Deficit.applied_final>=first_year).order_by(Deficit.applied_final.asc()).get()
+                deficit2=Deficit.select().where(Deficit.applied==m.subject.id,Deficit.applied_final>=first_year).order_by(Deficit.applied_final.asc()).get()
             except:
-                deficit2=Deficit.select().where(Deficit.applied==m.instructor.id,).order_by(Deficit.applied_final.asc()).get()
+                deficit2=Deficit.select().where(Deficit.applied==m.subject.id,).order_by(Deficit.applied_final.asc()).get()
                 print deficit2.deficit
             Ototal=0
             list_of_offerings=list()
             offering = (Activity
                         .select()
                         .join(Offering)
-                        .where(Activity.instructor == m.instructor, Offering.semester <= first_year)
+                        .where(Activity.subject == m.subject, Offering.semester <= first_year)
                         .order_by(Offering.semester.desc()))
             for y in offering:
                 list_of_offerings.append(y)
             for num in list_of_offerings:
-                var1 = weight_calc(num.oid.id)
+                var1 = weight_calc(num.offering.id)
                 Ototal += var1 * m.split
-            defi=deficit_func(m.instructor.id, 2008, first_year)
-            targ.write(str(m.instructor.name)+','+str(defi)+','+str(deficit2.deficit)+','+str(Ototal)+','+'\n')
+            defi=deficit_func(m.subject.id, 2008, first_year)
+            targ.write(str(m.subject.name)+','+str(defi)+','+str(deficit2.deficit)+','+str(Ototal)+','+'\n')
     return redirect('/')
 
 
@@ -212,24 +212,24 @@ def Profile(prof_id,year,reports,):
         supervision = (Supervision
                        .select()
                        .join(Activity)
-                       .where(Activity.instructor == prof_id)
+                       .where(Activity.subject == prof_id)
                        .order_by(Supervision.semester.desc()))
         projectsupervision = (ProjectSupervision
                               .select()
                               .join(Activity)
-                              .where(Activity.instructor == prof_id)
+                              .where(Activity.subject == prof_id)
                               .order_by(ProjectSupervision.semester.desc()))
         offering = (Activity
                     .select()
                     .join(Offering)
-                    .where(Activity.instructor == prof_id,Offering.semester==x.id)
+                    .where(Activity.subject == prof_id,Offering.semester==x.id)
                     .order_by(Offering.semester.desc()))
 
         for y in offering:
             list_of_offerings.append(y)
     list_offering_id = list()
     for x in list_of_offerings:
-        list_offering_id.append(x.oid.id)
+        list_offering_id.append(x.offering.id)
         list_offering_id.sort()
     adjustment = (Adjustment
                   .select()
@@ -242,14 +242,14 @@ def Profile(prof_id,year,reports,):
     Snum = (Supervision
                   .select()
                   .join(Activity)
-                  .where(Activity.instructor == prof_id))
+                  .where(Activity.subject == prof_id))
     list_supervision_date = list()
     list_supervision_value = list()
     for num in Snum:
-        Ssum = Activity.select().where(Activity.sid==num.id).get()
+        Ssum = Activity.select().where(Activity.supervision==num.id).get()
         Stotal += num.supervision_class_id.weight*Ssum.split
-        list_supervision_date.append(Ssum.sid.semester.year)
-        list_supervision_date.append(Ssum.sid.semester.session)
+        list_supervision_date.append(Ssum.supervision.semester.year)
+        list_supervision_date.append(Ssum.supervision.semester.session)
         list_supervision_value.append(num.supervision_class_id.weight * Ssum.split)
     list_forviewer = dict()
     list_split = dict()
@@ -257,24 +257,24 @@ def Profile(prof_id,year,reports,):
     counter =- 1
     for num in list_of_offerings:
         counter += 1
-        Osum = Activity.select().where(Activity.oid==num.oid.id).get()
-        var1 = weight_calc(Osum.oid.id)
+        Osum = Activity.select().where(Activity.offering==num.offering.id).get()
+        var1 = weight_calc(Osum.offering.id)
         Ototal += var1*Osum.split
-        list_forviewer[Osum.oid.id] = var1
-        list_split[Osum.oid.id] = Osum.split
-        offering_value_date.append((str(Osum.oid.semester.year)+'0'+str(Osum.oid.semester.session)))
+        list_forviewer[Osum.offering.id] = var1
+        list_split[Osum.offering.id] = Osum.split
+        offering_value_date.append((str(Osum.offering.semester.year)+'0'+str(Osum.offering.semester.session)))
         offering_value_date.append(var1*Osum.split)
     list_project_supervision_date = list()
     list_project_supervision_value = list()
     Pnum = (ProjectSupervision
                   .select()
                   .join(Activity)
-                  .where(Activity.instructor == prof_id))
+                  .where(Activity.subject == prof_id))
     for num in Pnum:
-        Psum = Activity.select().where(Activity.pid == num.id).get()
+        Psum = Activity.select().where(Activity.project == num.id).get()
         Ptotal += num.project_class_id.weight*Psum.split
-        list_project_supervision_date.append(Psum.pid.semester.year)
-        list_project_supervision_date.append(Psum.pid.semester.session)
+        list_project_supervision_date.append(Psum.project.semester.year)
+        list_project_supervision_date.append(Psum.project.semester.session)
         list_project_supervision_value.append(num.project_class_id.weight * Psum.split)
     Atotal = (Person
               .select()
@@ -353,7 +353,7 @@ def Profile(prof_id,year,reports,):
                 if 'enroll' + str(id.id) in request.form:
                         l = Offering.update(enrolment=(int(request.form['applied_start'+str(id.id)]))).where(Offering.id == id.id)
                         l.execute()
-                        Adjustment.create(comment=('enrolment in + '+str(id.id)+' + oid to become + '+str(int(request.form['applied_start'+str(id.id)]))+' +'))
+                        Adjustment.create(comment=('enrolment in + '+str(id.id)+' + offering to become + '+str(int(request.form['applied_start'+str(id.id)]))+' +'))
 
     if reports==True:
         return total, defi, offering_value_date, list_project_supervision_date, list_project_supervision_value, list_supervision_value, list_supervision_date
@@ -408,25 +408,25 @@ def listm():
         if request.form['subm1'] == "submit3":
             try:
                 instructor = request.form['instructor']
-                oid = request.form['oid']
-                sid = request.form['sid']
-                pid = request.form['pid']
-                rid = request.form['rid']
+                offering = request.form['offering']
+                supervision = request.form['supervision']
+                project = request.form['pid']
+                role = request.form['rid']
                 split = request.form['split']
                 if instructor=='':
                     error='instructor is none'
-                if sid=='':
-                    sid=None
-                if oid=='':
-                    oid=None
-                if pid=='':
-                    pid=None
-                if rid=='':
-                    rid=None
+                if supervision=='':
+                    supervision=None
+                if offering=='':
+                    offering=None
+                if project=='':
+                    project=None
+                if role=='':
+                    role=None
                 if split=='':
                     split = 1
-                Activity.create(instructor=instructor, oid=oid, sid=sid,pid=pid, rid=rid, split=split)
-                B=Activity.select().where(Activity.instructor==instructor, Activity.oid==oid, Activity.sid==sid,Activity.pid==pid, Activity.rid==rid, Activity.split==split).get()
+                Activity.create(subject=instructor, offering=offering, supervision=supervision,project=project, role=role, split=split)
+                B=Activity.select().where(Activity.subject==instructor, Activity.offering==offering, Activity.supervision==supervision,Activity.project==project, Activity.role==role, Activity.split==split).get()
                 Adjustment.create(comment='Created Teaching paring ' + str(B.id),
                                   overide_address='Activity.' + str(B.id))
             except:
@@ -455,7 +455,7 @@ def listm():
                 pass
         if request.form['subm1'] == "update info":
             enrol = request.form['enroll']
-            ooid = request.form['oid']
+            ooid = request.form['offering']
             sections = request.form['sections']
             sections = int(sections)
             enrol = int(enrol)
@@ -463,7 +463,7 @@ def listm():
             A=Offering.update(enrolment=enrol, sections=sections).where(Offering.id==ooid)
             A.execute()
             print 'i updated?'
-            Adjustment.create(comment=('enrolment in + '+str(ooid)+' + oid to become + '+str(enrol)+' +'))
+            Adjustment.create(comment=('enrolment in + '+str(ooid)+' + offering to become + '+str(enrol)+' +'))
         if request.form['subm1'] == "reviewed":
             person=Person.select()
             for id in person:
@@ -523,7 +523,7 @@ def listm():
         #     purge=request.form['purgeid4']
         #     a=CourseGeneration.delete().where(CourseGeneration.id==purge)
         #     a.execute()
-    mastermany = Activity.select().order_by(Activity.oid.asc())
+    mastermany = Activity.select().order_by(Activity.offering.asc())
     return render_template("masterlist.html", Person=Person, ProjectType=ProjectType, Course=Course,
                            SupervisionClass=SupervisionClass, ProjectClass=ProjectClass,
                            ProjectSupervision=ProjectSupervision, Supervision=Supervision, Adjustment=Adjustment,
@@ -541,9 +541,9 @@ def reports(year):
         for x in term:
             var1=str(x.year)
             list_of_teachers1 = list()
-            master=Activity.select().join(Offering).where(Activity.oid==Offering.id,Offering.semester==x.id)
+            master=Activity.select().join(Offering).where(Activity.offering==Offering.id,Offering.semester==x.id)
             for y in master:
-                list_of_teachers1.append(y.instructor)
+                list_of_teachers1.append(y.subject)
             list_of_teachers2=set(list_of_teachers1)
             for z in list_of_teachers2:
                 total, defi, offering_value_date, list_project_supervision_date, list_project_supervision_value, list_supervision_value, list_supervision_date = Profile(z.id, var1, reports)
