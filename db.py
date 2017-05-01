@@ -56,9 +56,9 @@ class Person(BaseModel):
     """
     A person in this database is a teaching professional
     """
-    name = TextField(null = False)
+    name = TextField()
     email = TextField(unique = True)
-    start = ForeignKeyField(Term, related_name = 'startdate', null = False)
+    start = ForeignKeyField(Term, related_name = 'startdate', )
     retired = BooleanField(default = False)
     reviewed = BooleanField(default = False)
     # def load(self):
@@ -69,7 +69,7 @@ class Deficit(BaseModel):
     To track the irregular deficits accumulated by professors
     """
     deficit = FloatField()
-    applied = ForeignKeyField(Person, related_name = 'applicant', null = False)
+    applied = ForeignKeyField(Person, related_name = 'applicant', )
     applied_start = IntegerField()
     applied_final = IntegerField()
 
@@ -144,27 +144,27 @@ class Role(BaseModel):
     """
     These fields represent the class of the user and information they have access too, dept is short for department.
     """
-    role_name = TextField(null = False)
-    view_you = BooleanField(null = False)
-    view_dept = BooleanField(null = False)
-    view_all = BooleanField(null = False)
-    edit_dept = BooleanField(null = False)
+    role_name = TextField()
+    view_you = BooleanField()
+    view_dept = BooleanField()
+    view_all = BooleanField()
+    edit_dept = BooleanField()
 
 
 class SupervisionClass(BaseModel):
     """
     Supervising student level, grad, under grad, ect
     """
-    description = TextField(null = False)
-    weight = FloatField(null = False)
+    description = TextField()
+    weight = FloatField()
 
 
 class ProjectClass(BaseModel):
     """
     Supervising student level, grad, under grad, ect
     """
-    description = TextField(null = False)
-    weight = FloatField(null = False)
+    description = TextField()
+    weight = FloatField()
 
 
 class ProjectType(BaseModel):
