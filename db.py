@@ -58,7 +58,7 @@ class Person(BaseModel):
     """
     name = TextField()
     email = TextField(unique = True)
-    start = ForeignKeyField(Term, related_name = 'startdate', )
+    start = ForeignKeyField(Semester)
     retired = BooleanField(default = False)
     reviewed = BooleanField(default = False)
     # def load(self):
@@ -69,7 +69,7 @@ class Deficit(BaseModel):
     To track the irregular deficits accumulated by professors
     """
     deficit = FloatField()
-    applied = ForeignKeyField(Person, related_name = 'applicant', )
+    applied = ForeignKeyField(Person)
     applied_start = IntegerField()
     applied_final = IntegerField()
 
@@ -132,10 +132,9 @@ class Offering(BaseModel):
     """
     Display the current courses on offering during the current session
     """
-    enrolment = IntegerField()
-    # prof_id = ForeignKeyField(Person, related_name='instructor')
-    semester = ForeignKeyField(Semester, related_name = 'semester')
-    generation = ForeignKeyField(CourseGeneration, related_name = 'generation')
+    enrolment = IntegerField(null = True)
+    semester = ForeignKeyField(Semester)
+    generation = ForeignKeyField(CourseGeneration)
     sections = IntegerField(default = 1)
     reviewed = BooleanField(default = False)
 
@@ -189,9 +188,9 @@ class Supervision(BaseModel):
     """
     A table to tie together students ans their class
     """
-    student_id = ForeignKeyField(Student, related_name = 'supervisions')
-    supervision_class_id = ForeignKeyField(SupervisionClass, related_name = 'supervisions')
-    semester = ForeignKeyField(Semester, related_name = 'supervisions')
+    student_id = ForeignKeyField(Student)
+    supervision_class_id = ForeignKeyField(SupervisionClass)
+    semester = ForeignKeyField(Semester)
 
 
 class Adjustment(BaseModel):
@@ -202,7 +201,7 @@ class Adjustment(BaseModel):
     comment = TextField(null = True)
     overide_value = FloatField(null = True)
     overide_address = TextField(null = True)
-    instructor = ForeignKeyField(Person, related_name = 'made_change', null = True)
+    instructor = ForeignKeyField(Person, null = True)
 
 
 class Activity(BaseModel):
