@@ -63,7 +63,7 @@ elif arguments['import']:
     elif arguments['csv']:
         Core.import_file(arguments['FILE'])
 
-    elif argument['offerings']:
+    elif arguments['offerings']:
         Core.populate(arguments['FILE'])
 
 elif arguments['export']:
