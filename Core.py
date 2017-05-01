@@ -32,114 +32,6 @@ cy=Fore.YELLOW
 cb=Fore.BLUE
 
 
-def intake(year):
-    list_of_error_types=list()
-    list_Errors = list()
-    varlen_for_progress = len(year)
-    counter=0
-    last_selester=0
-    offering_id = list()
-    code = list()
-    try:
-        for filename in year:
-            counter+=1
-            coursecodes = list()
-            list_names = list()
-            primary_prof_list_and_instances = list()
-            courses_offered = list()
-            primary_prof_list = list()
-            secondary_prof_list = list()
-            list_sections = list()
-            var = -1
-            progress(counter,varlen_for_progress)
-            crsnumber = re.compile(r"(?<=ENGI )(\d+)")
-            crosslist = re.compile(r"(?<=CROSS LISTED)(\W)")
-            namestrip = re.compile(r"(?<=Primary - )...\S+")
-            namestrip2 = re.compile(r"(?<=Primary - )\w+\s+\w+\s+\w+\s+\w+")
-            semstrip = re.compile(r".\d$")
-            yearstrip = re.compile(r"^\d...")
-            p1 = re.compile(r".....\d.....$")
-            filename4 = p1.findall(filename)
-            p3 = re.compile(r"(\d+\b)(?!.*\1\b)")
-            filen2 = int(''.join(p3.findall(str(filename4))))
-            filen3 = str(filen2)
-            startyear = (yearstrip.findall(filen3))
-            startsem = (semstrip.findall(filen3))
-            startyear = str(startyear).strip("[]'")
-            startsem = str(startsem).strip("[]'")
-            last_selester=filename
-            x_file = open(filename).readlines()
-            for w in x_file:
-                w = str(w.splitlines())
-                P_name = str((namestrip.findall(w))).strip("[]'")
-                crosscheck = str((crosslist.findall(w))).strip("[]'")
-                crse = str(crsnumber.findall(w)).strip("[]'")
-                code.append(crse)
-                file2 = str((namestrip2.findall(w)))
-                if crse!='' and P_name=='':
-                    if crosscheck == "":
-                        list_of_error_types.append('cross listed:')
-                    else:
-                        list_of_error_types.append('no prof')
-                    file4 = str(crse).strip("'[]")
-                    list_Errors.append(filename)
-                    list_Errors.append(file4)
-                if P_name!='' and P_name!='m munprod':
-                    var+=1
-                    list_names.append(P_name)
-                    P_name = str(P_name).strip("[]'")
-                    file2 = str(file2).strip("[]'")
-                    file4 = str(crse).strip("'[]")
-                    secondary_prof_list.append(file2)
-                    primary_prof_list_and_instances.append(P_name)
-                    courses_offered.append(file4)
-                    if crse!=''and list_names[var]!='m munprod':
-                        list_sections.append(1)
-                        primary_prof_list.append(P_name)
-                    elif list_names[var]!='m munprod':
-                        list_sections[-1]=list_sections[-1]+1
-            counter1 = -1
-            y=None
-            fixer_counter = -1
-            for prof in primary_prof_list_and_instances:
-                if prof != 'm munprod':
-                    x=prof
-                    counter1+=1
-                    if x!=y:
-                        fixer_counter+=1
-                        y=x
-                    if secondary_prof_list[counter1]!='':
-                        patch=str(secondary_prof_list[counter1]).split()
-                        person((patch[2]+' '+patch[3]),(patch[2]+' '+patch[3])+'@mun.ca',startyear,startsem)
-                        pid2=Person.select().where(Person.name==(patch[2]+' '+patch[3])).get()
-                        offer(startyear, courses_offered[counter1], startsem, pid2.id, 80, list_sections[fixer_counter])
-                        person((patch[0]+' '+patch[1]),(patch[0]+' '+patch[1])+'@mun.ca',startyear,startsem)
-                        pid1=Person.select().where(Person.name==(patch[0]+' '+patch[1])).get()
-                        off=offer(startyear, courses_offered[counter1], startsem, pid1.id, 80, list_sections[fixer_counter])
-                        offering_id.append(off)
-                    else:
-                        person(primary_prof_list_and_instances[counter1],primary_prof_list_and_instances[counter1]+'@mun.ca',startyear,startsem)
-                        pid1=Person.select().where(Person.name==primary_prof_list_and_instances[counter1]).get()
-                        offer(startyear,courses_offered[counter1],startsem,pid1.id,80,list_sections[fixer_counter])
-        print
-        print 'completed files in parameters'
-        print
-        coursecodes.append(offering_id)
-        coursecodes.append(code)
-        return coursecodes,list_Errors,list_of_error_types
-    except:
-        print
-        print 'The file '+cr+last_selester+rs+" is bad and this was the file i was processing when i failed"
-
-
-def splitting(pid1):
-    id_storage=pid1[0]
-    for id_num in id_storage:
-        if id_num is not None:
-            update1=Mastermany.update(split=float(0.5)).where(Mastermany.oid==id_num)
-            update1.execute()
-
-
 def informationXchange(generation,list1):
     first_run_var=1
     aa = None
@@ -409,57 +301,6 @@ def export_file(selector, name='default'):
             dump_csv(selector, fh)
 
 
-def error(list_of_error, list_of_error_types):
-    print 'please see that the errors int the '+cy+'error.txt'+rs+' file are attended to '
-    targ = open('Errors', 'w')
-    counter=-1
-    var = len(list_of_error)
-    var = var/2
-    for x in list_of_error_types:
-        targ.write(x)
-        targ.write('\n')
-    while counter != var:
-        counter += 1
-        if  counter == var:
-            break
-        var3 = counter*2
-        var4 = var3+1
-        targ.write('\n')
-        targ.write(list_of_error[var3])
-        targ.write('\n')
-        targ.write(list_of_error[var4])
-    print 'view the '+cy+'input'+rs+' files to correct'
-
-
-def offergen(files):
-    start_time = time.time()
-    coursecodes, list_of_error, list_of_error_types = intake(files)
-    print
-    if list_of_error != '':
-        print
-        print cr+"please check on the "+cy+"errors"+cr+" file, I have some results"
-    print
-    print cb+"My program took", time.time() - start_time, cb+"to run"
-    print
-    return coursecodes,list_of_error,list_of_error_types
-
-
-def split(files):
-    start_time = time.time()
-    person1 = Person.select()
-    counter = 0
-    varlen = len(person1)
-    for ixd in person1:
-        counter += 1
-        progress(counter,varlen)
-        update = Mastermany.update(split=1).where(Mastermany.instructor == ixd.id)
-        update.execute()
-        update1 = Mastermany.update(split=.5).where(Mastermany.oid == 904)
-        update1.execute()
-    print
-    print "My program took", time.time() - start_time, "to run"
-    splitting(files)
-
 
 def progress(count, total, status=''):
     bar_len = 60
@@ -554,12 +395,6 @@ def offerplot(dict_temp2,name,scale='default'):
     plt.xticks(ind, year_term, rotation='vertical')
     plt.savefig(str(name)+'.pdf',bbox_inches='tight')
     plt.close()
-
-
-def populate(files):
-        coursecodes, htmldates, list_of_error_types = offergen(files)
-        split(coursecodes)
-        error(htmldates, list_of_error_types)
 
 
 def test():

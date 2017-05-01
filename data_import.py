@@ -13,10 +13,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import bs4
 import calendar
 import collections
 import db
+import itertools
 import re
+import sys
 
 from ConvertParse import sanitize_course
 from Core import progress
@@ -99,3 +102,128 @@ def import_courses(filenames):
 
     progress(1, 1)
     print('\n')
+
+
+def import_offerings(files):
+    file_count = len(files)
+    print('Importing offering data from %d files...' % file_count)
+
+    crosslist = re.compile(r"(?<=CROSS LISTED)(\W)")
+    term_details = re.compile(r"Course Offerings: ([0-9]+)-[0-9]+ ([A-Za-z]+)")
+    section_line = re.compile(r'^([A-Z]+) ([A-Z0-9]+) ([^0-9]+) ([0-9]{3}) ([0-9]{5}) ')
+    instructor_name = re.compile(r'Primary - (.*)$')
+
+    for (i, filename) in enumerate(files):
+        progress(i, file_count)
+
+        # Parse the year and session from the HTML at the top of the file,
+        # before we enter the Big Blob of Text.
+        soup = bs4.BeautifulSoup(open(filename, 'r'), 'html.parser')
+        if soup.body is None:
+            sys.stderr.write('error: %s has no HTML body\n' % filename)
+            continue
+
+        ((year, session),) = term_details.findall(soup.body.h2.text)
+        year = int(year)
+        session = db.Session.get(name = session)
+        term, _ = db.Term.get_or_create(year = year, session = session)
+
+        # Parse the raw text in the remainder of the file.
+        #
+        # This big blob of text is stateful in that multiple sections of the
+        # same course offering are grouped together, so we ened to keep track
+        # of what the "current offering" is.
+        offering = None
+
+        for (lineno, line) in enumerate(open(filename, 'r')):
+            # The lines we care about all contain sections and CRNs (xxx yyyy):
+            match = section_line.findall(line)
+            if len(match) == 0:
+                continue
+
+            ((subject, code, title, section, crn),) = match
+            section = int(section)
+            crn = int(crn)
+
+            # Parse instructor names, e.g., "A Aliceson     B Bobson"
+            instructors = instructor_name.findall(line)
+            if len(instructors) == 0 or instructors[0].strip() == 'm munprod':
+                continue
+
+            instructors = instructors[0].split()
+            a = iter(instructors)
+            instructors = set(itertools.izip(a, a))
+
+            # If the line starts right at the beginning with no spaces,
+            # it's the first section of the course being described.
+            # We need to find the course and the correct course generation,
+            # create a new Offering and link the instructor(s) to it.
+            if not line.startswith(' '):
+                offering = create_offering(subject, code, title, term)
+
+                for instructor in instructors:
+                    (initial, surname) = instructor
+                    candidates = db.Person.select().where(
+                        db.Person.name.startswith(initial),
+                        db.Person.name.endswith(surname)
+                    )
+
+                    if candidates.count() == 0:
+                        sys.stderr.write(
+                                "%s:%d: error: no such instructor: %s %s\n" % (
+                                    filename, lineno, initial, surname))
+                        sys.stderr.write('  Course:         %s\n' %
+                                offering.course)
+                        sys.stderr.write('  Offering:       %s\n' %
+                                offering.semester)
+                        sys.stderr.write('  Instructor(s):  %s\n' %
+                                ', '.join([ '%s %s' % i for i in instructors ]))
+                        continue
+
+                    print(list(candidates))
+
+            # Otherwise (i.e., if this isn't the first section), we just need
+            # to increment the section count for the existing offering data.
+            else:
+                assert offering is not None
+                offering.sections += 1
+                offering.save()
+
+
+def create_offering(subject, code, title, term):
+    """
+    Create a new Offering for a specific course in a specific term,
+    creating the Course itself and a CourseGeneration if need be.
+    """
+
+    # Find the course being offered or, if it doesn't exist in the calendar
+    # (e.g., a new or Special Topics course), create it.
+    try:
+        course = db.Course.get(subject = subject, code = code)
+
+    except db.Course.DoesNotExist:
+        course = db.Course.create(subject = subject, code = code)
+
+    # Similarly, try to find a matching CourseGeneration, but if there isn't one
+    # (as in new or Special Topics course), create one.
+    try:
+        gen = db.CourseGeneration.get(
+            db.CourseGeneration.start_year <= term.year,
+            db.CourseGeneration.end_year >= term.year,
+            course = course
+        )
+
+    except db.CourseGeneration.DoesNotExist:
+        gen = db.CourseGeneration.create(
+            course = course,
+            title = title,
+            start_year = term.year,
+            end_year = term.year
+        )
+
+    # Finally, create the new Offering.
+    return db.Offering.create(
+            course = course,
+            semester = term,
+            generation = gen,
+    )

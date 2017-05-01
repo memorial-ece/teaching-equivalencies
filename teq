@@ -64,7 +64,7 @@ elif arguments['import']:
         Core.import_file(arguments['FILE'])
 
     elif arguments['offerings']:
-        Core.populate(arguments['FILE'])
+        data_import.import_offerings(arguments['FILE'])
 
 elif arguments['export']:
     Core.export_file(arguments['FILE'])
