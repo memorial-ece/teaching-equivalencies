@@ -99,7 +99,7 @@ def offer(year,code,session,profid,numberofstudents,sectionnumbers):
                 A=Offering.select().where(Offering.enrolment==numberofstudents,Offering.semester==ses,Offering.generation==x.id,Offering.sections==sectionnumbers).get()
             except:
                 A=Offering.select().where(Offering.enrolment==numberofstudents,Offering.semester==ses,Offering.generation==x.id,Offering.sections==sectionnumbers).get()
-            Mastermany.get_or_create(instructor=profid,oid=A)
+            Activity.get_or_create(instructor=profid,oid=A)
             return A.id
 
 
@@ -163,14 +163,14 @@ def supera(TermS, profid, Studentid, supervisoncalss, session):
     ses=Term.select().where(Term.year==TermS,Term.session==session).get()
     Supervision.get_or_create(student_id=Studentid,supervision_class_id=supervisoncalss,semester=ses)
     A=Supervision.select().where(Supervision.student_id==Studentid,Supervision.supervision_class_id==supervisoncalss,Supervision.semester==ses).get()
-    Mastermany.get_or_create(instructor=profid,sid=A, split=1)
+    Activity.get_or_create(instructor=profid,sid=A, split=1)
 
 
 def Psupera(TermS, profid, team_id, supervisoncalss, session):
     ses=Term.select().where(Term.year==TermS,Term.session==session).get()
     ProjectSupervision.get_or_create(team_id=team_id,project_class_id=supervisoncalss,semester=ses)
     A=ProjectSupervision.select().where(ProjectSupervision.team_id==team_id,ProjectSupervision.project_class_id==supervisoncalss,ProjectSupervision.semester==ses).get()
-    Mastermany.get_or_create(instructor=profid,pid=A, split=1)
+    Activity.get_or_create(instructor=profid,pid=A, split=1)
 
 
 def person(name, email, staryear, startsem):
@@ -245,8 +245,8 @@ def import_file(selector):
         load_csv(ProjectClass, name)
     if selector == 'ProjectType':
         load_csv(ProjectType, name)
-    if selector == 'Mastermany':
-        load_csv(Mastermany, name)
+    if selector == 'Activity':
+        load_csv(Activity, name)
     if selector == 'ProjectSupervision':
         load_csv(ProjectSupervision, name)
     if selector == 'Adjustment':
@@ -288,8 +288,8 @@ def export_file(selector, name='default'):
         if str(selector) == 'ProjectType':
             query = ProjectType.select().order_by(ProjectType.id)
             dump_csv(query, fh)
-        if str(selector) == 'Mastermany':
-            query = Mastermany.select().order_by(Mastermany.instructor)
+        if str(selector) == 'Activity':
+            query = Activity.select().order_by(Activity.instructor)
             dump_csv(query, fh)
         if str(selector) == 'ProjectSupervision':
             query = ProjectSupervision.select().order_by(ProjectSupervision.id)

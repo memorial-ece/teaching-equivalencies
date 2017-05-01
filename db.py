@@ -205,10 +205,11 @@ class Adjustment(BaseModel):
     instructor = ForeignKeyField(Person, related_name = 'made_change', null = True)
 
 
-class Mastermany(BaseModel):
+class Activity(BaseModel):
     """
-    A table that ties together all aspects of a teachers equivalency
+    An activity that counts for some level of teaching credit.
     """
+
     instructor = ForeignKeyField(Person, related_name = 'person_id')
     oid = ForeignKeyField(Offering, related_name = 'offering_id', null = True)
     sid = ForeignKeyField(Supervision, related_name = 'supervision_id', null = True)
@@ -218,11 +219,11 @@ class Mastermany(BaseModel):
 
 
 ALL_TABLES = [
+    Activity,
     Adjustment,
     Course,
     CourseGeneration,
     Deficit,
-    Mastermany,
     Offering,
     Person,
     ProjectClass,
