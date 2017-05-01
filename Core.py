@@ -93,7 +93,7 @@ def informationXchange(generation,list1):
 def offer(year,code,session,profid,numberofstudents,sectionnumbers):
     for x in CourseGeneration.select().join(Course).where(Course.code==code).order_by(CourseGeneration.end_year.asc()):
         if int(x.end_year)>=int(year):
-            ses=Term.select().where(Term.year==year,Term.session==session).get()
+            ses=Semester.select().where(Semester.year==year,Semester.session==session).get()
             try:
                 Offering.get_or_create(enrolment=numberofstudents,semester=ses,generation=x.id,sections=sectionnumbers,reviewed=False)
                 A=Offering.select().where(Offering.enrolment==numberofstudents,Offering.semester==ses,Offering.generation==x.id,Offering.sections==sectionnumbers).get()
@@ -160,14 +160,14 @@ def superC(BOOLDoyouwanttocreateanewone, Description, Weight):
 
 
 def supera(TermS, profid, Studentid, supervisoncalss, session):
-    ses=Term.select().where(Term.year==TermS,Term.session==session).get()
+    ses=Semester.select().where(Semester.year==TermS,Semester.session==session).get()
     Supervision.get_or_create(student_id=Studentid,supervision_class_id=supervisoncalss,semester=ses)
     A=Supervision.select().where(Supervision.student_id==Studentid,Supervision.supervision_class_id==supervisoncalss,Supervision.semester==ses).get()
     Activity.get_or_create(subject=profid,supervision=A, split=1)
 
 
 def Psupera(TermS, profid, team_id, supervisoncalss, session):
-    ses=Term.select().where(Term.year==TermS,Term.session==session).get()
+    ses=Semester.select().where(Semester.year==TermS,Semester.session==session).get()
     ProjectSupervision.get_or_create(team_id=team_id,project_class_id=supervisoncalss,semester=ses)
     A=ProjectSupervision.select().where(ProjectSupervision.team_id==team_id,ProjectSupervision.project_class_id==supervisoncalss,ProjectSupervision.semester==ses).get()
     Activity.get_or_create(subject=profid,project=A, split=1)
@@ -175,9 +175,9 @@ def Psupera(TermS, profid, team_id, supervisoncalss, session):
 
 def person(name, email, staryear, startsem):
     # can't hear
-    try:Term.get_or_create(year= staryear, session = startsem)
+    try:Semester.get_or_create(year= staryear, session = startsem)
     except:pass
-    ses=Term.select().where(Term.year==staryear,Term.session==startsem).get()
+    ses=Semester.select().where(Semester.year==staryear,Semester.session==startsem).get()
     try:Person.get_or_create(name=name,email=email,start=ses.id,reviewed=False)
     except:pass
 
@@ -235,8 +235,8 @@ def import_file(selector):
         load_csv(CourseGeneration, name)
     if selector == 'Student':
         load_csv(Student, name)
-    if selector == 'Term':
-        load_csv(Term, name)
+    if selector == 'Semester':
+        load_csv(Semester, name)
     if selector == 'Offering':
         load_csv(Offering, name)
     if selector == 'Role':
@@ -273,8 +273,8 @@ def export_file(selector, name='default'):
         if str(selector) == 'Student':
             query = Student.select().order_by(Student.id)
             dump_csv(query, fh)
-        if str(selector) == 'Term':
-            query = Term.select().order_by(Term.id)
+        if str(selector) == 'Semester':
+            query = Semester.select().order_by(Semester.id)
             dump_csv(query, fh)
         if str(selector) == 'Offering':
             query = Offering.select().order_by(Offering.id)
@@ -431,9 +431,9 @@ def set_false():
 
 def termselect(year):
     if year == 'true':
-        term=Term.select()
+        term=Semester.select()
     else:
-        term=Term.select().where(Term.year<=year)
+        term=Semester.select().where(Semester.year<=year)
     return term
 
 def percent():

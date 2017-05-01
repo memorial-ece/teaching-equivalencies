@@ -23,7 +23,7 @@ def test_csv():
     targ.write('Course#, Title, EE, CoE, # Stud., Instructor, Load, Cnt., Location, Cnt., Sctn., Length, Location, Cnt., Location')
     for i in prof:
         prof_id=i.id
-        term = Term.select().where(Term.year == 2008,Term.session==01)
+        term = Semester.select().where(Semester.year == 2008,Semester.session==01)
         list_of_offerings = list()
         person = Person.get(Person.id == prof_id)
         for x in term:
@@ -282,7 +282,7 @@ def Profile(prof_id,year,reports,):
               .join(Adjustment)
               .select(fn.SUM(Adjustment.weight))
               .scalar())
-    term2=Term.select().order_by(Term.year.asc()).get()
+    term2=Semester.select().order_by(Semester.year.asc()).get()
     defi = deficit_func(prof_id,person.start.year,2016)
     deficit2=Deficit.select().join(Person).where(Person.id==prof_id)
     if Ototal is None:
@@ -309,7 +309,7 @@ def Profile(prof_id,year,reports,):
             name = request.form['name']
             email = request.form['email']
             start = request.form['start']
-            varyear= Term.select().where(Term.year==start,Term.session==01).get()
+            varyear= Semester.select().where(Semester.year==start,Semester.session==01).get()
             A=Person.update(name=name,email=email,start=varyear.id).where(Person.id==prof_id)
             A.execute()
             Adjustment.create(comment=("Person table update, name + "+str(name)+" + email + "+str(email)+" + start + "+str(start)+" +"), instructor=prof_id)
@@ -447,10 +447,10 @@ def listm():
             try:
                 year = request.form['year']
                 session = request.form['session']
-                Term.create(year=year,session=session)
-                B=Term.select().where(Term.year==year,Term.session==session)
-                Adjustment.create(comment='Created Term ' + str(B.id),
-                                  overide_address='Term.' + str(B.id))
+                Semester.create(year=year,session=session)
+                B=Semester.select().where(Semester.year==year,Semester.session==session)
+                Adjustment.create(comment='Created Semester ' + str(B.id),
+                                  overide_address='Semester.' + str(B.id))
             except:
                 pass
         if request.form['subm1'] == "update info":
@@ -527,7 +527,7 @@ def listm():
     return render_template("masterlist.html", Person=Person, ProjectType=ProjectType, Course=Course,
                            SupervisionClass=SupervisionClass, ProjectClass=ProjectClass,
                            ProjectSupervision=ProjectSupervision, Supervision=Supervision, Adjustment=Adjustment,
-                           Role=Role, Term=Term, Offering=Offering,
+                           Role=Role, Semester=Semester, Offering=Offering,
                            CourseGeneration=CourseGeneration, Student=Student,Activity=mastermany)
 
 

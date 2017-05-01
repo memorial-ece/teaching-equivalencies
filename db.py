@@ -44,9 +44,9 @@ class Session(BaseModel):
         return self.name
 
 
-class Term(BaseModel):
+class Semester(BaseModel):
     """
-    Term is the numerical representation of year and semester by Memorial University
+    Semester is the numerical representation of year and semester by Memorial University
     """
     year = IntegerField()
     session = ForeignKeyField(Session)
@@ -134,7 +134,7 @@ class Offering(BaseModel):
     """
     enrolment = IntegerField()
     # prof_id = ForeignKeyField(Person, related_name='instructor')
-    semester = ForeignKeyField(Term, related_name = 'semester')
+    semester = ForeignKeyField(Semester, related_name = 'semester')
     generation = ForeignKeyField(CourseGeneration, related_name = 'generation')
     sections = IntegerField(default = 1)
     reviewed = BooleanField(default = False)
@@ -182,7 +182,7 @@ class ProjectSupervision(BaseModel):
     # prof_id = ForeignKeyField(Person, related_name = 'supervisied_projects')
     team_id = ForeignKeyField(ProjectType, related_name = 'projects')
     project_class_id = ForeignKeyField(ProjectClass, related_name = 'projects')
-    semester = ForeignKeyField(Term, related_name = 'projects')
+    semester = ForeignKeyField(Semester, related_name = 'projects')
 
 
 class Supervision(BaseModel):
@@ -191,7 +191,7 @@ class Supervision(BaseModel):
     """
     student_id = ForeignKeyField(Student, related_name = 'supervisions')
     supervision_class_id = ForeignKeyField(SupervisionClass, related_name = 'supervisions')
-    semester = ForeignKeyField(Term, related_name = 'supervisions')
+    semester = ForeignKeyField(Semester, related_name = 'supervisions')
 
 
 class Adjustment(BaseModel):
@@ -232,11 +232,11 @@ ALL_TABLES = [
     ProjectSupervision,
     ProjectType,
     Role,
+    Semester,
     Session,
     Student,
     Supervision,
     SupervisionClass,
-    Term,
 ]
 
 def get():

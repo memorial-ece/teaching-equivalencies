@@ -126,7 +126,7 @@ def import_offerings(files):
         ((year, session),) = term_details.findall(soup.body.h2.text)
         year = int(year)
         session = db.Session.get(name = session)
-        term, _ = db.Term.get_or_create(year = year, session = session)
+        term, _ = db.Semester.get_or_create(year = year, session = session)
 
         # Parse the raw text in the remainder of the file.
         #
