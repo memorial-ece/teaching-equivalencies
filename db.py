@@ -51,6 +51,12 @@ class Semester(BaseModel):
     year = IntegerField()
     session = ForeignKeyField(Session)
 
+    def __repr__(self):
+        return 'Semester { %d %r }' % (self.year, self.session)
+
+    def __str__(self):
+        return '%s %d-%d' % (self.session, self.year, self.year + 1)
+
 
 class Person(BaseModel):
     """
