@@ -29,12 +29,27 @@ class BaseModel(Model):
         database = db
 
 
+class Session(BaseModel):
+    """
+    A period of the year that a semester can fall in (e.g., Fall, Winter...).
+    """
+
+    code = CharField(1)
+    name = TextField()
+
+    def __repr__(self):
+        return 'Session { %d / %s }' % (self.code, self.name)
+
+    def __str__(self):
+        return self.name
+
+
 class Term(BaseModel):
     """
     Term is the numerical representation of year and semester by Memorial University
     """
     year = IntegerField()
-    session = IntegerField()
+    session = ForeignKeyField(Session)
 
 
 class Person(BaseModel):
@@ -214,6 +229,7 @@ ALL_TABLES = [
     ProjectSupervision,
     ProjectType,
     Role,
+    Session,
     Student,
     Supervision,
     SupervisionClass,
@@ -228,3 +244,9 @@ def init(drop_first = True):
         db.drop_tables(ALL_TABLES, safe = True)
 
     db.create_tables(ALL_TABLES)
+
+    db.fall = Session.create(code = 'F', name = 'Fall')
+    db.winter = Session.create(code = 'W', name = 'Winter')
+    db.spring = Session.create(code = 'S', name = 'Spring')
+    db.intersession = Session.create(code = 'I', name = 'Intersession')
+    db.summer = Session.create(code = 's', name = 'Summer')
