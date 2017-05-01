@@ -212,7 +212,7 @@ class Adjustment(BaseModel):
 
 class Activity(BaseModel):
     """
-    An activity that counts for some level of teaching credit.
+    A record of someone doing something that counts for teaching credit.
     """
 
     # Who performed the activity.
