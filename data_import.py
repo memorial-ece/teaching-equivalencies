@@ -193,7 +193,19 @@ def import_offerings(files):
                         )
                         continue
 
-                    print(list(candidates))
+                    elif candidates.count() == 1:
+                        db.Activity.get_or_create(
+                            subject = candidates.get(),
+                            offering = offering,
+                        )
+
+                    else:
+                        err("multiple potential matches for '%s':\n  %s"
+                            % (
+                                instructor,
+                                '\n  '.join([ repr(c) for c in candidates ])
+                            )
+                        )
 
             # Otherwise (i.e., if this isn't the first section), we just need
             # to increment the section count for the existing offering data.
