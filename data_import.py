@@ -156,6 +156,16 @@ def import_offerings(files):
             a = iter(instructors)
             instructors = set(itertools.izip(a, a))
 
+            err = lambda msg, extra_lines = []: (
+                print_diagnostic_message(
+                    'error', filename, lineno, msg, extra_lines)
+            )
+
+            warn = lambda msg, extra_lines = []: (
+                print_diagnostic_message(
+                    'warning', filename, lineno, msg, extra_lines)
+            )
+
             # If the line starts right at the beginning with no spaces,
             # it's the first section of the course being described.
             # We need to find the course and the correct course generation,
@@ -171,15 +181,16 @@ def import_offerings(files):
                     )
 
                     if candidates.count() == 0:
-                        sys.stderr.write(
-                                "%s:%d: error: no such instructor: %s %s\n" % (
-                                    filename, lineno, initial, surname))
-                        sys.stderr.write('  Course:         %s\n' %
-                                offering.course)
-                        sys.stderr.write('  Offering:       %s\n' %
-                                offering.semester)
-                        sys.stderr.write('  Instructor(s):  %s\n' %
-                                ', '.join([ '%s %s' % i for i in instructors ]))
+                        warn(
+                            "no such instructor: %s %s" % (initial, surname),
+                            [
+                                'Course:         %s' %
+                                    offering.generation.course,
+                                'Offering:       %s' % offering.semester,
+                                'Instructor(s):  %s' % ', '.join(
+                                    [ '%s %s' % i for i in instructors ])
+                            ]
+                        )
                         continue
 
                     print(list(candidates))
@@ -264,3 +275,9 @@ def import_people(url):
             )
 
     print('Imported details of %d individuals.' % total_created)
+
+
+def print_diagnostic_message(kind, filename, lineno, message, notes = []):
+    sys.stderr.write("\n%s:%d: %s: %s\n" % (filename, lineno, kind, message))
+    for note in notes:
+        sys.stderr.write('note: %s\n' % note)
