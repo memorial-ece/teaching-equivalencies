@@ -283,7 +283,7 @@ def Profile(prof_id,year,reports,):
               .select(fn.SUM(Adjustment.weight))
               .scalar())
     term2=Semester.select().order_by(Semester.year.asc()).get()
-    defi = deficit_func(prof_id,person.start.year,2016)
+    defi = deficit_func(prof_id,None,2016)  # TODO: fix cumulative load calc.
     deficit2=Deficit.select().join(Person).where(Person.id==prof_id)
     if Ototal is None:
         Ototal = 0

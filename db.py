@@ -64,10 +64,7 @@ class Person(BaseModel):
     """
     name = TextField()
     email = TextField(unique = True)
-    start = ForeignKeyField(Semester)
-    retired = BooleanField(default = False)
     reviewed = BooleanField(default = False)
-    # def load(self):
 
 
 class Deficit(BaseModel):
