@@ -66,6 +66,14 @@ class Person(BaseModel):
     email = TextField(unique = True)
     reviewed = BooleanField(default = False)
 
+    def __str__(self):
+        return self.name
+
+    def __repr__(self):
+        return "Person { name: '%s', email: '%s', reviewed: %s }" % (
+            self.name, self.email, self.reviewed
+        )
+
 
 class Deficit(BaseModel):
     """
@@ -140,6 +148,9 @@ class Offering(BaseModel):
     generation = ForeignKeyField(CourseGeneration)
     sections = IntegerField(default = 1)
     reviewed = BooleanField(default = False)
+
+    def __str__(self):
+        return '%s (%s)' % (self.generation.course, self.semester)
 
 
 class Role(BaseModel):
