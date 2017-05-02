@@ -237,6 +237,8 @@ def import_people(url):
         sys.stderr.write('Error retrieving %s:\n%s\n' % (url, r))
         return
 
+    total_created = 0
+
     soup = bs4.BeautifulSoup(r.text, 'html.parser')
     for row in soup.table.find_all('tr'):
         columns = row.find_all('td')
@@ -250,10 +252,15 @@ def import_people(url):
         name = name.split(',')[0]
         email = email.replace('[at]', '@')
 
-        try: db.Person.get_or_create(name = name, email = email)
+        try:
+            _, created = db.Person.get_or_create(name = name, email = email)
+            total_created += created
+
         except peewee.IntegrityError, e:
             sys.stderr.write(
                 'error: failure to create person %s (%s)\n  %s\n' % (
                     email, name, e
                 )
             )
+
+    print('Imported details of %d individuals.' % total_created)
