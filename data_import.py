@@ -18,7 +18,9 @@ import collections
 import db
 import itertools
 import muncal
+import peewee
 import re
+import requests
 import sys
 
 from ConvertParse import sanitize_course
@@ -227,3 +229,31 @@ def create_offering(subject, code, title, term):
             semester = term,
             generation = gen,
     )
+
+
+def import_people(url):
+    r = requests.get(url)
+    if r.status_code != 200:
+        sys.stderr.write('Error retrieving %s:\n%s\n' % (url, r))
+        return
+
+    soup = bs4.BeautifulSoup(r.text, 'html.parser')
+    for row in soup.table.find_all('tr'):
+        columns = row.find_all('td')
+        if len(columns) != 4:
+            continue
+
+        (name, room, phone, email) = [ c.text for c in columns ]
+        if not email.endswith('mun.ca'):
+            continue
+
+        name = name.split(',')[0]
+        email = email.replace('[at]', '@')
+
+        try: db.Person.get_or_create(name = name, email = email)
+        except peewee.IntegrityError, e:
+            sys.stderr.write(
+                'error: failure to create person %s (%s)\n  %s\n' % (
+                    email, name, e
+                )
+            )

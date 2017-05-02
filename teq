@@ -24,6 +24,7 @@ instructors at Memorial University.
 Usage:
     teq initdb
     teq import courses FILE...
+    teq import people URL
     teq import offerings FILE...
     teq import csv FILE
     teq export TABLE
@@ -34,6 +35,7 @@ Commands:
     initdb           Create (empty) database, dropping any existing tables first
     import courses   Import calendar course descriptions (HTML format)
     import csv       Import an exported-and-edited database table (CSV format)
+    import people    Import instructors' details (URL to HTML "People" webpage)
     import offerings Import Banner offering data (HTML format)
     export           Export a database table to CSV
     autovet          ???
@@ -55,13 +57,16 @@ if arguments['initdb']:
     db.init(database)
 
 elif arguments['import']:
-    assert arguments['courses'] ^ arguments['offerings']
+    assert arguments['courses'] ^ arguments['people'] ^ arguments['offerings']
 
     if arguments['courses']:
         data_import.import_courses(arguments['FILE'])
 
     elif arguments['csv']:
         Core.import_file(arguments['FILE'])
+
+    elif arguments['people']:
+        data_import.import_people(arguments['URL'])
 
     elif arguments['offerings']:
         data_import.import_offerings(arguments['FILE'])
