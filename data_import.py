@@ -171,7 +171,7 @@ def import_offerings(files):
             # We need to find the course and the correct course generation,
             # create a new Offering and link the instructor(s) to it.
             if not line.startswith(' '):
-                offering = create_offering(subject, code, title, term)
+                offering = get_offering(subject, code, title, term)
 
                 for instructor in instructors:
                     (initial, surname) = instructor
@@ -203,9 +203,9 @@ def import_offerings(files):
                 offering.save()
 
 
-def create_offering(subject, code, title, term):
+def get_offering(subject, code, title, term):
     """
-    Create a new Offering for a specific course in a specific term,
+    Get or create a new Offering for a specific course in a specific term,
     creating the Course itself and a CourseGeneration if need be.
     """
 
@@ -234,12 +234,13 @@ def create_offering(subject, code, title, term):
             end_year = term.year
         )
 
-    # Finally, create the new Offering.
-    return db.Offering.create(
-            course = course,
+    # Finally, get or create the new Offering.
+    offering, _ = db.Offering.get_or_create(
             semester = term,
             generation = gen,
     )
+
+    return offering
 
 
 def import_people(url):
