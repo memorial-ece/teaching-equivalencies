@@ -194,7 +194,7 @@ def team(name, email):
 
 def deficit_func(prof_id,year_first,year_second):
     now = datetime.datetime.now()
-    defic = Deficit.select().join(Person).where(Person.id == prof_id,Deficit.applied_final<=year_second)
+    defic = PersonalLoad.select().join(Person).where(Person.id == prof_id,PersonalLoad.end.year<=year_second)
     totaldef = 0
     for x in defic:
         if x.applied_final<year_first:
@@ -203,7 +203,7 @@ def deficit_func(prof_id,year_first,year_second):
             totaldef+=x.deficit*(x.applied_final-year_first+1)
         else:
             totaldef+=x.deficit*(x.applied_final-x.applied_start+1)
-    defic2=Deficit.select().join(Person).where(Person.id == prof_id, Deficit.applied_final==None).get()
+    defic2=PersonalLoad.select().join(Person).where(Person.id == prof_id, PersonalLoad.end.year==None).get()
     if year_second >= defic2.applied_start:
         totaldef+=defic2.deficit*(year_second-defic2.applied_start)
     return totaldef
@@ -395,16 +395,6 @@ def offerplot(dict_temp2,name,scale='default'):
     plt.xticks(ind, year_term, rotation='vertical')
     plt.savefig(str(name)+'.pdf',bbox_inches='tight')
     plt.close()
-
-
-def test():
-    person = Person.select()
-    print 'work'
-    for x in person:
-        print x.start.year
-        Deficit.create(deficit=3.3333333, applied=x.id, applied_start=x.start.year, applied_final=(x.start.year+1))
-        Deficit.create(deficit=4.0, applied=x.id, applied_start=(x.start.year+2))
-    set_false()
 
 
 def set_false():

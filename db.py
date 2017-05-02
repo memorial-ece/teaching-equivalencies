@@ -75,14 +75,27 @@ class Person(BaseModel):
         )
 
 
-class Deficit(BaseModel):
+class TeachingLoad(BaseModel):
     """
-    To track the irregular deficits accumulated by professors
+    The annual teaching expectation for an instructor.
     """
-    deficit = FloatField()
-    applied = ForeignKeyField(Person)
-    applied_start = IntegerField()
-    applied_final = IntegerField()
+
+    # Description of the load, e.g., "Typical ASM (Engineering)"
+    name = TextField()
+
+    # Numeric expectation of courses taught per year
+    load = FloatField()
+
+
+class PersonalLoad(BaseModel):
+    """
+    A teaching load for an individual over a specific time period.
+    """
+
+    instructor = ForeignKeyField(Person)
+    load = ForeignKeyField(TeachingLoad)
+    start = ForeignKeyField(Semester, related_name = 'load_starts')
+    end = ForeignKeyField(Semester, related_name = 'load_ends')
 
 
 class Course(BaseModel):
@@ -238,9 +251,9 @@ ALL_TABLES = [
     Adjustment,
     Course,
     CourseGeneration,
-    Deficit,
     Offering,
     Person,
+    PersonalLoad,
     ProjectClass,
     ProjectSupervision,
     ProjectType,
@@ -250,6 +263,7 @@ ALL_TABLES = [
     Student,
     Supervision,
     SupervisionClass,
+    TeachingLoad,
 ]
 
 def get():
@@ -266,3 +280,5 @@ def init(drop_first = True):
     db.spring = Session.create(code = 'S', name = 'Spring')
     db.intersession = Session.create(code = 'I', name = 'Intersession')
     db.summer = Session.create(code = 's', name = 'Summer')
+
+    TeachingLoad.create(name = 'Engineering ASM (typical)', load = 4.0)

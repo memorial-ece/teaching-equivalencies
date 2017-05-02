@@ -102,9 +102,9 @@ def test_csv2():
     for m in master:
         if m.offering.semester.year==first_year:
             try:
-                deficit2=Deficit.select().where(Deficit.applied==m.subject.id,Deficit.applied_final>=first_year).order_by(Deficit.applied_final.asc()).get()
+                deficit2=PersonalLoad.select().where(instructor=m.subject.id,PersonalLoad.end.year>=first_year).order_by(PersonalLoad.end.asc()).get()
             except:
-                deficit2=Deficit.select().where(Deficit.applied==m.subject.id,).order_by(Deficit.applied_final.asc()).get()
+                deficit2=PersonalLoad.select().where(instructor=m.subject.id).order_by(PersonalLoad.end.asc()).get()
                 print deficit2.deficit
             Ototal=0
             list_of_offerings=list()
@@ -284,7 +284,7 @@ def Profile(prof_id,year,reports,):
               .scalar())
     term2=Semester.select().order_by(Semester.year.asc()).get()
     defi = deficit_func(prof_id,None,2016)  # TODO: fix cumulative load calc.
-    deficit2=Deficit.select().join(Person).where(Person.id==prof_id)
+    deficit2=PersonalLoad.select().join(Person).where(Person.id==prof_id)
     if Ototal is None:
         Ototal = 0
     if Atotal is None:
@@ -317,35 +317,35 @@ def Profile(prof_id,year,reports,):
             weight = request.form['weight']
             comment = request.form['comment']
             Adjustment.create(weight=weight, comment=comment, instructor=prof_id)
-        if request.form['subm1'] == "deficit":
-            defi2=Deficit.select()
-            for x in defi2:
-                if 'applied_start'+str(x.id) in request.form:
-                    if request.form['applied_start'+str(x.id)]!='':
-                        a = Deficit.update(applied_start=int(request.form['applied_start'+str(x.id)])).where(Deficit.id == x.id)
-                        a.execute()
-                if 'applied_final'+str(x.id) in request.form:
-                    if request.form['applied_start'+str(x.id)]!='':
-                        b = Deficit.update(applied_final=int(request.form['applied_final'+str(x.id)])).where(Deficit.id == x.id)
-                        b.execute()
-                if 'deficit'+str(x.id) in request.form:
-                    if request.form['applied_start'+str(x.id)]!='':
-                        c = Deficit.update(deficit=float(request.form['deficit'+str(x.id)])).where(Deficit.id == x.id)
-                        c.execute()
-            deficit3 = request.form['deficit3']
-            applied_start = request.form['applied_start']
-
-            var = Deficit.select().where(Deficit.applied==prof_id).order_by(Deficit.applied_start.desc()).get()
-            if deficit3=="":
-                deficit3=4.0
-            applied_start=int(applied_start)
-            var2 = int(var.applied_start)
-            if var2>=applied_start:
-                return 'error'
-            A=Deficit.update(applied_final=applied_start).where(Deficit.applied==prof_id,Deficit.applied_final==None)
-            A.execute()
-            Deficit.create(deficit=deficit3,applied=prof_id, applied_start=applied_start)
-            Adjustment.create(comment=("Deficit table update, applied_start"+str(applied_start)+" deficit"+str(deficit3)), applied=prof_id)
+#        if request.form['subm1'] == "deficit":
+#            defi2=Deficit.select()
+#            for x in defi2:
+#                if 'applied_start'+str(x.id) in request.form:
+#                    if request.form['applied_start'+str(x.id)]!='':
+#                        a = Deficit.update(applied_start=int(request.form['applied_start'+str(x.id)])).where(Deficit.id == x.id)
+#                        a.execute()
+#                if 'applied_final'+str(x.id) in request.form:
+#                    if request.form['applied_start'+str(x.id)]!='':
+#                        b = Deficit.update(applied_final=int(request.form['applied_final'+str(x.id)])).where(Deficit.id == x.id)
+#                        b.execute()
+#                if 'deficit'+str(x.id) in request.form:
+#                    if request.form['applied_start'+str(x.id)]!='':
+#                        c = Deficit.update(deficit=float(request.form['deficit'+str(x.id)])).where(Deficit.id == x.id)
+#                        c.execute()
+#            deficit3 = request.form['deficit3']
+#            applied_start = request.form['applied_start']
+#
+#            var = Deficit.select().where(Deficit.applied==prof_id).order_by(Deficit.applied_start.desc()).get()
+#            if deficit3=="":
+#                deficit3=4.0
+#            applied_start=int(applied_start)
+#            var2 = int(var.applied_start)
+#            if var2>=applied_start:
+#                return 'error'
+#            A=Deficit.update(applied_final=applied_start).where(Deficit.applied==prof_id,Deficit.applied_final==None)
+#            A.execute()
+#            Deficit.create(deficit=deficit3,applied=prof_id, applied_start=applied_start)
+#            Adjustment.create(comment=("Deficit table update, applied_start"+str(applied_start)+" deficit"+str(deficit3)), applied=prof_id)
         if request.form['subm1'] == "offering":
             off=Offering.select()
             for id in off:
