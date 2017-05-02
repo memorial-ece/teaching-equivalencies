@@ -28,8 +28,6 @@ Usage:
     teq import offerings FILE...
     teq import csv FILE
     teq export TABLE
-    teq autovet
-    teq calculate-deficits
 
 Commands:
     initdb           Create (empty) database, dropping any existing tables first
@@ -38,8 +36,6 @@ Commands:
     import people    Import instructors' details (URL to HTML "People" webpage)
     import offerings Import Banner offering data (HTML format)
     export           Export a database table to CSV
-    autovet          ???
-    calculate-deficits ???
 """
 
 import db
@@ -73,11 +69,5 @@ elif arguments['import']:
 
 elif arguments['export']:
     Core.export_file(arguments['FILE'])
-
-elif arguments['autovet']:
-    Core.percent()
-
-elif arguments['calculate-deficits']:
-    Core.test()
 
 database.close()
