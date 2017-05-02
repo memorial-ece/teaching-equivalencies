@@ -77,7 +77,7 @@ def import_courses(filenames):
     for (i, ((subject, code), details_by_year)) in enumerate(courses.items()):
         progress(i, course_count)
 
-        course, created = db.Course.get_or_create(subject = subject, code = code)
+        course, _ = db.Course.get_or_create(subject = subject, code = code)
         gen = None
 
         for year in sorted(details_by_year.keys()):
