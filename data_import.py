@@ -14,10 +14,10 @@
 # limitations under the License.
 
 import bs4
-import calendar
 import collections
 import db
 import itertools
+import muncal
 import re
 import sys
 
@@ -48,7 +48,7 @@ def import_courses(filenames):
 
         year = int(re.findall(r'\d{4}', filename)[-1])
 
-        for (name, c) in calendar.parseHTML(open(filename)).items():
+        for (name, c) in muncal.parseHTML(open(filename)).items():
             course = sanitize_course(name, c)
             courses_by_year[year].append(course)
 
