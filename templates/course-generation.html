@@ -15,7 +15,9 @@
     {%- endwith %}
 
     <h1>
-      {{ gen.course.subject }} {{ gen.course.code }}: {{ gen.title }}
+      <a href="/course/{{ gen.course.id }}">
+        {{ gen.course.subject }} {{ gen.course.code }}</a>:
+      {{ gen.title }}
     </h1>
 
     <form method="POST" action="/course/generation/{{ gen.id }}">
