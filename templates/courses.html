@@ -16,6 +16,7 @@
 
     <table class="table table-condensed table-hover table-striped">
       <thead>
+        <th></th>
         <th>Subject</th>
         <th>Code</th>
         <th>Most recent name</th>
@@ -25,8 +26,9 @@
       <tbody>
         {%- for c in courses %}
           <tr>
+            <td><a href="/course/{{ c.id }}">&#x1F50E;</a></td>
             <td>{{ c.subject }}</td>
-            <td><a href="/course/{{ c.id }}">{{ c.code }}</a></td>
+            <td>{{ c.code }}</td>
             <td>{{ c.most_recent_name() }}</td>
             <td>
               {%- for gen in c.generations %}
