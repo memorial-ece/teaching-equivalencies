@@ -1,3 +1,5 @@
+# -*- coding: utf8 -*-
+
 # Copyright 2017 Jonathan Anderson
 # Copyright 2017 Keegan Joseph Brophy
 #
@@ -142,8 +144,15 @@ class CourseGeneration(ValidatableModel):
             self.other_info != details['Other info'] or
             self.previous_course != details['PreviousCourseCode'])
 
+    def years(self):
+        if self.start_year == self.end_year:
+            return str(self.start_year)
+
+        else:
+            return u'%s–%s' % (self.start_year, self.end_year)
+
     def __str__(self):
-        return '%s (%d-%d)' % (self.course, self.start_year, self.end_year)
+        return '%s (%s)' % (self.course, self.years())
 
 
 class Student(BaseModel):
