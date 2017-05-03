@@ -1,0 +1,65 @@
+{%- extends "base.html" %}
+
+{% import "bootstrap/utils.html" as utils %}
+
+{% block content %}
+  <div class="container">
+    {%- with messages = get_flashed_messages(with_categories=True) %}
+    {%- if messages %}
+      <div class="row">
+        <div class="col-md-12">
+          {{utils.flashed_messages(messages)}}
+        </div>
+      </div>
+    {%- endif %}
+    {%- endwith %}
+
+    <h1>
+      {{ gen.course.subject }} {{ gen.course.code }}: {{ gen.title }}
+    </h1>
+
+    <form method="POST" action="/course/generation/{{ gen.id }}">
+      {{ form.hidden_tag() }}
+
+      <table class="table table-condensed table-hover table-striped">
+        <tbody>
+          <tr>
+            <th>From</th>
+            <td>{{ form.start_year(style = "width: 3em") }}</td>
+          </tr>
+          <tr>
+            <th>To</th>
+            <td>{{ form.end_year(style = "width: 3em") }}</td>
+          </tr>
+          <tr>
+            <th>Title</th>
+            <td>{{ form.title(style = "width: 32em") }}</td>
+          </tr>
+          <tr>
+            <th>Description</th>
+            <td>{{ form.description(rows = "6", style = "width: 32em") }}</td>
+          </tr>
+          <tr>
+            <th>Credit-hours</th>
+            <td>{{ form.credit_hours(style = "width: 2em") }}</td>
+          </tr>
+          <tr>
+            <th>Lecture hours</th>
+            <td>{{ form.lecture_hours(style = "width: 2em") }}</td>
+          </tr>
+          <tr>
+            <th>Lab hours</th>
+            <td>{{ form.lab_hours(style = "width: 2em") }}</td>
+          </tr>
+          <tr>
+            <th>Other info</th>
+            <td>{{ form.other_info(style = "width: 32em") }}</td>
+          </tr>
+          <tr>
+              <td colspan="2">{{ form.submit }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </form>
+  </div>
+{%- endblock %}
