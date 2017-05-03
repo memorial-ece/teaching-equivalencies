@@ -14,7 +14,10 @@
     {%- endif %}
     {%- endwith %}
 
-    <h1>{{ course.subject }} {{ course.code }}</h1>
+    <h1>
+      {{ course.subject }} {{ course.code }}:
+      {{ course.most_recent_name() }}
+    </h1>
 
     <table class="table table-condensed table-hover table-striped">
       <thead>

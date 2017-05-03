@@ -18,6 +18,7 @@
       <thead>
         <th>Subject</th>
         <th>Code</th>
+        <th>Most recent name</th>
         <th>Generations</th>
       </thead>
 
@@ -26,6 +27,7 @@
           <tr>
             <td>{{ c.subject }}</td>
             <td><a href="/course/{{ c.id }}">{{ c.code }}</a></td>
+            <td>{{ c.most_recent_name() }}</td>
             <td>
               {%- for gen in c.generations %}
                 <a href="/course/generation/{{ gen.id }}">

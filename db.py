@@ -124,6 +124,10 @@ class Course(BaseModel):
     # Because of courses like 200W we cannot store info as int
     code = CharField(4)
 
+    def most_recent_name(self):
+        gen = self.generations.order_by(CourseGeneration.end_year.desc())
+        return None if gen.count() == 0 else gen.get().title
+
     def __str__(self):
         return '%s %s' % (self.subject, self.code)
 
