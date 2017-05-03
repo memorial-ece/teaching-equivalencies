@@ -29,21 +29,26 @@ The following Python packages are required dependencies:
 To initialize the database, run:
 
 ```sh
-teq execute pt c (create)
+teq initdb
 ```
 
-Information about
+Information about instructors,
 [courses and course offerings](https://github.com/memorial-ece/course-data)
 can then be imported:
 
 ```sh
-teq intake <calendar_html_files>
-teq populate <offering_descriptions>
+teq import people http://www.mun.ca/engineering/about/people
+teq import courses <calendar_html_files>
+teq import offerings <offering_descriptions>
 ```
 
-Other steps that require further documentation include:
+
+### Web server
+
+To run the Web server in local (debug) mode, run:
 
 ```sh
-teq autovet (if you want it makes life easier for verification)
-teq execute deficits
+teq serve
 ```
+
+In production, the Web server should be run as a WSGI application.
