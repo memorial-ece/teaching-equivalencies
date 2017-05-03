@@ -28,6 +28,14 @@ class BaseModel(Model):
     class Meta:
         database = db
 
+class ValidatableModel(BaseModel):
+    """
+    An object that is derived from noisy data and thus requires
+    human validation.
+    """
+
+    validated = BooleanField(default = False)
+
 
 class Session(BaseModel):
     """
@@ -58,20 +66,19 @@ class Semester(BaseModel):
         return '%s %d-%d' % (self.session, self.year, self.year + 1)
 
 
-class Person(BaseModel):
+class Person(ValidatableModel):
     """
     A person in this database is a teaching professional
     """
     name = TextField()
     email = TextField(unique = True)
-    reviewed = BooleanField(default = False)
 
     def __str__(self):
         return self.name
 
     def __repr__(self):
-        return "Person { name: '%s', email: '%s', reviewed: %s }" % (
-            self.name, self.email, self.reviewed
+        return "Person { name: '%s', email: '%s', validated: %s }" % (
+            self.name, self.email, self.validated
         )
 
 
@@ -87,7 +94,7 @@ class TeachingLoad(BaseModel):
     load = FloatField()
 
 
-class PersonalLoad(BaseModel):
+class PersonalLoad(ValidatableModel):
     """
     A teaching load for an individual over a specific time period.
     """
@@ -105,13 +112,12 @@ class Course(BaseModel):
     subject = TextField()
     # Because of courses like 200W we cannot store info as int
     code = CharField(4)
-    reviewed = BooleanField(default = False)
 
     def __str__(self):
         return '%s %s' % (self.subject, self.code)
 
 
-class CourseGeneration(BaseModel):
+class CourseGeneration(ValidatableModel):
     """
     As a course changes over time it becomes necessary to update it to moder information
     """
@@ -126,7 +132,6 @@ class CourseGeneration(BaseModel):
     previous_course = TextField(null = True)
     start_year = IntegerField()
     end_year = IntegerField()
-    reviewed = BooleanField(default = False)
 
     def differs_from(self, details):
         return (self.labs != details['Labs'] or
@@ -152,7 +157,7 @@ class Student(BaseModel):
         return '%s (%s)' % (name, email)
 
 
-class Offering(BaseModel):
+class Offering(ValidatableModel):
     """
     Display the current courses on offering during the current session
     """
@@ -160,7 +165,6 @@ class Offering(BaseModel):
     semester = ForeignKeyField(Semester)
     generation = ForeignKeyField(CourseGeneration)
     sections = IntegerField(default = 1)
-    reviewed = BooleanField(default = False)
 
     def __str__(self):
         return '%s (%s)' % (self.generation.course, self.semester)
