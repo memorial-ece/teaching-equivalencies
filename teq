@@ -28,6 +28,7 @@ Usage:
     teq import offerings FILE...
     teq import csv FILE
     teq export TABLE
+    teq serve [--port=PORT]
 
 Commands:
     initdb           Create (empty) database, dropping any existing tables first
@@ -36,12 +37,31 @@ Commands:
     import people    Import instructors' details (URL to HTML "People" webpage)
     import offerings Import Banner offering data (HTML format)
     export           Export a database table to CSV
+    serve            Expose data through a local Web server
+
+Options:
+    -p,--port=PORT   TCP port to serve content on [default: 5000]
 """
 
 import db
 import docopt
+import sys
+import webapp
 
 arguments = docopt.docopt(__doc__)
+
+# Serving Web content is a bit special: we don't need to pre-open the database
+# (the web app will handle per-connection DB opening/closing).
+if arguments['serve']:
+    try:
+        port = int(arguments['--port'])
+        app = webapp.create_app()
+        app.run(port = port, debug = True)
+        sys.exit(0)
+
+    except ValueError:
+        sys.stderr.write("Invalid port number: '%s'\n" % arguments['--port'])
+        sys.exit(1)
 
 database = db.get()
 database.connect()

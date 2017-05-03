@@ -1,0 +1,40 @@
+{%- extends "base.html" %}
+
+{% import "bootstrap/utils.html" as utils %}
+
+{% block content %}
+  <div class="container">
+    {%- with messages = get_flashed_messages(with_categories=True) %}
+    {%- if messages %}
+      <div class="row">
+        <div class="col-md-12">
+          {{utils.flashed_messages(messages)}}
+        </div>
+      </div>
+    {%- endif %}
+    {%- endwith %}
+
+    <table class="table table-condensed table-hover table-striped">
+      <thead>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Reviewed</th>
+        <th></th>
+      </thead>
+
+      <tbody>
+        {%- for p in people %}
+          <form method="POST" action="/people">
+            {{ p.hidden_tag() }}
+            <tr>
+              <td>{{ p.name(style = "width: 15em") }}</td>
+              <td>{{ p.email(style = "width: 15em") }}</td>
+              <td>{{ p.validated }}</td>
+              <td>{{ p.submit }}</td>
+            </tr>
+          </form>
+        {%- endfor %}
+      </tbody>
+    </table>
+  </div>
+{%- endblock %}

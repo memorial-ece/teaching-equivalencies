@@ -14,6 +14,9 @@ The following Python packages are required dependencies:
 * docopt
 * dotenv
 * flask
+* flask-bootstrap
+* flask-nav
+* flask-wtf
 * fuzzywuzzy
 * levenshtein
 * matplotlib

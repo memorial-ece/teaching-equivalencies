@@ -148,61 +148,6 @@ def favicon():
                                'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 
-@app.route("/s/<search>/<id>", methods=['GET', 'POST'])
-def Coursehist(search,id):
-    if request.method == 'POST':
-        if request.form['subm1'] == "submit1":
-            labs = request.form['labs']
-            credit_hours = request.form['credit_hours']
-            lecture_hours = request.form['lecture_hours']
-            title = request.form['title']
-            comments = request.form['comments']
-            course = int(request.form['course'])
-            A=Course.get_or_create(code=course,subject='ENGI',reviewed=True)
-            other_info = request.form['other_info']
-            previous_course = request.form['previous_course']
-            start_year = request.form['start_year']
-            end_year = request.form['end_year']
-            CourseGeneration.create(labs=labs,
-                                    credit_hours=credit_hours,
-                                    lecture_hours=lecture_hours,
-                                    title=title,
-                                    comments=comments,
-                                    other_info=other_info,
-                                    previous_course=previous_course,
-                                    start_year=start_year,
-                                    end_year=end_year,
-                                    course=A[0].id,
-                                    reviewed=True)
-            B=CourseGeneration.select().where(CourseGeneration.labs==labs,
-                                              CourseGeneration.credit_hours==credit_hours,
-                                              CourseGeneration.lecture_hours==lecture_hours,
-                                              CourseGeneration.title==title,
-                                              CourseGeneration.comments==comments,
-                                              CourseGeneration.other_info==other_info,
-                                              CourseGeneration.previous_course==previous_course,
-                                              CourseGeneration.start_year==start_year,
-                                              CourseGeneration.end_year==end_year,
-                                              CourseGeneration.course==A[0].id,
-                                              CourseGeneration.reviewed==True).get()
-            Adjustment.create(comment='Created a course generation'+str(B.id),overide_address='CourseGeneration'+str(B.id))
-    list2 = []
-    if search=='course':
-        course = Course.get(Course.id==id)
-        generation = (CourseGeneration.select().join(Course).where(Course.id == id))
-        list1 = informationXchange(generation, list2)
-    if search =='gen':
-        gen = CourseGeneration.get(CourseGeneration.id == id)
-        course = Course.get(Course.code == gen.course.code)
-        generation = (CourseGeneration.select().join(Course).where(Course.code == gen.course.code))
-        list1 = informationXchange(generation, list2)
-    if search=='c':
-        course = Course.get(Course.code==id)
-        generation = (CourseGeneration.select().join(Course).where(Course.code == id))
-        list1 = informationXchange(generation, list2)
-    return render_template("course.html", course=course, generation=generation, list1=list1, course_id=id, search=search)
-
-
 @app.route("/profile/<prof_id>/<year>/<reports>", methods=['GET', 'POST'])
 def Profile(prof_id,year,reports,):
     term=termselect(year)
@@ -563,15 +508,3 @@ def reports(year):
                     list_total.append(total)
     offerplot(list_total,'Deficit','offer')
     return redirect('/')
-
-
-@app.route('/Dashboard')
-@app.route('/index')
-@app.route('/home')
-@app.route('/')
-def index():
-    return render_template("home.html")
-
-if __name__ == '__main__':
-    app.config["SECRET_KEY"] = "Ravioli"
-app.run(port=5000, debug=True)
