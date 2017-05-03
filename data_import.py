@@ -91,7 +91,7 @@ def import_courses(filenames):
                     credit_hours = details['Credit Hours'],
                     lecture_hours = details['Lecture Hours'],
                     title = details['Title'],
-                    comments = details['Description'],
+                    description = details['Description'],
                     other_info = details['Other info'],
                     previous_course = details['PreviousCourseCode'],
                     start_year = year,

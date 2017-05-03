@@ -70,9 +70,18 @@ class Semester(BaseModel):
 
 class Person(ValidatableModel):
     """
-    A person in this database is a teaching professional
+    A person can be an instructor, a graduate student under supervision
+    or even some combination of the two.
     """
+
+    # A student or employee ID
+    mun_id = IntegerField(null = True)
+
+    # Human-meaningful name (also used for processing of offering data).
     name = TextField()
+
+    # Email addresses are useful for the application to have, and they are also
+    # a useful signal of uniqueness.
     email = TextField(unique = True)
 
     def __str__(self):
@@ -124,11 +133,11 @@ class CourseGeneration(ValidatableModel):
     As a course changes over time it becomes necessary to update it to moder information
     """
     # due to situations like 4.5 these numbers are stored as doubles
-    labs = DoubleField(default = 0)
+    lab_hours = DoubleField(default = 0)
     credit_hours = DoubleField(default = 3)
     lecture_hours = DoubleField(default = 3)
     title = TextField()
-    comments = TextField(null = True)
+    description = TextField(null = True)
     course = ForeignKeyField(Course, related_name = 'generations')
     other_info = TextField(null = True)
     previous_course = TextField(null = True)
@@ -140,7 +149,7 @@ class CourseGeneration(ValidatableModel):
             self.credit_hours != details['Credit Hours'] or
             self.lecture_hours != details['Lecture Hours'] or
             self.title != details['Title'] or
-            self.comments != details['Description'] or
+            self.description != details['Description'] or
             self.other_info != details['Other info'] or
             self.previous_course != details['PreviousCourseCode'])
 
