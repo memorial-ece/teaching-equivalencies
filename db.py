@@ -315,7 +315,6 @@ class Activity(BaseModel):
     instruction = ForeignKeyField(Offering, null = True)
     supervision = ForeignKeyField(Supervision, null = True)
     project = ForeignKeyField(ProjectSupervision, null = True)
-    role = ForeignKeyField(Role, null = True)
     split = FloatField(null = True)
 
     def credit(self):
