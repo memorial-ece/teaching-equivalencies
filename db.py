@@ -84,6 +84,20 @@ class Person(ValidatableModel):
     # a useful signal of uniqueness.
     email = TextField(unique = True)
 
+    def graduate_supervision(self):
+        return (
+            a.supervision
+                for a in self.activities.where(Activity.supervision != None)
+        )
+
+    def project_supervision(self):
+        return (
+            a.project for a in self.activities.where(Activity.project != None)
+        )
+
+    def teaching(self):
+        return self.activities.where(Activity.instruction != None)
+
     def __str__(self):
         return self.name
 
@@ -158,6 +172,16 @@ class CourseGeneration(ValidatableModel):
             self.other_info != details['Other info'] or
             self.previous_course != details['PreviousCourseCode'])
 
+    def weights(self):
+        return [
+            ('Lectures', u'', self.credit_hours / 3.0),
+            (
+                'Labs', u'%f/3 ⨉ 0.27' % self.lab_hours,
+                self.lab_hours / 3.0 * 0.27
+            ),
+            ('Tutorials', u'', self.tutorial_hours * 0.14),
+        ]
+
     def years(self):
         if self.start_year == self.end_year:
             return str(self.start_year)
@@ -188,6 +212,20 @@ class Offering(ValidatableModel):
     semester = ForeignKeyField(Semester)
     generation = ForeignKeyField(CourseGeneration)
     sections = IntegerField(default = 1)
+
+    def credit(self):
+        return sum([ value for (_, _, value) in self.weights() ])
+
+    def weights(self):
+        if self.enrolment:
+            size_factor = max(1, (self.enrolment - 75.0) / 75 / 2)
+        else:
+            size_factor = 1
+
+        return [
+            (key, formula, val * size_factor)
+            for (key, formula, val) in self.generation.weights()
+        ]
 
     def __str__(self):
         return '%s (%s)' % (self.generation.course, self.semester)
@@ -237,6 +275,9 @@ class ProjectSupervision(BaseModel):
     project_class_id = ForeignKeyField(ProjectClass, related_name = 'projects')
     semester = ForeignKeyField(Semester, related_name = 'projects')
 
+    def credit(self):
+        return 0.125
+
 
 class Supervision(BaseModel):
     """
@@ -245,6 +286,11 @@ class Supervision(BaseModel):
     student_id = ForeignKeyField(Student)
     supervision_class_id = ForeignKeyField(SupervisionClass)
     semester = ForeignKeyField(Semester)
+
+    def credit(self):
+        # Graduate student supervision credit is based on an annual credit
+        # of 0.14, so divide it by three each term.
+        return 0.14 / 3
 
 
 class Adjustment(BaseModel):
@@ -271,6 +317,33 @@ class Activity(BaseModel):
     project = ForeignKeyField(ProjectSupervision, null = True)
     role = ForeignKeyField(Role, null = True)
     split = FloatField(null = True)
+
+    def credit(self):
+        shares = Activity.select()
+
+        if self.instruction:
+            total = self.instruction.credit()
+            shares = shares.where(Activity.instruction == self.instruction)
+
+        elif self.supervision:
+            total = self.supervision.credit()
+            shares = shares.where(Activity.supervision == self.supervision)
+
+        elif self.project:
+            total = self.project.credit()
+            shares = shares.where(Activity.project == self.project)
+
+        # If we have an explicit `split` value, use it, otherwise assume
+        # equal shares among all visible instructors/supervisors
+        if self.split: return total / self.split
+        else: return total / shares.count()
+
+    def __getattr__(self, name):
+        print("name: '%s'" % name)
+        if name == 'total_credit':
+            return self.credit()
+
+        raise AttributeError
 
 
 ALL_TABLES = [
