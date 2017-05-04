@@ -217,10 +217,9 @@ class Offering(ValidatableModel):
         return sum([ value for (_, _, value) in self.weights() ])
 
     def weights(self):
+        size_factor = 1
         if self.enrolment:
-            size_factor = max(1, (self.enrolment - 75.0) / 75 / 2)
-        else:
-            size_factor = 1
+            size_factor += max(0, (self.enrolment - 75.0) / 75 / 2)
 
         section_factor = {
             'Labs': self.lab_sections,
