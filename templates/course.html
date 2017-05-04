@@ -14,46 +14,62 @@
     {%- endif %}
     {%- endwith %}
 
-    <h1>
-      {{ course.subject }} {{ course.code }}:
-      {{ course.most_recent_name() }}
+    <h1 class="page-header">
+      {{ course.subject }} {{ course.code }}
     </h1>
 
-    <table class="table table-condensed table-hover table-striped">
-      <thead>
-        <th></th>
-        <th>From</th>
-        <th>To</th>
-        <th>Title</th>
-        <th>Cred</th>
-        <th>Lect</th>
-        <th>Labs</th>
-        <th>Comments</th>
-        <th>Other</th>
-        <th></th>
-      </thead>
+    {%- for gen in generations %}
+      <div class="panel">
+        <div class="panel-heading">
+          <a class="pull-right" href="/course/generation/{{ gen.id }}">
+            &#x1F50E;
+          </a>
 
-      <tbody>
-        {%- for gen in generations %}
-          <form method="POST" action="/course/{{ course.id }}"/>
+          <a href="/course/generation/{{ gen.id }}">
+            {{ gen.years() }}
+          </a>
+        </div>
+        <div class="panel-body">
+          <div class="col-md-2">
+            <div>{{ gen.credit_hours }} credit-hours</div>
+            <div>{{ gen.lecture_hours }} lecture hours</div>
+            <div>{{ gen.lab_hours }} lab hours</div>
+          </div>
+
+          <div class="col-md-8">
+            <a href="/course/generation/{{ gen.id }}">{{ gen.title }}</a>
+            {{ gen.description }}
+          </div>
+
+          <div class="col-md-2">
+            {{ gen.other_info }}
+          </div>
+        </div>
+      </div>
+
+      <table class="table table-bordered table-striped">
+        <thead>
+          <tr>
+            <th>Semester</th>
+            <th>Enrolment</th>
+            <th>Lab sections</th>
+            <th>Credit</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {%- for o in gen.offerings %}
             <tr>
-              {{ gen.hidden_tag() }}
               <td>
-                <a href="/course/generation/{{ gen.id.data }}">&#x1F50E;</a>
+                <a href="/course/offering/{{ o.id }}">{{ o.semester }}</a>
               </td>
-              <td>{{ gen.start_year(style = "width: 3em") }}</td>
-              <td>{{ gen.end_year(style = "width: 3em") }}</td>
-              <td>{{ gen.title(style = "width: 15em") }}</td>
-              <td>{{ gen.credit_hours(style = "width: 2em") }}</td>
-              <td>{{ gen.lecture_hours(style = "width: 2em") }}</td>
-              <td>{{ gen.lab_hours(style = "width: 2em") }}</td>
-              <td>{{ gen.description(rows = "5", style = "width: 20em") }}</td>
-              <td>{{ gen.other_info }}</td>
-              <td>{{ gen.submit }}</td>
+              <td class="text-right">{{ o.enrolment }}</td>
+              <td class="text-right">{{ o.lab_sections }}</td>
+              <td class="text-right">{{ o.credit() }}</td>
             </tr>
-          </form>
-        {%- endfor %}
-      </tbody>
-    </table>
+          {%- endfor %}
+        </tbody>
+      </table>
+    {%- endfor %}
   </div>
 {%- endblock %}
