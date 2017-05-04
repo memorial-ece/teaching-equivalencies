@@ -1,0 +1,42 @@
+{%- extends "base.html" %}
+
+{% import "bootstrap/utils.html" as utils %}
+
+{% block content %}
+  <div class="container">
+    {%- with messages = get_flashed_messages(with_categories=True) %}
+    {%- if messages %}
+      <div class="row">
+        <div class="col-md-12">
+          {{utils.flashed_messages(messages)}}
+        </div>
+      </div>
+    {%- endif %}
+    {%- endwith %}
+
+    <h1 class="page-header pull-right">{{ load.load }}</h1>
+    <h1 class="page-header">Teaching load: {{ load.name }}</h1>
+
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Instructor</th>
+          <th>Start</th>
+          <th>End</th>
+          <th>Validated</th>
+        </tr>
+      </thead>
+      <tbody>
+        {%- for l in load.with_load %}
+          <tr>
+            <td>{{ l.instructor.name }}</td>
+            <td>{{ l.start }}</td>
+            <td>{{ l.end }}</td>
+            <td>{{ l.validated }}</td>
+          </tr>
+        {%- endfor %}
+      </tbody>
+    </table>
+  </div>
+{%- endblock %}
+

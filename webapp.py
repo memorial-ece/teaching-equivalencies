@@ -137,10 +137,24 @@ def person(id):
     return flask.render_template('person.html', person = p, sum = sum)
 
 
+@frontend.route('/teaching-load/<int:id>', methods = [ 'GET', 'POST' ])
+def teaching_load(id):
+    l = db.TeachingLoad.get(id = id)
+
+    return flask.render_template('teaching-load.html', load = l)
+
+
+@frontend.route('/teaching-loads', methods = [ 'GET', 'POST' ])
+def teaching_loads():
+    return flask.render_template('teaching-loads.html',
+        loads = db.TeachingLoad.select())
+
+
 nav.nav.register_element('frontend_top',
     nav.Navbar(
         nav.View('teq', '.index'),
         nav.View('Courses', '.courses'),
+        nav.View('Loads', '.teaching_loads'),
         nav.View('People', '.people'),
     )
 )
