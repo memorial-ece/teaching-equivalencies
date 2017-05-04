@@ -323,7 +323,9 @@ class Activity(BaseModel):
     # Who performed the activity.
     subject = ForeignKeyField(Person, related_name = 'activities')
 
-    instruction = ForeignKeyField(Offering, null = True)
+    instruction = ForeignKeyField(Offering, null = True,
+            related_name = 'instructors')
+
     supervision = ForeignKeyField(Supervision, null = True)
     project = ForeignKeyField(ProjectSupervision, null = True)
     split = FloatField(null = True)
