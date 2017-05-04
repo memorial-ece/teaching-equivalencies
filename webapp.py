@@ -134,7 +134,7 @@ def person(id):
         p.validated = f.validated.data
         p.save()
 
-    return flask.render_template('person.html', person = p, sum = sum)
+    return flask.render_template('person.html', db = db, person = p, sum = sum)
 
 
 @frontend.route('/teaching-load/<int:id>', methods = [ 'GET', 'POST' ])

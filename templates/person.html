@@ -23,7 +23,7 @@
     </div>
 
     <div class="row">
-      <div class="col-md-5">
+      <div class="col-md-4">
         <h2 class="page-header pull-right text-success">
           {{ person.teaching() | sum(attribute = 'total_credit') }}
         </h2>
@@ -79,20 +79,22 @@
           </div>
         {%- endfor %}
       </div>
-      <div class="col-md-3">
+      <div class="col-md-4">
         <h2 class="page-header">Load</h2>
 
-        {%- for l in person.teaching_loads %}
-          <div class="panel">
+        {%- for l in person.teaching_loads.order_by(db.PersonalLoad.end) %}
+          <div class="panel {{
+              'panel-danger' if l.load.load > 0 else 'panel-success'
+            }}">
             <div class="panel-heading">
-              {{ l.years() }}
-            </div>
-            <div class="panel-body">
-              <div class="pull-right text-danger">
+              <div class="pull-right">
                 {{ l.load.load }}
               </div>
+              {{ l.load.name }}
+            </div>
+            <div class="panel-body">
 
-              <a href="/teaching-load/{{ l.load.id }}">{{ l.load.name }}</a>
+              {{ l.years() }}
             </div>
           </div>
         {%- endfor %}
