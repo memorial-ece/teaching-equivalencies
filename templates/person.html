@@ -47,6 +47,7 @@
                 {% for (label, formula, value) in activity.instruction.weights() %}
                   <tr>
                     <th>{{ label }}</th>
+                    <td>{{ formula }}</td>
                     <td>{{ value }}</td>
                   </tr>
                 {% endfor %}
