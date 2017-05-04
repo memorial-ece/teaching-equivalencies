@@ -14,34 +14,38 @@
     {%- endif %}
     {%- endwith %}
 
-    {%- for load in loads %}
-      <div class="panel {{ 'panel-success' if load.load > 0 else 'panel-danger' }}">
-        <div class="panel-heading">
-          <div class="pull-right">{{ load.load }}</div>
-          Teaching load: {{ load.name }}
-        </div>
+    <h2 class="page-header">Teaching loads</h2>
 
-        <div class="panel-body">
-          <table class="table table-striped">
-            <thead>
-              <tr>
-                <th>Instructor</th>
-                <th>Start</th>
-                <th>End</th>
-                <th>Validated</th>
-              </tr>
-            </thead>
-            <tbody>
-              {%- for l in load.with_load %}
+    {%- for load in loads %}
+      <div class="col-md-6">
+        <div class="panel {{ 'panel-success' if load.load > 0 else 'panel-danger' }}">
+          <div class="panel-heading">
+            <div class="pull-right">{{ load.load }}</div>
+            {{ load.name }}
+          </div>
+
+          <div class="panel-body">
+            <table class="table table-striped">
+              <thead>
                 <tr>
-                  <td>{{ l.instructor.name }}</td>
-                  <td>{{ l.start }}</td>
-                  <td>{{ l.end }}</td>
-                  <td>{{ l.validated }}</td>
+                  <th>Instructor</th>
+                  <th>Start</th>
+                  <th>End</th>
+                  <th>Val</th>
                 </tr>
-              {%- endfor %}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {%- for l in load.with_load %}
+                  <tr>
+                    <td>{{ l.instructor.name }}</td>
+                    <td>{{ l.start }}</td>
+                    <td>{{ l.end }}</td>
+                    <td>{{ l.validated }}</td>
+                  </tr>
+                {%- endfor %}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     {%- endfor %}
