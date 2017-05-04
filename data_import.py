@@ -196,7 +196,7 @@ def import_offerings(files):
                     elif candidates.count() == 1:
                         db.Activity.get_or_create(
                             subject = candidates.get(),
-                            offering = offering,
+                            instruction = offering,
                         )
 
                     else:
