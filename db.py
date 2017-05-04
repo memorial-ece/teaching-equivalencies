@@ -163,6 +163,9 @@ class CourseGeneration(ValidatableModel):
     start_year = IntegerField()
     end_year = IntegerField()
 
+    class Meta:
+        order_by = [ '-end_year' ]
+
     def differs_from(self, details):
         return (self.labs != details['Labs'] or
             self.credit_hours != details['Credit Hours'] or
@@ -212,6 +215,9 @@ class Offering(ValidatableModel):
     semester = ForeignKeyField(Semester)
     generation = ForeignKeyField(CourseGeneration, related_name = 'offerings')
     lab_sections = IntegerField(default = 1)
+
+    class Meta:
+        order_by = [ '-semester' ]
 
     def credit(self):
         return sum([ value for (_, _, value) in self.weights() ])
