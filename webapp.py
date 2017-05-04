@@ -46,7 +46,7 @@ def index():
 def course(id):
     course = db.Course.get(id = id)
 
-    f = forms.UpdateCourseGeneration()
+    f = forms.CourseGenerationUpdate()
     if f.validate_on_submit():
         g = db.CourseGeneration.get(id = f.id.data)
         g.lab_hours = f.lab_hours.data
@@ -72,7 +72,7 @@ def course(id):
 @frontend.route('/course/generation/<int:id>', methods = [ 'GET', 'POST' ])
 def course_generation(id):
     g = db.CourseGeneration.get(id = id)
-    f = forms.UpdateCourseGeneration(obj = g)
+    f = forms.CourseGenerationUpdate(obj = g)
 
     if f.validate_on_submit():
         g.lab_hours = f.lab_hours.data
@@ -91,7 +91,7 @@ def course_generation(id):
 @frontend.route('/course/offering/<int:id>', methods = [ 'GET', 'POST' ])
 def course_offering(id):
     o = db.Offering.get(id = id)
-    f = forms.UpdateCourseOffering(obj = o)
+    f = forms.CourseOfferingUpdate(obj = o)
 
     if f.validate_on_submit():
         o.enrolment = f.enrolment.data
@@ -109,7 +109,7 @@ def courses():
 
 @frontend.route('/people', methods = [ 'GET', 'POST' ])
 def people():
-    f = forms.UpdatePerson()
+    f = forms.PersonUpdate()
     if f.validate_on_submit():
         p = db.Person.get(id = f.id.data)
         p.name = f.name.data
@@ -118,7 +118,7 @@ def people():
         p.save()
 
     people = db.Person.select().order_by(db.Person.name)
-    person_forms = [ forms.UpdatePerson(None, obj = p) for p in people ]
+    person_forms = [ forms.PersonUpdate(None, obj = p) for p in people ]
 
     return flask.render_template('people.html', people = person_forms)
 
@@ -127,7 +127,7 @@ def people():
 def person(id):
     p = db.Person.get(id = id)
 
-    f = forms.UpdatePerson()
+    f = forms.PersonUpdate()
     if f.validate_on_submit():
         p.name = f.name.data
         p.email = f.email.data

@@ -18,7 +18,7 @@ from wtforms.widgets import HiddenInput
 from wtforms.validators import Required, Email
 
 
-class UpdateCourseGeneration(FlaskForm):
+class CourseGenerationUpdate(FlaskForm):
     id = IntegerField(widget = HiddenInput())
     lab_hours = FloatField()
     credit_hours = FloatField()
@@ -32,7 +32,7 @@ class UpdateCourseGeneration(FlaskForm):
     submit = SubmitField(u'Update')
 
 
-class UpdateCourseOffering(FlaskForm):
+class CourseOfferingUpdate(FlaskForm):
     id = IntegerField(widget = HiddenInput())
     enrolment = IntegerField()
     lab_sections = IntegerField()
@@ -40,7 +40,7 @@ class UpdateCourseOffering(FlaskForm):
     submit = SubmitField(u'Update')
 
 
-class UpdatePerson(FlaskForm):
+class PersonUpdate(FlaskForm):
     id = IntegerField(widget = HiddenInput())
     name = TextField(u'Name', validators = [ Required() ])
     email = TextField(u'Email address', validators = [ Email() ])
