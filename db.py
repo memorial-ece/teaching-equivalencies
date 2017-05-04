@@ -338,7 +338,6 @@ class Activity(BaseModel):
         else: return total / shares.count()
 
     def __getattr__(self, name):
-        print("name: '%s'" % name)
         if name == 'total_credit':
             return self.credit()
 
