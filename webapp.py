@@ -105,6 +105,20 @@ def people():
     return flask.render_template('people.html', people = person_forms)
 
 
+@frontend.route('/person/<int:id>', methods = [ 'GET', 'POST' ])
+def person(id):
+    p = db.Person.get(id = id)
+
+    f = forms.UpdatePerson()
+    if f.validate_on_submit():
+        p.name = f.name.data
+        p.email = f.email.data
+        p.validated = f.validated.data
+        p.save()
+
+    return flask.render_template('person.html', person = p, sum = sum)
+
+
 nav.nav.register_element('frontend_top',
     nav.Navbar(
         nav.View('ECE::teq', '.index'),

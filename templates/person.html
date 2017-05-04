@@ -1,0 +1,81 @@
+{%- extends "base.html" %}
+
+{% import "bootstrap/utils.html" as utils %}
+
+{% block content %}
+  <div class="container">
+    {%- with messages = get_flashed_messages(with_categories=True) %}
+    {%- if messages %}
+      <div class="row">
+        <div class="col-md-12">
+          {{utils.flashed_messages(messages)}}
+        </div>
+      </div>
+    {%- endif %}
+    {%- endwith %}
+
+    <div class="row">
+      <div class="col-md-12">
+        <div class="page-header">
+          <h1>{{ person.name }}</h1>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <h2 class="page-header pull-right text-success">
+          {{ person.teaching() | sum(attribute = 'total_credit') }}
+        </h2>
+        <h2 class="page-header">Teaching</h2>
+
+        {%- for activity in person.teaching() %}
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h4 class="least-content pull-right text-success">
+                {{ activity.total_credit }}
+              </h4>
+              <h4>
+                <a href="/course/{{ activity.instruction.generation.course.id }}">
+                  {{ activity.instruction.generation.course }}</a>:
+                {{ activity.instruction.semester }}
+              </h4>
+            </div>
+
+            <div class="panel-body">
+              <table class="table table-striped">
+                {% for (label, formula, value) in activity.instruction.weights() %}
+                  <tr>
+                    <th>{{ label }}</th>
+                    <td>{{ value }}</td>
+                  </tr>
+                {% endfor %}
+              </table>
+            </div>
+          </div>
+        {%- endfor %}
+      </div>
+      <div class="col-md-6">
+        <h2 class="page-header">Supervision</h2>
+
+        <h3 class="page-header">Graduate students</h3>
+        {%- for a in person.graduate_supervision() %}
+          <div class="well">
+            <p>
+              hi
+            </p>
+          </div>
+        {%- endfor %}
+
+        <h3 class="page-header">Projects</h3>
+        {%- for a in person.project_supervision() %}
+          <div class="well">
+            <p>
+              hi
+            </p>
+          </div>
+        {%- endfor %}
+      </div>
+    </div>
+  </div>
+{%- endblock %}

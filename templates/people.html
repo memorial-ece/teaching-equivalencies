@@ -16,6 +16,7 @@
 
     <table class="table table-condensed table-hover table-striped">
       <thead>
+        <th></th>
         <th>Name</th>
         <th>Email</th>
         <th>Reviewed</th>
@@ -27,6 +28,7 @@
           <form method="POST" action="/people">
             {{ p.hidden_tag() }}
             <tr>
+              <td><a href="/person/{{ p.id.data }}">&#x1F50E;</a></td>
               <td>{{ p.name(style = "width: 15em") }}</td>
               <td>{{ p.email(style = "width: 15em") }}</td>
               <td>{{ p.validated }}</td>
