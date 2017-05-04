@@ -398,4 +398,4 @@ def init(drop_first = True):
     db.summer = Session.create(code = 's', name = 'Summer')
 
     TeachingLoad.create(name = 'Engineering ASM', load = 4.0)
-    TeachingLoad.create(name = 'New faculty remission', load = -1)
+    TeachingLoad.create(name = 'New faculty remission', load = -1.0)
