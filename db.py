@@ -124,10 +124,15 @@ class PersonalLoad(ValidatableModel):
     A teaching load for an individual over a specific time period.
     """
 
-    instructor = ForeignKeyField(Person)
+    instructor = ForeignKeyField(Person, related_name = 'teaching_loads')
     load = ForeignKeyField(TeachingLoad)
     start = ForeignKeyField(Semester, related_name = 'load_starts')
     end = ForeignKeyField(Semester, related_name = 'load_ends')
+
+    def years(self):
+        return u'%s %s–%s %s' % (
+            self.start.session, self.start.year,
+            self.end.session, self.end.year)
 
 
 class Course(BaseModel):
@@ -393,3 +398,4 @@ def init(drop_first = True):
     db.summer = Session.create(code = 's', name = 'Summer')
 
     TeachingLoad.create(name = 'Engineering ASM (typical)', load = 4.0)
+    TeachingLoad.create(name = 'New faculty remission', load = -1)

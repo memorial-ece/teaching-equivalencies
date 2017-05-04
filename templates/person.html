@@ -23,7 +23,7 @@
     </div>
 
     <div class="row">
-      <div class="col-md-6">
+      <div class="col-md-5">
         <h2 class="page-header pull-right text-success">
           {{ person.teaching() | sum(attribute = 'total_credit') }}
         </h2>
@@ -58,7 +58,7 @@
           </div>
         {%- endfor %}
       </div>
-      <div class="col-md-6">
+      <div class="col-md-4">
         <h2 class="page-header">Supervision</h2>
 
         <h3 class="page-header">Graduate students</h3>
@@ -79,6 +79,25 @@
           </div>
         {%- endfor %}
       </div>
+      <div class="col-md-3">
+        <h2 class="page-header">Load</h2>
+
+        {%- for l in person.teaching_loads %}
+          <div class="panel">
+            <div class="panel-heading">
+              {{ l.years() }}
+            </div>
+            <div class="panel-body">
+              <div class="pull-right text-danger">
+                {{ l.load.load }}
+              </div>
+
+              {{ l.load.name }}
+            </div>
+          </div>
+        {%- endfor %}
+      </div>
+    </div>
     </div>
   </div>
 {%- endblock %}
