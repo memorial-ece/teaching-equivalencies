@@ -14,11 +14,63 @@
     {%- endif %}
     {%- endwith %}
 
-    <div class="jumbotron">
-      <h2>ECE::teq</h2>
-      <p>
-        Teaching equivalency tracking for ECE ASMs
-      </p>
+    <div class="row">
+      <div class="jumbotron">
+        <h2>ECE::teq</h2>
+        <p>
+          Teaching equivalencies in the
+          Department of Electrical and Computer Engineering
+        </p>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <h2 class="page-header">Courses</h2>
+
+        <table class="table table-condensed table-hover table-striped">
+          <thead>
+            <th></th>
+            <th>Subject</th>
+            <th>Code</th>
+            <th>Most recent name</th>
+          </thead>
+
+          <tbody>
+            {%- for c in courses %}
+              <tr>
+                <td><a href="/course/{{ c.id }}">&#x1F50E;</a></td>
+                <td>{{ c.subject }}</td>
+                <td>{{ c.code }}</td>
+                <td>{{ c.most_recent_name() }}</td>
+              </tr>
+            {%- endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="col-md-6">
+        <h2 class="page-header">People</h2>
+
+        <table class="table table-condensed table-hover table-striped">
+          <thead>
+            <th></th>
+            <th>Name</th>
+            <th>Email</th>
+            <th></th>
+          </thead>
+
+          <tbody>
+            {%- for p in people %}
+              <tr>
+                <td><a href="/person/{{ p.id.data }}">&#x1F50E;</a></td>
+                <td>{{ p.name }}</td>
+                <td>{{ p.email }}</td>
+              </tr>
+            {%- endfor %}
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 {%- endblock %}

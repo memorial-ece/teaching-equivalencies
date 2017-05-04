@@ -34,7 +34,12 @@ def _db_close(exc):
 
 @frontend.route('/')
 def index():
-    return flask.render_template('index.html')
+    return flask.render_template('index.html',
+        courses = db.Course.select().order_by(
+            db.Course.subject, db.Course.code),
+
+        people = db.Person.select(),
+    )
 
 
 @frontend.route('/course/<int:id>', methods = [ 'GET', 'POST' ])
