@@ -51,6 +51,7 @@
         <thead>
           <tr>
             <th>Semester</th>
+            <th>Instructor(s)</th>
             <th>Enrolment</th>
             <th>Lab sections</th>
             <th>Credit</th>
@@ -62,6 +63,14 @@
             <tr>
               <td>
                 <a href="/course/offering/{{ o.id }}">{{ o.semester }}</a>
+              </td>
+              <td>
+                {%- for activity in o.instructors %}
+                  <a href="/person/{{ activity.subject.id }}">
+                    {{ activity.subject }}
+                  </a>
+                  {{- "," if not loop.last }}
+                {%- endfor %}
               </td>
               <td class="text-right">{{ o.enrolment }}</td>
               <td class="text-right">{{ o.lab_sections }}</td>
