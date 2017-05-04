@@ -139,7 +139,7 @@ def person(id):
 
 nav.nav.register_element('frontend_top',
     nav.Navbar(
-        nav.View('ECE::teq', '.index'),
+        nav.View('teq', '.index'),
         nav.View('Courses', '.courses'),
         nav.View('People', '.people'),
     )
