@@ -127,7 +127,7 @@ class PersonalLoad(ValidatableModel):
     instructor = ForeignKeyField(Person, related_name = 'teaching_loads')
     load = ForeignKeyField(TeachingLoad)
     start = ForeignKeyField(Semester, related_name = 'load_starts')
-    end = ForeignKeyField(Semester, related_name = 'load_ends')
+    end = ForeignKeyField(Semester, null = True, related_name = 'load_ends')
 
     def years(self):
         return u'%s %s–%s %s' % (
