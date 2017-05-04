@@ -132,9 +132,7 @@ class PersonalLoad(ValidatableModel):
     end = ForeignKeyField(Semester, null = True, related_name = 'load_ends')
 
     def years(self):
-        return u'%s %s–%s %s' % (
-            self.start.session, self.start.year,
-            self.end.session, self.end.year)
+        return u'%s–%s' % (self.start, self.end if self.end else '')
 
 
 class Course(BaseModel):
