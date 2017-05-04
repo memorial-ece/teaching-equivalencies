@@ -54,9 +54,9 @@ def course(id):
         g.end_year = f.end_year.data
         g.save()
 
-    generations = [
-        forms.UpdateCourseGeneration(None, obj = g) for g in course.generations
-    ]
+    generations = (
+        course.generations.order_by(db.CourseGeneration.end_year.desc())
+    )
 
     return flask.render_template('course.html',
         course = course,

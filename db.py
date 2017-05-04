@@ -210,7 +210,7 @@ class Offering(ValidatableModel):
     """
     enrolment = IntegerField(null = True)
     semester = ForeignKeyField(Semester)
-    generation = ForeignKeyField(CourseGeneration)
+    generation = ForeignKeyField(CourseGeneration, related_name = 'offerings')
     lab_sections = IntegerField(default = 1)
 
     def credit(self):
