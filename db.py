@@ -140,6 +140,7 @@ class CourseGeneration(ValidatableModel):
     lab_hours = DoubleField(default = 0)
     credit_hours = DoubleField(default = 3)
     lecture_hours = DoubleField(default = 3)
+    tutorial_hours = DoubleField(default = 0)
     title = TextField()
     description = TextField(null = True)
     course = ForeignKeyField(Course, related_name = 'generations')
