@@ -264,7 +264,7 @@ class Activity(BaseModel):
     """
 
     # Who performed the activity.
-    subject = ForeignKeyField(Person)
+    subject = ForeignKeyField(Person, related_name = 'activities')
 
     offering = ForeignKeyField(Offering, null = True)
     supervision = ForeignKeyField(Supervision, null = True)
