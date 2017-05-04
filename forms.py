@@ -47,3 +47,10 @@ class PersonUpdate(FlaskForm):
     validated = BooleanField(u'This information has been human-validated')
 
     submit = SubmitField(u'Update')
+
+
+class TeachingLoadCreate(FlaskForm):
+    name = TextField(u'Name', validators = [ Required() ])
+    load = FloatField(u'Load', validators = [ Required() ])
+
+    submit = SubmitField(u'Create')

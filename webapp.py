@@ -144,10 +144,21 @@ def teaching_load(id):
     return flask.render_template('teaching-load.html', load = l)
 
 
+@frontend.route('/teaching-load/create', methods = [ 'GET', 'POST' ])
+def teaching_load_create():
+    f = forms.TeachingLoadCreate()
+    if f.validate_on_submit():
+        l = db.TeachingLoad.create(name = f.name.data, load = f.load.data)
+    else:
+        flask.flash('Invalid form input: %s' % f.data, category = 'error')
+
+    return flask.redirect(flask.url_for('.teaching_loads'))
+
+
 @frontend.route('/teaching-loads', methods = [ 'GET', 'POST' ])
 def teaching_loads():
     return flask.render_template('teaching-loads.html',
-        loads = db.TeachingLoad.select())
+        loads = db.TeachingLoad.select(), new = forms.TeachingLoadCreate())
 
 
 nav.nav.register_element('frontend_top',
