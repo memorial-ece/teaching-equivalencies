@@ -211,7 +211,7 @@ class Offering(ValidatableModel):
     enrolment = IntegerField(null = True)
     semester = ForeignKeyField(Semester)
     generation = ForeignKeyField(CourseGeneration)
-    sections = IntegerField(default = 1)
+    lab_sections = IntegerField(default = 1)
 
     def credit(self):
         return sum([ value for (_, _, value) in self.weights() ])
@@ -222,8 +222,14 @@ class Offering(ValidatableModel):
         else:
             size_factor = 1
 
+        section_factor = {
+            'Labs': self.lab_sections,
+            'Lectures': 1.0,
+            'Tutorials': 1.0,
+        }
+
         return [
-            (key, formula, val * size_factor)
+            (key, formula, val * size_factor * section_factor[key])
             for (key, formula, val) in self.generation.weights()
         ]
 

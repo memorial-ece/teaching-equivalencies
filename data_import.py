@@ -211,7 +211,7 @@ def import_offerings(files):
             # to increment the section count for the existing offering data.
             else:
                 assert offering is not None
-                offering.sections += 1
+                offering.lab_sections += 1
                 offering.save()
 
 
