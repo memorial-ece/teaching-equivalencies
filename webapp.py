@@ -83,6 +83,19 @@ def course_generation(id):
     return flask.render_template('course-generation.html', form = f, gen = g)
 
 
+@frontend.route('/course/offering/<int:id>', methods = [ 'GET', 'POST' ])
+def course_offering(id):
+    o = db.Offering.get(id = id)
+    f = forms.UpdateCourseOffering(obj = o)
+
+    if f.validate_on_submit():
+        o.enrolment = f.enrolment.data
+        o.lab_sections = f.lab_sections.data
+        o.save()
+
+    return flask.render_template('course-offering.html', form = f, offering = o)
+
+
 @frontend.route('/courses')
 def courses():
     courses = db.Course.select().order_by(db.Course.subject, db.Course.code)

@@ -38,7 +38,9 @@
               <h4>
                 <a href="/course/{{ activity.instruction.generation.course.id }}">
                   {{ activity.instruction.generation.course }}</a>:
-                {{ activity.instruction.semester }}
+                <a href="/course/offering/{{ activity.instruction.id }}">
+                  {{ activity.instruction.semester }}
+                </a>
               </h4>
             </div>
 
@@ -47,8 +49,8 @@
                 {% for (label, formula, value) in activity.instruction.weights() %}
                   <tr>
                     <th>{{ label }}</th>
-                    <td>{{ formula }}</td>
-                    <td>{{ value }}</td>
+                    <td class="text-center">{{ formula }}</td>
+                    <td class="text-right">{{ value }}</td>
                   </tr>
                 {% endfor %}
               </table>

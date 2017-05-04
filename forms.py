@@ -32,6 +32,14 @@ class UpdateCourseGeneration(FlaskForm):
     submit = SubmitField(u'Update')
 
 
+class UpdateCourseOffering(FlaskForm):
+    id = IntegerField(widget = HiddenInput())
+    enrolment = IntegerField()
+    lab_sections = IntegerField()
+
+    submit = SubmitField(u'Update')
+
+
 class UpdatePerson(FlaskForm):
     id = IntegerField(widget = HiddenInput())
     name = TextField(u'Name', validators = [ Required() ])

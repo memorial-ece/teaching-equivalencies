@@ -1,0 +1,47 @@
+{%- extends "base.html" %}
+
+{% import "bootstrap/utils.html" as utils %}
+
+{% block content %}
+  <div class="container">
+    {%- with messages = get_flashed_messages(with_categories=True) %}
+    {%- if messages %}
+      <div class="row">
+        <div class="col-md-12">
+          {{utils.flashed_messages(messages)}}
+        </div>
+      </div>
+    {%- endif %}
+    {%- endwith %}
+
+    <h2 class="page-header pull-right">
+      {{ offering.semester }}
+    </h2>
+
+    <h2 class="page-header">
+      <a href="/course/{{ offering.generation.course.id }}">
+        {{ offering.generation.course.subject }} {{ offering.generation.course.code }}</a>:
+      {{ offering.generation.title }}
+    </h2>
+
+    <form method="POST" action="/course/offering/{{ offering.id }}">
+      {{ form.hidden_tag() }}
+
+      <table class="table table-condensed table-hover table-striped">
+        <tbody>
+          <tr>
+            <th>Enrolment</th>
+            <td>{{ form.enrolment }}</td>
+          </tr>
+          <tr>
+            <th>Lab sections</th>
+            <td>{{ form.lab_sections }}</td>
+          </tr>
+          <tr>
+              <td colspan="2">{{ form.submit }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </form>
+  </div>
+{%- endblock %}
