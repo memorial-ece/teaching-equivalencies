@@ -19,6 +19,7 @@
         <th></th>
         <th>Name</th>
         <th>Email</th>
+        <th>Current</th>
         <th>Reviewed</th>
         <th></th>
       </thead>
@@ -31,6 +32,13 @@
               <td><a href="/person/{{ p.id.data }}">&#x1F50E;</a></td>
               <td>{{ p.name(style = "width: 15em") }}</td>
               <td>{{ p.email(style = "width: 15em") }}</td>
+              <td>{{
+                '✔' if db.PersonalLoad.select()
+                    .where(db.PersonalLoad.instructor == p.id.data)
+                    .where(db.PersonalLoad.end == None)
+                    .count() > 0
+                else '✕'
+              }}</td>
               <td>{{ p.validated }}</td>
               <td>{{ p.submit }}</td>
             </tr>

@@ -120,7 +120,7 @@ def people():
     people = db.Person.select().order_by(db.Person.name)
     person_forms = [ forms.PersonUpdate(None, obj = p) for p in people ]
 
-    return flask.render_template('people.html', people = person_forms)
+    return flask.render_template('people.html', db = db, people = person_forms)
 
 
 @frontend.route('/person/<int:id>', methods = [ 'GET', 'POST' ])
