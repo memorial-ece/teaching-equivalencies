@@ -43,16 +43,15 @@ Options:
     -p,--port=PORT   TCP port to serve content on [default: 5000]
 """
 
-import db
 import docopt
 import sys
-import webapp
 
 arguments = docopt.docopt(__doc__)
 
 # Serving Web content is a bit special: we don't need to pre-open the database
 # (the web app will handle per-connection DB opening/closing).
 if arguments['serve']:
+    import webapp
     try:
         port = int(arguments['--port'])
         app = webapp.create_app()
@@ -63,10 +62,10 @@ if arguments['serve']:
         sys.stderr.write("Invalid port number: '%s'\n" % arguments['--port'])
         sys.exit(1)
 
+import db
 database = db.get()
 database.connect()
 
-import Core
 import data_import
 
 if arguments['initdb']:
@@ -79,6 +78,7 @@ elif arguments['import']:
         data_import.import_courses(arguments['FILE'])
 
     elif arguments['csv']:
+        import Core
         Core.import_file(arguments['FILE'])
 
     elif arguments['people']:
@@ -88,6 +88,7 @@ elif arguments['import']:
         data_import.import_offerings(arguments['FILE'])
 
 elif arguments['export']:
+    import Core
     Core.export_file(arguments['FILE'])
 
 database.close()
