@@ -272,8 +272,8 @@ def import_people(url):
         if not email.endswith('mun.ca'):
             continue
 
-        name = name.split(',')[0]
-        email = email.replace('[at]', '@')
+        name = name.split(',')[0].strip()
+        email = email.replace('[at]', '@').strip()
 
         try:
             _, created = db.Person.get_or_create(name = name, email = email)
