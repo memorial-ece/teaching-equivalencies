@@ -140,7 +140,7 @@ class TeachingLoad(BaseModel):
     load = FloatField()
 
 
-class PersonalLoad(ValidatableModel):
+class PersonalLoad(BaseModel):
     """
     A teaching load for an individual over a specific time period.
     """

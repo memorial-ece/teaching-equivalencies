@@ -31,7 +31,6 @@
                   <th>Instructor</th>
                   <th>Start</th>
                   <th>End</th>
-                  <th>Val</th>
                 </tr>
               </thead>
               <tbody>
@@ -40,7 +39,6 @@
                     <td>{{ l.instructor.name }}</td>
                     <td>{{ l.start }}</td>
                     <td>{{ l.end if l.end else '' }}</td>
-                    <td>{{ l.validated }}</td>
                   </tr>
                 {%- endfor %}
               </tbody>
