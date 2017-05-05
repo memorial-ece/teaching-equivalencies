@@ -280,11 +280,17 @@ def import_people(url):
             total_created += created
 
         except peewee.IntegrityError, e:
-            sys.stderr.write(
-                'error: failure to create person %s (%s)\n  %s\n' % (
-                    email, name, e
-                )
-            )
+            sys.stderr.write("""error: failure to create person '%s' (%s)
+  note: %s
+  note: existing people with same email:
+%s
+""" % (
+                    name, email, e,
+                    ''.join([
+                        "    - '%s' (%s)\n" % (p.name, p.email) for p in
+                            db.Person.select().where(db.Person.email == email)
+                    ])
+            ))
 
     print('Imported details of %d individuals.' % total_created)
 
