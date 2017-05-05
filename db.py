@@ -86,6 +86,9 @@ class Person(ValidatableModel):
     # a useful signal of uniqueness.
     email = TextField(unique = True)
 
+    class Meta:
+        order_by = [ 'name' ]
+
     def graduate_supervision(self):
         return (
             a.supervision
