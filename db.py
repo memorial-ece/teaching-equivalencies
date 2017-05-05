@@ -89,6 +89,22 @@ class Person(ValidatableModel):
     class Meta:
         order_by = [ 'name' ]
 
+    @classmethod
+    def current_instructors(cls):
+        return (
+            Person.select()
+                .join(PersonalLoad)
+                .where(PersonalLoad.end == None)
+                .distinct()
+        )
+
+    def current_instructor(self):
+        return (
+            self.teaching_loads
+                .where(PersonalLoad.end is not None)
+                .count() > 0
+        )
+
     def graduate_supervision(self):
         return (
             a.supervision

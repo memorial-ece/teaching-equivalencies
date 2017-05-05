@@ -38,7 +38,7 @@ def index():
         courses = db.Course.select().order_by(
             db.Course.subject, db.Course.code),
 
-        people = db.Person.select(),
+        people = db.Person.current_instructors(),
     )
 
 
