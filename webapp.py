@@ -186,7 +186,7 @@ def teaching_loads():
 def personal_load_create():
     form = forms.PersonalLoadCreate()
     form.instructor.choices = [
-        (p.id, p.name) for p in db.Person.select()
+        (p.id, p.name) for p in db.Person.select().where(db.Person.validated)
     ]
     form.start.choices = form.end.choices = [ (-1, '') ] + [
         (s.id, str(s))
