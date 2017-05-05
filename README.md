@@ -20,6 +20,7 @@ The following Python packages are required dependencies:
 * fuzzywuzzy
 * levenshtein
 * matplotlib
+* numparser
 * peewee
 * psycopg2
 * python-dotenv (*not* `dotenv`)

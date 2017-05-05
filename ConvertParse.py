@@ -12,69 +12,24 @@
 #    See the License for the specific language governing permissions and
 #    limitations under the License.
 
+import numparser
 import re
+
+lab_sessions = re.compile('at least ([^ ]+) ([^-])-hour sessions per semester')
 
 
 # noinspection PyUnboundLocalVariable
 def convert_parse_labs(name, course):
-    labs = course['lab hours'] if 'lab hours' in course else 3
-    if labs == 'at least three 1.5-hour sessions per semester':
-        l4 = 4.5
-    if labs == 'scheduled as required':
-        l4 = 0
-    p = re.compile(r"(\w+) (\d+)")
-    p1 = re.compile(r"(\d+)")
-    p2 = re.compile(r"([a-z]+)")
-    lab = str(labs)
-    l = p.findall(lab)
-    l1 = str(l)
-    a1 = p2.findall(l1)
-    a2 = p1.findall(lab)
-    l2 = ''.join(map(str, a2))
-    l3 = ''.join(map(str, a1))
-    if l3 == 'one':
-        a = 1
-    elif l3 == 'two':
-        a = 2
-    elif l3 == 'three':
-        a = 3
-    elif l3 == 'four':
-        a = 4
-    elif l3 == 'five':
-        a = 5
-    elif l3 == 'six':
-        a = 6
-    elif l3 == 'seven':
-        a = 7
-    elif l3 == 'eight':
-        a = 8
-    elif l3 == 'nine':
-        a = 9
-    elif l3 == 'ten':
-        a = 10
-    elif l3 == 'eleven':
-        a = 11
-    elif l3 == 'twelve':
-        a = 12
-    elif l3 == 'thirteen':
-        a = 13
+    labs = course['lab hours'] if 'lab hours' in course else '0'
+
+    m = lab_sessions.match(labs)
+    if m:
+        (num, length) = [ numparser.numparser(n) for n in m.groups() ]
+        labs = num * length
     else:
-        a = 3
-    a_1 = int(a)
-    if l2 == '':
-        l2 = 0
-    l2_1 = int(l2)
-    tot = l2_1 * a_1
-    if tot == 0:
-        tot = 0
-    try:
-        if l4 is not None:
-            tot = l4
-            tot = str(tot)
-            return tot
-    except:
-        tot = str(tot)
-        return tot
+        labs = numparser.numparser(labs)
+
+    return labs
 
 
 def convert_parse_credit_hours(name, course):
