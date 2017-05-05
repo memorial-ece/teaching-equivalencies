@@ -67,7 +67,7 @@ class Semester(BaseModel):
     def __str__(self):
         # Truncate next year to two digits unless the current year is xx99.
         next_year = (self.year % 100 if self.year % 100 < 99 else self.year) + 1
-        return '%s %d-%d' % (self.session, self.year, next_year)
+        return '%s %d-%02d' % (self.session, self.year, next_year)
 
 
 class Person(ValidatableModel):
