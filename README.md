@@ -12,15 +12,18 @@ The following Python packages are required dependencies:
 * beautifulsoup
 * colorama
 * docopt
-* dotenv
 * flask
 * flask-bootstrap
 * flask-nav
 * flask-wtf
+* Flask-DotEnv
 * fuzzywuzzy
 * levenshtein
 * matplotlib
 * peewee
+* psycopg2
+* python-dotenv (*not* `dotenv`)
+* requests
 * sqlite3
 
 
