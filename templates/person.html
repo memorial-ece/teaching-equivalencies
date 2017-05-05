@@ -29,7 +29,7 @@
         </h2>
         <h2 class="page-header">Teaching</h2>
 
-        {%- for activity in person.teaching() %}
+        {%- for activity in person.teaching().order_by(db.Activity.id.desc()) %}
           <div class="panel panel-default">
             <div class="panel-heading">
               <h4 class="least-content pull-right text-success">
