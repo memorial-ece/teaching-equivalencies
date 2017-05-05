@@ -34,7 +34,9 @@
                 </tr>
               </thead>
               <tbody>
-                {%- for l in load.with_load %}
+                {%- for l in load.with_load
+                    .order_by(db.PersonalLoad.end,
+                              db.PersonalLoad.start) %}
                   <tr>
                     <td>{{ l.instructor.name }}</td>
                     <td>{{ l.start }}</td>
