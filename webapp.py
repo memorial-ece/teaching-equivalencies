@@ -179,7 +179,8 @@ def teaching_load_create():
 def teaching_loads():
     add_load = personal_load_create()
 
-    return flask.render_template('teaching-loads.html', add_load = add_load,
+    return flask.render_template('teaching-loads.html',
+        add_load = add_load, db = db,
         loads = db.TeachingLoad.select(), new = forms.TeachingLoadCreate())
 
 def personal_load_create():
