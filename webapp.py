@@ -117,7 +117,11 @@ def people():
         p.validated = f.validated.data
         p.save()
 
-    people = db.Person.select().order_by(db.Person.name)
+    people = (
+        db.Person.select()
+            .order_by(db.Person.name)
+            .order_by(db.Person.validated.desc())
+    )
     person_forms = [ forms.PersonUpdate(None, obj = p) for p in people ]
 
     return flask.render_template('people.html', db = db, people = person_forms)
