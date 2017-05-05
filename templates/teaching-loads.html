@@ -39,12 +39,38 @@
                   <tr>
                     <td>{{ l.instructor.name }}</td>
                     <td>{{ l.start }}</td>
-                    <td>{{ l.end }}</td>
+                    <td>{{ l.end if l.end else '' }}</td>
                     <td>{{ l.validated }}</td>
                   </tr>
                 {%- endfor %}
               </tbody>
             </table>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            Add "{{ load.name }}" to another person
+          </div>
+          <div class="panel-body">
+            <form method="POST" action="/teaching-load/add">
+              {{ add_load.hidden_tag() }}
+              <input type="hidden" name="load" value="{{ load.id }}"/>
+
+              <td colspan="3">
+                <div class="pull-right">{{ add_load.instructor }}</div>
+                <div>{{ add_load.instructor.label }}</div>
+
+                <div class="pull-right">{{ add_load.start }}</div>
+                <div>{{ add_load.start.label }}</div>
+
+                <div class="pull-right">{{ add_load.end }}</div>
+                <div>{{ add_load.end.label }}</div>
+              </td>
+              <td>
+                {{ add_load.submit }}
+              </td>
+            </form>
           </div>
         </div>
       </div>

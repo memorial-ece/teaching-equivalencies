@@ -49,6 +49,16 @@ class PersonUpdate(FlaskForm):
     submit = SubmitField(u'Update')
 
 
+class PersonalLoadCreate(FlaskForm):
+    instructor = SelectField(u'Instructor', coerce=int,
+                             validators = [ Required() ])
+
+    start = SelectField(u'Start', coerce=int, validators = [ Required() ])
+    end = SelectField(u'End', coerce=int, validators = [ Required() ])
+
+    submit = SubmitField(u'Add')
+
+
 class TeachingLoadCreate(FlaskForm):
     name = TextField(u'Name', validators = [ Required() ])
     load = FloatField(u'Load', validators = [ Required() ])

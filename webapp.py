@@ -148,6 +148,22 @@ def teaching_load(id):
     return flask.render_template('teaching-load.html', load = l)
 
 
+@frontend.route('/teaching-load/add', methods = [ 'GET', 'POST' ])
+def teaching_load_add():
+    f = personal_load_create()
+    print(f.data)
+    if f.validate_on_submit():
+        db.PersonalLoad.create(
+            instructor = f.instructor.data,
+            load = int(flask.request.form['load']),
+            start = f.start.data,
+            end = f.end.data if f.end.data != -1 else None)
+    else:
+        flask.flash('Invalid form input: %s' % f.data, category = 'error')
+
+    return flask.redirect(flask.url_for('.teaching_loads'))
+
+
 @frontend.route('/teaching-load/create', methods = [ 'GET', 'POST' ])
 def teaching_load_create():
     f = forms.TeachingLoadCreate()
@@ -161,8 +177,21 @@ def teaching_load_create():
 
 @frontend.route('/teaching-loads')
 def teaching_loads():
-    return flask.render_template('teaching-loads.html',
+    add_load = personal_load_create()
+
+    return flask.render_template('teaching-loads.html', add_load = add_load,
         loads = db.TeachingLoad.select(), new = forms.TeachingLoadCreate())
+
+def personal_load_create():
+    form = forms.PersonalLoadCreate()
+    form.instructor.choices = [
+        (p.id, p.name) for p in db.Person.select()
+    ]
+    form.start.choices = form.end.choices = [ (-1, '') ] + [
+        (s.id, str(s))
+            for s in db.Semester.select().order_by(db.Semester.year.desc())
+    ]
+    return form
 
 
 nav.nav.register_element('frontend_top',
