@@ -1,4 +1,4 @@
-#!/usr/bin/env python -tt
+#!/usr/bin/env python
 
 #  Copyright 2017 Keegan Joseph Brophy
 #  Copyright 2017 Jonathan Anderson
@@ -75,7 +75,7 @@ elif arguments['import']:
     assert arguments['courses'] ^ arguments['people'] ^ arguments['offerings']
 
     if arguments['courses']:
-        data_import.import_courses(arguments['FILE'])
+        data_import.import_courses(arguments['FILE'], cli_progress)
 
     elif arguments['csv']:
         import Core
@@ -85,7 +85,7 @@ elif arguments['import']:
         data_import.import_people(arguments['URL'])
 
     elif arguments['offerings']:
-        data_import.import_offerings(arguments['FILE'])
+        data_import.import_offerings(arguments['FILE'], cli_progress)
 
 elif arguments['export']:
     import Core

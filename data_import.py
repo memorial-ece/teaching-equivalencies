@@ -24,10 +24,9 @@ import requests
 import sys
 
 from ConvertParse import sanitize_course
-from Core import progress
 
 
-def import_courses(filenames):
+def import_courses(filenames, emit_progress):
     """
     Import descriptions of courses from the online Calendar.
 
@@ -46,7 +45,7 @@ def import_courses(filenames):
     courses_by_year = collections.defaultdict(list)
 
     for (i, filename) in enumerate(filenames):
-        progress(i, file_count)
+        emit_progress(i, file_count)
 
         year = int(re.findall(r'\d{4}', filename)[-1])
 
@@ -54,7 +53,7 @@ def import_courses(filenames):
             course = sanitize_course(name, c)
             courses_by_year[year].append(course)
 
-    progress(1, 1)
+    emit_progress(1, 1)
     print('\n')
 
     # Arrange courses by course code (e.g., ENGI 200W) and then by year.
@@ -75,7 +74,7 @@ def import_courses(filenames):
     course_count = len(courses)
     print('Identifying generations of %d courses...' % course_count)
     for (i, ((subject, code), details_by_year)) in enumerate(courses.items()):
-        progress(i, course_count)
+        emit_progress(i, course_count)
 
         course, _ = db.Course.get_or_create(subject = subject, code = code)
         gen = None
@@ -102,11 +101,11 @@ def import_courses(filenames):
                 gen.end_year = year
                 gen.save()
 
-    progress(1, 1)
+    emit_progress(1, 1)
     print('\n')
 
 
-def import_offerings(files):
+def import_offerings(files, emit_progress):
     file_count = len(files)
     print('Importing offering data from %d files...' % file_count)
 
@@ -116,7 +115,7 @@ def import_offerings(files):
     instructor_name = re.compile(r'Primary - (.*)$')
 
     for (i, filename) in enumerate(files):
-        progress(i, file_count)
+        emit_progress(i, file_count)
 
         # Parse the year and session from the HTML at the top of the file,
         # before we enter the Big Blob of Text.
