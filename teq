@@ -74,13 +74,12 @@ def cli_progress(count, total, status=''):
     sys.stdout.write('[%s] %s%s ...%s\r' % (bar, percents, '%', status))
     sys.stdout.flush()
 
-import data_import
-
 if arguments['initdb']:
     db.init(database)
 
 elif arguments['import']:
     assert arguments['courses'] ^ arguments['people'] ^ arguments['offerings']
+    import data_import
 
     if arguments['courses']:
         data_import.import_courses(arguments['FILE'], cli_progress)
