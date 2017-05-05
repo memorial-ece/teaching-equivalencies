@@ -159,7 +159,7 @@ def teaching_load_create():
     return flask.redirect(flask.url_for('.teaching_loads'))
 
 
-@frontend.route('/teaching-loads', methods = [ 'GET', 'POST' ])
+@frontend.route('/teaching-loads')
 def teaching_loads():
     return flask.render_template('teaching-loads.html',
         loads = db.TeachingLoad.select(), new = forms.TeachingLoadCreate())
