@@ -1,0 +1,8 @@
+Flask>=0.12
+Flask-Bootstrap>=3.3
+Flask-WTF>=0.14
+flask-dotenv>=0.1.1
+flask-nav>=0.6
+pypostgres>=0.8
+pysqlite>=2.8
+python-dotenv>=0.6.5
