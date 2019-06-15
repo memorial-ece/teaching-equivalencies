@@ -174,24 +174,28 @@ class CourseGeneration(ValidatableModel):
     """
     As a course changes over time it becomes necessary to update it to moder information
     """
-    # due to situations like 4.5 these numbers are stored as doubles
-    lab_hours = DoubleField(default = 0)
-    credit_hours = DoubleField(default = 3)
-    lecture_hours = DoubleField(default = 3)
-    tutorial_hours = DoubleField(default = 0)
-    title = TextField()
-    description = TextField(null = True)
+
     course = ForeignKeyField(Course, related_name = 'generations')
-    other_info = TextField(null = True)
-    previous_course = TextField(null = True)
+
+    # Calendar years in which the course's description looked like this
     start_year = IntegerField()
     end_year = IntegerField()
+
+    title = TextField()
+    description = TextField(null = True)
+    credit_hours = IntegerField(default = 3)
+
+    lecture_hours = DoubleField(default = 3)    # Lecture hours per week
+    lab_hours = DoubleField(default = 0)        # Lab hours per semester
+    tutorial_hours = IntegerField(default = 0)  # Number of tutorials per term
+
+    other_info = TextField(null = True)
 
     class Meta:
         order_by = [ '-end_year' ]
 
     def differs_from(self, details):
-        return (self.labs != details['Labs'] or
+        return (self.lab_hours != details['Labs'] or
             self.credit_hours != details['Credit Hours'] or
             self.lecture_hours != details['Lecture Hours'] or
             self.title != details['Title'] or
@@ -201,12 +205,21 @@ class CourseGeneration(ValidatableModel):
 
     def weights(self):
         return [
-            ('Lectures', u'', self.credit_hours / 3.0),
             (
-                'Labs', u'%f/3 ⨉ 0.27' % self.lab_hours,
-                self.lab_hours / 3.0 * 0.27
+                'Lectures',
+                u'%f / 3' % self.lecture_hours,
+                self.lecture_hours / 3.0
             ),
-            ('Tutorials', u'', self.tutorial_hours * 0.14),
+            (
+                'Labs',
+                u'%.02f / 36 ⨉ 0.27' % self.lab_hours,
+                self.lab_hours / 36.0 * 0.27
+            ),
+            (
+                'Tutorials',
+                u'%d ⨉ %f ⨉ 0.14' % (self.tutorials, self.tutorial_length),
+                self.tutorials * self.tutorial_length * 0.14
+            ),
         ]
 
     def years(self):

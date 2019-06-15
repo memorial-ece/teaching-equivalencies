@@ -86,7 +86,7 @@ def import_courses(filenames, emit_progress):
             if gen is None or gen.differs_from(details):
                 gen = db.CourseGeneration.create(
                     course = course,
-                    labs = details['Labs'],
+                    lab_hours = details['Labs'],
                     credit_hours = details['Credit Hours'],
                     lecture_hours = details['Lecture Hours'],
                     title = details['Title'],
